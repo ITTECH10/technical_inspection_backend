@@ -4,13 +4,16 @@ const userController = require('./../controllers/userController')
 
 const router = express.Router()
 
-router.route('/signup')
-.post(authController.signup)
-
 router.route('/login')
 .post(authController.login)
 
+router.use(authController.protect)
+router.use(authController.restrictTo('admin'))
+
+router.route('/signup')
+.post(authController.signup)
+
 router.route('/')
-.get(authController.protect, userController.getAllUsers)
+.get(userController.getAllUsers)
 
 module.exports = router

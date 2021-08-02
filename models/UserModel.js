@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
         },
         unique: true
     },
+    role: {
+        type: String,
+        default: 'user'
+    },
     vehicleModel: {
         type: String,
         required: [true, 'Please provide users vehicle model.']
