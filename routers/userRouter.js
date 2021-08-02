@@ -13,7 +13,7 @@ router.use(authController.restrictTo('admin'))
 router.route('/signup')
 .post(authController.signup)
 
-router.route('/')
-.get(userController.getAllUsers)
+// router.route('/')
+// .get(userController.getAllUsers)
 
 module.exports = router
