@@ -76,3 +76,11 @@ exports.editUserInfo = catchAsync(async(req, res, next) => {
         user
     })
 })
+
+exports.deleteUser = catchAsync(async(req ,res, next) => {
+    await User.findByIdAndDelete(req.params.id)
+
+    res.status(204).json({
+        message: 'success'
+    })
+})
