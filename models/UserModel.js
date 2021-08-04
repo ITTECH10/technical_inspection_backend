@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     lastInspected: {
         type: Date,
-        required: [true, 'Please provide the date on which the user last checked his vehicle.'],
+        // required: [true, 'Please provide the date on which the user last checked his vehicle.'],
         default: Date.now()
     },
     password: {

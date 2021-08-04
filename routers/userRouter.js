@@ -20,4 +20,8 @@ router.route('/signup')
 router.route('/')
 .get(userController.getAllUsers)
 
+router.route('/:id')
+.get(userController.getOneUser)
+.patch(userController.editUserInfo)
+
 module.exports = router
