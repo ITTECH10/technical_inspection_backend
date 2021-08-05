@@ -14,7 +14,8 @@ mongoose.connect(DB, {
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true
-}).then(() => console.log('Konekcija ka bazi podataka uspješna...'));
+}).then(() => console.log('Konekcija ka bazi podataka uspješna...'))
+.catch(err => console.log(err))
 
 app.listen(PORT, () => {
     console.log(`Server pokrenut na portu ${PORT}...`)
