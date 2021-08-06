@@ -2,7 +2,7 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Vehicle = require('./../models/VehicleModel')
 const cloudinary = require('cloudinary').v2
-const {uploadProfileImage} = require('./../utils/cloudinary')
+const {uploadSingleImage} = require('./../utils/cloudinary')
 
 exports.createVehicle = catchAsync(async(req, res, next) => {
     const newVehicle = await Vehicle.create({
@@ -33,8 +33,9 @@ exports.getMyVehicles = catchAsync(async(req, res, next) => {
 
 exports.uploadVehicleImages = catchAsync(async(req, res, next) => {
     if(req.files) {
-        uploadProfileImage(req)
-        // console.log(req.files.filename)
+        console.log(req.files.photo.length)
+        uploadSingleImage(req)
+        // console.log(req.files)
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
             if(img) {
                 console.log(img)
@@ -46,10 +47,13 @@ exports.uploadVehicleImages = catchAsync(async(req, res, next) => {
         })
     }
 
-    const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.carId, {image: req.files.image})
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.carId, {image: req.files.image}, {
+        new: true
+    })
 
     res.status(201).json({
         message: 'success',
         updatedVehicle
     })
 })
+
