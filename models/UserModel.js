@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     vehicleModel: {
         type: String,
-        required: [true, 'Please provide users vehicle model.']
+        // required: [true, 'Please provide users vehicle model.']
     },
     lastInspected: {
         type: Date,

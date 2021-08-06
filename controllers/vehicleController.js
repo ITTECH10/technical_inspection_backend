@@ -3,6 +3,7 @@ const AppError = require('./../utils/appError')
 const Vehicle = require('./../models/VehicleModel')
 const cloudinary = require('cloudinary').v2
 const {uploadSingleImage} = require('./../utils/cloudinary')
+const Email = require('./../utils/nodemailer')
 
 exports.createVehicle = catchAsync(async(req, res, next) => {
     const newVehicle = await Vehicle.create({
@@ -11,6 +12,13 @@ exports.createVehicle = catchAsync(async(req, res, next) => {
         modelDetails: req.body.modelDetails,
         lastTechnicalInspection: req.body.lastTechnicalInspection
     })
+
+    try{
+        await new Email(req.user).carAdded()
+    }
+    catch(err) {
+        console.log(err)
+    }
 
     res.status(201).json({
         message: 'success',
