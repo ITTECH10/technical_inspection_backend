@@ -65,3 +65,11 @@ exports.uploadVehicleImages = catchAsync(async(req, res, next) => {
     })
 })
 
+exports.deleteMyVehicles = catchAsync(async(req, res, next) => {
+    await Vehicle.findByIdAndDelete(req.params.id)
+
+    res.status(204).json({
+        messag: 'success'
+    })
+})
+

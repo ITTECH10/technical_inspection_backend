@@ -13,5 +13,6 @@ router.route('/upload/:carId')
 router.route('/:id')
 .post(vehicleController.createVehicle)
 .get(vehicleController.getMyVehicles)
+.delete(vehicleController.deleteMyVehicles)
 
 module.exports = router
