@@ -7,6 +7,9 @@ const router = express.Router()
 // BELOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
+router.route('/upload/:carId')
+.post(vehicleController.uploadVehicleImages)
+
 router.route('/:id')
 .post(vehicleController.createVehicle)
 .get(vehicleController.getMyVehicles)
