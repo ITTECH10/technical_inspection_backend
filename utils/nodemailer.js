@@ -20,7 +20,6 @@ module.exports = class Email {
 
   // Send the actual email
   async send(subject, text) {
-    // 2) Define email options
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -28,7 +27,6 @@ module.exports = class Email {
       text
     };
 
-    // 3) Create a transport and send email
     await this.newTransport().sendMail(mailOptions, (err, info) => {
         if(err) console.log(err)
         console.log(info)
