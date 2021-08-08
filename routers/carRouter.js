@@ -11,7 +11,7 @@ router.route('/upload/:carId')
 .post(vehicleController.uploadVehicleImages)
 
 router.route('/:id')
-.post(vehicleController.createVehicle)
+.post(vehicleController.checkForImages, vehicleController.createVehicle)
 .get(vehicleController.getMyVehicles)
 .delete(vehicleController.deleteMyVehicles)
 

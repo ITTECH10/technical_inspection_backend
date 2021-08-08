@@ -5,20 +5,42 @@ const cloudinary = require('cloudinary').v2
 const {uploadSingleImage} = require('./../utils/cloudinary')
 const Email = require('./../utils/nodemailer')
 
+// MIDLEWARE FOR VEHICLE CREATION AND IMAGES
+exports.checkForImages = catchAsync(async(req, res, next) => {
+    if(req.files) {
+        uploadSingleImage(req)
+
+        await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
+            if(img) {
+                console.log(img)
+                req.files.image = img.secure_url
+            }
+            if(err) {
+                console.log(err)
+            }
+        })
+    }
+
+    console.log(req.body)
+
+    next()
+})
+
 exports.createVehicle = catchAsync(async(req, res, next) => {
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
+        image: req.files.image,
         modelDetails: req.body.modelDetails,
         lastTechnicalInspection: req.body.lastTechnicalInspection
     })
 
-    try{
-        await new Email(req.user).carAdded()
-    }
-    catch(err) {
-        console.log(err)
-    }
+    // try{
+    //     await new Email(req.user).carAdded()
+    // }
+    // catch(err) {
+    //     console.log(err)
+    // }
 
     res.status(201).json({
         message: 'success',
