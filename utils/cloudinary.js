@@ -49,11 +49,14 @@ exports.uploadSingleImage = req => {
 }
 
 exports.uploadMultipleImages = req => {
-    let files = []
+    const oldTempFiles = []
+    const newTempFiles = []
+    let ext
+    let filename
 
-    req.files.photo.map(p => {
-        const ext = p.mimetype.split('/')[1];
-        const filename = `user-${req.user._id}-${Math.random() * 1000000}.${ext}`;
+    req.files.photo.map((p) => {
+        ext = p.mimetype.split('/')[1];
+        filename = `user-${req.user._id}-PLACEHOLDER.${ext}`;
 
         if (!p.mimetype.startsWith('image')) {
             return next(new AppError('Invalid file type. Please upload only images.', 400))
@@ -62,16 +65,29 @@ exports.uploadMultipleImages = req => {
         if (p.mimetype !== 'image/jpeg' && p.mimetype !== 'image/png') {
             return next(new AppError('Please provide an image type with jpg or png file extension.', 400));
         }
-
-        let joinedTemp = p.tempFilePath
-        files.push(p.tempFilePath)
-
-        // p.mv(joinedTemp, +filename, (err) => {
-        //     if (err) console.log(err)
-        // })
-
-        req.files.filename = filename
-        req.files.joinedTemp = joinedTemp + filename
-        req.files.photos = files
+        
+        oldTempFiles.push(p.tempFilePath)
     })
+
+    oldTempFiles.map((tf, i) => {
+        const tempDirectory = tf.split('\\')
+        const index = tempDirectory.length - 1
+        const newFilename = filename.replace('PLACEHOLDER', i)
+        
+        tempDirectory.splice(index, 1, newFilename)
+
+        const newTempDirectory = tempDirectory.join('\\')
+        
+        req.files.photo.map(p => {
+            p.mv(newTempDirectory, (err) => {
+                if(err) console.log(err)
+            })
+        })
+
+        const finalTempFiles = newTempDirectory
+
+        newTempFiles.push(finalTempFiles)
+    })
+
+    req.files.photos = newTempFiles
 }

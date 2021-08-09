@@ -13,18 +13,75 @@ const vehicleSchema = new mongoose.Schema({
     images: {
         type: Array
     },
+    mark: {
+        type: String,
+        required: [true, 'Please enter the vehicle mark.']
+    },
     model: {
         type: String,
         required: [true, 'Please enter the vehicle model.']
     },
-    lastTechnicalInspection: {
+    HSN: {
+        type: String,
+        minLength: [4, 'HSN must be at least 4 characters, got {VALUE}'],
+        maxLength: [4, 'HSN must be at least 4 characters, got {VALUE}'],
+        required: [true, 'Please enter vehicle HSN information.']
+    },
+    TSN: {
+        type: String,
+        maxLength: [3, 'TSN length cannot exceed 3 characters.'],
+        required: [true, 'Please enter vehicle TSN information.']
+    },
+    firstVehicleRegistration: {
         type: Date,
-        required: [true, 'Please tell us the last time the vehicle was on inspection.'],
         default: Date.now()
     },
-    modelDetails: {
-        type: String,
-        // required: [true, 'Please tell us more details about this model.']
+    firstVehicleRegistrationOnOwner: {
+        type: Date,
+        default: Date.now()
+    },
+    kilometersDriven: {
+        type: Number,
+        required: [true, 'Please enter the number of kilometers driven.']
+    },
+    lastTechnicalInspection: {
+        type: Date,
+        // required: [true, 'Please tell us the last time the vehicle was on inspection.'],
+        default: Date.now()
+    },
+    nextTechnicalInspection: {
+        type: Date,
+        default: Date.now()
+    },
+    TUV: {
+        type: Date,
+        default: Date.now()
+    },
+    AU: {
+        type: Date,
+        default: Date.now()
+    },
+    insuranceHouse: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Insurance',
+        required: [true, 'Please provide insurance house information.']
+    },
+    monthlyInsurancePayment: {
+        type: Number,
+        required: [true, 'Please provide your monthly insurance payment.']
+    },
+    allowedYearlyKilometers: {
+        type: Number,
+        required: [true, 'Please provide allowed kilometers per year.']
+    },
+    vehiclePaymentType: {
+        type: mongoose.Schema.Types.Mixed,
+        ref: 'BanksLeasing',
+        required: [true, 'Please provide your vehicle payment type.']
+    },
+    yearlyTax: {
+        type: Number,
+        required: [true, 'Please provide your yearly tax.']
     }
 })
 

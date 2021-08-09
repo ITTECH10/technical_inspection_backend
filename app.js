@@ -1,6 +1,8 @@
 const express = require('express')
 const userRouter = require('./routers/userRouter')
 const carRouter = require('./routers/carRouter')
+const bankRouter = require('./routers/bankRouter')
+const insuranceHouseRouter = require('./routers/insuranceHouseRouter')
 const globalErrorHandler = require('./controllers/errorController')
 const cors = require('cors')
 const fileupload = require('express-fileupload')
@@ -17,6 +19,8 @@ app.use(fileupload({
 
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/cars', carRouter)
+app.use('/api/v1/payment', bankRouter)
+app.use('/api/v1/insuranceHouse', insuranceHouseRouter)
 
 app.all('*', (req, res, next) => {
     res.status(404).json({

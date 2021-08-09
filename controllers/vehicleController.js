@@ -12,7 +12,7 @@ exports.checkForImages = catchAsync(async(req, res, next) => {
 
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
             if(img) {
-                console.log(img)
+                // console.log(img)
                 req.files.image = img.secure_url
             }
             if(err) {
@@ -21,8 +21,6 @@ exports.checkForImages = catchAsync(async(req, res, next) => {
         })
     }
 
-    console.log(req.body)
-
     next()
 })
 
@@ -30,9 +28,16 @@ exports.createVehicle = catchAsync(async(req, res, next) => {
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
-        image: req.files.image,
-        modelDetails: req.body.modelDetails,
-        lastTechnicalInspection: req.body.lastTechnicalInspection
+        // image: req.files.image ? req.files.image : '',
+        mark: req.body.mark,
+        HSN: req.body.HSN,
+        TSN: req.body.TSN,
+        kilometersDriven: req.body.kilometersDriven,
+        insuranceHouse: req.body.insuranceHouse,
+        monthlyInsurancePayment: req.body.monthlyInsurancePayment,
+        allowedYearlyKilometers: req.body.allowedYearlyKilometers,
+        vehiclePaymentType: req.body.vehiclePaymentType,
+        yearlyTax: req.body.yearlyTax
     })
 
     // try{
