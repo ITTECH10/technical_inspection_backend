@@ -31,3 +31,16 @@ exports.getAllBanks = catchAsync(async(req, res, next) => {
         banks
     })
 })
+
+exports.getUsersBank = catchAsync(async(req, res, next) => {
+    const bank = await BanksLeasing.findById(req.params.bankId)
+
+    if(!bank) {
+        return next(new AppError('There are no banks found.', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        bank
+    })
+})

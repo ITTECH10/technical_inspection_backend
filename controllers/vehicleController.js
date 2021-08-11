@@ -7,6 +7,7 @@ const Email = require('./../utils/nodemailer')
 
 // MIDLEWARE FOR VEHICLE CREATION AND IMAGES
 exports.checkForImages = catchAsync(async(req, res, next) => {
+    // if(!req.files) next()
     if(req.files) {
         uploadSingleImage(req)
 
@@ -25,11 +26,10 @@ exports.checkForImages = catchAsync(async(req, res, next) => {
 })
 
 exports.createVehicle = catchAsync(async(req, res, next) => {
-    console.log(req.body)
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
-        image: req.files.image ? req.files.image : '',
+        image: req.files ? req.files.image : req.body.image,
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
@@ -108,7 +108,8 @@ exports.connectInsuranceHouse = catchAsync(async(req, res, next) => {
         return next(new AppError('No vehicle was found', 404))
     }
 
-    vehicle.insuranceHouse = req.body.insuranceHouse
+    vehicle.insuranceHouse = req.body.insuranceHouse || vehicle.insuranceHouse
+    vehicle.vehiclePaymentType = req.body.vehiclePaymentType || vehicle.vehiclePaymentType
 
     await vehicle.save({
         new: true,
@@ -116,6 +117,19 @@ exports.connectInsuranceHouse = catchAsync(async(req, res, next) => {
     })
 
     res.status(202).json({
+        message: 'success',
+        vehicle
+    })
+})
+
+exports.getVehicle = catchAsync(async(req, res, next) => {
+    const vehicle = await Vehicle.findById(req.params.id)
+
+    if(!vehicle) {
+        return next(new AppError('There is no vehicle found', 404))
+    }
+
+    res.status(200).json({
         message: 'success',
         vehicle
     })

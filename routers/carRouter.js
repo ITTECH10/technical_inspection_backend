@@ -14,8 +14,11 @@ router.route('/:updateId')
 .patch(vehicleController.connectInsuranceHouse)
 
 router.route('/:id')
-.post(vehicleController.createVehicle)
+.post(vehicleController.checkForImages, vehicleController.createVehicle)
 .get(vehicleController.getMyVehicles)
 .delete(vehicleController.deleteMyVehicles)
+
+router.route('/car/:id')
+.get(vehicleController.getVehicle)
 
 module.exports = router

@@ -30,3 +30,16 @@ exports.getAllInsurances = catchAsync(async(req, res, next) => {
         insurances
     })
 })
+
+exports.getUsersInsuranceHouse = catchAsync(async(req, res, next) => {
+    const insurance = await Insurance.findById(req.params.insuranceId)
+
+    if(!insurance) {
+        return next(new AppError('There are no insurances found.', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        insurance
+    })
+})

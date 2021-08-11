@@ -7,8 +7,7 @@ const vehicleSchema = new mongoose.Schema({
         required: [true, 'Vehicle must have a owner.']
     },
     image: {
-        type: String,
-        default: 'https://images.unsplash.com/photo-1551836989-b4622a17a792?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
+        type: String
     },
     images: {
         type: Array

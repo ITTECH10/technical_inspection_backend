@@ -11,4 +11,7 @@ router.route('/')
 .get(bankLeasingController.getAllBanks)
 .post(bankLeasingController.createBanksLeasing)
 
+router.route('/:bankId')
+.get(bankLeasingController.getUsersBank)
+
 module.exports = router

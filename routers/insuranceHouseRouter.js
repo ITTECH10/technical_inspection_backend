@@ -11,4 +11,7 @@ router.route('/')
 .get(insuranceHouseController.getAllInsurances)
 .post(insuranceHouseController.createInsuranceHouse)
 
+router.route('/:insuranceId')
+.get(insuranceHouseController.getUsersInsuranceHouse)
+
 module.exports = router
