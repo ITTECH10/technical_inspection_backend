@@ -7,7 +7,8 @@ const router = express.Router()
 // BELLOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
-router.route('/:bankLeasingId')
+router.route('/')
+.get(bankLeasingController.getAllBanks)
 .post(bankLeasingController.createBanksLeasing)
 
 module.exports = router

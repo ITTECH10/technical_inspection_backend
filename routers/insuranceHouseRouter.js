@@ -7,7 +7,8 @@ const router = express.Router()
 // BELLOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
-router.route('/:insuranceId')
+router.route('/')
+.get(insuranceHouseController.getAllInsurances)
 .post(insuranceHouseController.createInsuranceHouse)
 
 module.exports = router

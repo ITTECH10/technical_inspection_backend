@@ -10,8 +10,11 @@ router.use(authController.protect)
 router.route('/upload/:carId')
 .post(vehicleController.uploadVehicleImages)
 
+router.route('/:updateId')
+.patch(vehicleController.connectInsuranceHouse)
+
 router.route('/:id')
-.post(vehicleController.checkForImages, vehicleController.createVehicle)
+.post(vehicleController.createVehicle)
 .get(vehicleController.getMyVehicles)
 .delete(vehicleController.deleteMyVehicles)
 

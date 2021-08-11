@@ -9,14 +9,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
         email: req.body.email,
         role: req.body.role,
-        vehicleModel: req.body.vehicleModel,
-        lastInspected: req.body.lastInspected,
         password: req.body.password,
         confirmPassword: req.body.confirmPassword
     })
-
-    // NOT ALLOWED
-    // const token = signToken(newUser._id)
 
     res.status(201).json({
         message: 'success',

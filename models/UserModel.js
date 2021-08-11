@@ -18,15 +18,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user'
     },
-    vehicleModel: {
-        type: String,
-        // required: [true, 'Please provide users vehicle model.']
-    },
-    lastInspected: {
-        type: Date,
-        // required: [true, 'Please provide the date on which the user last checked his vehicle.'],
-        default: Date.now()
-    },
     password: {
         type: String,
         required: [true, 'Please provide a password.'],

@@ -4,7 +4,7 @@ const BanksLeasingSchema = new mongoose.Schema({
     banksLeasingOwner: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Banks and leasing information must be filled out.']
+        // required: [true, 'Banks and leasing information must be filled out.']
     },
     name: {
         type: String,

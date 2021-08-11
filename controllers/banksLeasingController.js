@@ -4,7 +4,7 @@ const BanksLeasing = require('./../models/BanksLeasingModel')
 
 exports.createBanksLeasing = catchAsync(async(req, res, next) => {
     const newBanksLeasing = await BanksLeasing.create({
-        banksLeasingOwner: req.params.bankLeasingId,
+        // banksLeasingOwner: req.params.bankLeasingId,
         name: req.body.name,
         streetAddress: req.body.street,
         numberAddress: req.body.number,
@@ -16,5 +16,18 @@ exports.createBanksLeasing = catchAsync(async(req, res, next) => {
     res.status(201).json({
         message: 'success',
         newBanksLeasing
+    })
+})
+
+exports.getAllBanks = catchAsync(async(req, res, next) => {
+    const banks = await BanksLeasing.find()
+
+    if(!banks) {
+        return next(new AppError('There are no banks found.', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        banks
     })
 })

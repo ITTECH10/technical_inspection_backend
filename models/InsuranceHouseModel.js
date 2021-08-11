@@ -4,7 +4,7 @@ const insuranceHouseSchema = new mongoose.Schema({
     insuranceOwner: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Insurance House information must be filled out.']
+        // required: [true, 'Insurance House information must be filled out.']
     },
     name: {
         type: String,

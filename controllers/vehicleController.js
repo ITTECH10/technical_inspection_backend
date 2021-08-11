@@ -25,18 +25,19 @@ exports.checkForImages = catchAsync(async(req, res, next) => {
 })
 
 exports.createVehicle = catchAsync(async(req, res, next) => {
+    console.log(req.body)
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
-        // image: req.files.image ? req.files.image : '',
+        image: req.files.image ? req.files.image : '',
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
         kilometersDriven: req.body.kilometersDriven,
-        insuranceHouse: req.body.insuranceHouse,
+        // insuranceHouse: req.body.insuranceHouse,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
         allowedYearlyKilometers: req.body.allowedYearlyKilometers,
-        vehiclePaymentType: req.body.vehiclePaymentType,
+        // vehiclePaymentType: req.body.vehiclePaymentType,
         yearlyTax: req.body.yearlyTax
     })
 
@@ -100,3 +101,22 @@ exports.deleteMyVehicles = catchAsync(async(req, res, next) => {
     })
 })
 
+exports.connectInsuranceHouse = catchAsync(async(req, res, next) => {
+    const vehicle = await Vehicle.findById(req.params.updateId)
+
+    if(!vehicle) {
+        return next(new AppError('No vehicle was found', 404))
+    }
+
+    vehicle.insuranceHouse = req.body.insuranceHouse
+
+    await vehicle.save({
+        new: true,
+        validateBeforeSave: false
+    })
+
+    res.status(202).json({
+        message: 'success',
+        vehicle
+    })
+})

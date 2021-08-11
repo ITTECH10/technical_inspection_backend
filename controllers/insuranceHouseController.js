@@ -4,7 +4,6 @@ const Insurance = require('./../models/InsuranceHouseModel')
 
 exports.createInsuranceHouse = catchAsync(async(req, res, next) => {
     const newInsuranceHouse = await Insurance.create({
-        insuranceOwner: req.params.insuranceId,
         name: req.body.name,
         streetAddress: req.body.street,
         numberAddress: req.body.number,
@@ -16,5 +15,18 @@ exports.createInsuranceHouse = catchAsync(async(req, res, next) => {
     res.status(201).json({
         message: 'success',
         newInsuranceHouse
+    })
+})
+
+exports.getAllInsurances = catchAsync(async(req, res, next) => {
+    const insurances = await Insurance.find()
+
+    if(!insurances) {
+        return next(new AppError('There are no insurances found.', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        insurances
     })
 })

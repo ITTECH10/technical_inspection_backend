@@ -64,7 +64,7 @@ const vehicleSchema = new mongoose.Schema({
     insuranceHouse: {
         type: mongoose.Schema.ObjectId,
         ref: 'Insurance',
-        required: [true, 'Please provide insurance house information.']
+        // required: [true, 'Please provide insurance house information.']
     },
     monthlyInsurancePayment: {
         type: Number,
@@ -77,7 +77,7 @@ const vehicleSchema = new mongoose.Schema({
     vehiclePaymentType: {
         type: mongoose.Schema.Types.Mixed,
         ref: 'BanksLeasing',
-        required: [true, 'Please provide your vehicle payment type.']
+        // required: [true, 'Please provide your vehicle payment type.']
     },
     yearlyTax: {
         type: Number,
