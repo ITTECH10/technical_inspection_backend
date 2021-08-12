@@ -8,14 +8,14 @@ module.exports = class Email {
   }
 
   newTransport() {
-      // Sendgrid
-      return nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD
-        }
-      });
+    // Sendgrid
+    return nodemailer.createTransport({
+      service: 'SendGrid',
+      auth: {
+        user: process.env.SENDGRID_USERNAME,
+        pass: process.env.SENDGRID_PASSWORD
+      }
+    });
   }
 
   // Send the actual email
@@ -28,8 +28,8 @@ module.exports = class Email {
     };
 
     await this.newTransport().sendMail(mailOptions, (err, info) => {
-        if(err) console.log(err)
-        console.log(info)
+      if (err) console.log(err)
+      // console.log(info)
     })
   }
 

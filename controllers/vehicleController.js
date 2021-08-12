@@ -2,21 +2,21 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Vehicle = require('./../models/VehicleModel')
 const cloudinary = require('cloudinary').v2
-const {uploadSingleImage} = require('./../utils/cloudinary')
+const { uploadSingleImage } = require('./../utils/cloudinary')
 const Email = require('./../utils/nodemailer')
 
 // MIDLEWARE FOR VEHICLE CREATION AND IMAGES
-exports.checkForImages = catchAsync(async(req, res, next) => {
+exports.checkForImages = catchAsync(async (req, res, next) => {
     // if(!req.files) next()
-    if(req.files) {
+    if (req.files) {
         uploadSingleImage(req)
 
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
-            if(img) {
+            if (img) {
                 // console.log(img)
                 req.files.image = img.secure_url
             }
-            if(err) {
+            if (err) {
                 console.log(err)
             }
         })
@@ -25,7 +25,7 @@ exports.checkForImages = catchAsync(async(req, res, next) => {
     next()
 })
 
-exports.createVehicle = catchAsync(async(req, res, next) => {
+exports.createVehicle = catchAsync(async (req, res, next) => {
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
@@ -54,10 +54,10 @@ exports.createVehicle = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.getMyVehicles = catchAsync(async(req, res, next) => {
-    const userVehicles = await Vehicle.find({vehicleOwner: req.params.id})
+exports.getMyVehicles = catchAsync(async (req, res, next) => {
+    const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id })
 
-    if(!userVehicles) {
+    if (!userVehicles) {
         return next(new AppError('No vehicles were found', 404))
     }
 
@@ -67,23 +67,22 @@ exports.getMyVehicles = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.uploadVehicleImages = catchAsync(async(req, res, next) => {
-    if(req.files) {
-        console.log(req.files.photo.length)
+exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
+    if (req.files) {
         uploadSingleImage(req)
         // console.log(req.files)
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
-            if(img) {
-                console.log(img)
+            if (img) {
+                // console.log(img)
                 req.files.image = img.secure_url
             }
-            if(err) {
+            if (err) {
                 console.log(err)
             }
         })
     }
 
-    const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.carId, {image: req.files.image}, {
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.carId, { image: req.files.image }, {
         new: true
     })
 
@@ -93,7 +92,7 @@ exports.uploadVehicleImages = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.deleteMyVehicles = catchAsync(async(req, res, next) => {
+exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     await Vehicle.findByIdAndDelete(req.params.id)
 
     res.status(204).json({
@@ -101,10 +100,10 @@ exports.deleteMyVehicles = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.connectInsuranceHouse = catchAsync(async(req, res, next) => {
+exports.connectInsuranceHouse = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.params.updateId)
 
-    if(!vehicle) {
+    if (!vehicle) {
         return next(new AppError('No vehicle was found', 404))
     }
 
@@ -122,10 +121,10 @@ exports.connectInsuranceHouse = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.getVehicle = catchAsync(async(req, res, next) => {
+exports.getVehicle = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.params.id)
 
-    if(!vehicle) {
+    if (!vehicle) {
         return next(new AppError('There is no vehicle found', 404))
     }
 
