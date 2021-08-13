@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken')
 
 exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         role: req.body.role,
         password: req.body.password,

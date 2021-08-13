@@ -3,6 +3,14 @@ const validatorPackage = require('validator')
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: [true, 'Please enter customers name.']
+    },
+    lastName: {
+        type: String,
+        required: [true, 'Please enter customers last name.']
+    },
     email: {
         type: String,
         required: [true, 'Please provide an email.'],
@@ -27,7 +35,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please confirm the password.'],
         validate: {
-            validator: function(val) {
+            validator: function (val) {
                 return val === this.password
             },
             message: "Passwords do not match."
@@ -35,15 +43,15 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.pre('save', async function(next) {
-    if(!this.isModified('password')) return
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return
     this.password = await bcrypt.hash(this.password, 12)
     this.confirmPassword = undefined
 
     next()
 })
 
-userSchema.methods.comparePasswords = async function(candidatePassword, userPassword) {
+userSchema.methods.comparePasswords = async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword)
 };
 
