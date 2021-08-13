@@ -6,11 +6,15 @@ const vehicleSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'Vehicle must have a owner.']
     },
-    image: {
+    thumbnail: {
         type: String
     },
     images: {
         type: Array
+    },
+    imageCreatedAt: {
+        type: Date,
+        default: Date.now()
     },
     mark: {
         type: String,

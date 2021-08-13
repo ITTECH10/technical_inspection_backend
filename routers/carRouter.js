@@ -7,18 +7,19 @@ const router = express.Router()
 // BELOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
-router.route('/upload/:carId')
-.post(vehicleController.uploadVehicleImages)
+router.route('/images/:carId')
+    .post(vehicleController.uploadVehicleImages)
+    .get(vehicleController.getCarImages)
 
 router.route('/:updateId')
-.patch(vehicleController.connectInsuranceHouse)
+    .patch(vehicleController.connectInsuranceHouse)
 
 router.route('/:id')
-.post(vehicleController.checkForImages, vehicleController.createVehicle)
-.get(vehicleController.getMyVehicles)
-.delete(vehicleController.deleteMyVehicles)
+    .post(vehicleController.checkForImages, vehicleController.createVehicle)
+    .get(vehicleController.getMyVehicles)
+    .delete(vehicleController.deleteMyVehicles)
 
 router.route('/car/:id')
-.get(vehicleController.getVehicle)
+    .get(vehicleController.getVehicle)
 
 module.exports = router
