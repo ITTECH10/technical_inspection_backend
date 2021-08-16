@@ -2,7 +2,7 @@ const express = require('express')
 const userRouter = require('./routers/userRouter')
 const carRouter = require('./routers/carRouter')
 const bankRouter = require('./routers/bankRouter')
-const imageRouter = require('./routers/imageRouter')
+const fileRouter = require('./routers/fileRouter')
 const insuranceHouseRouter = require('./routers/insuranceHouseRouter')
 const globalErrorHandler = require('./controllers/errorController')
 const cors = require('cors')
@@ -22,7 +22,7 @@ app.use('/api/v1/users', userRouter)
 app.use('/api/v1/cars', carRouter)
 app.use('/api/v1/payment', bankRouter)
 app.use('/api/v1/insuranceHouse', insuranceHouseRouter)
-// app.use('/api/v1/upload', imageRouter)
+// app.use('/api/v1/upload', fileRouter)
 
 app.all('*', (req, res, next) => {
     res.status(404).json({

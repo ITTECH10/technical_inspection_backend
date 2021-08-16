@@ -1,6 +1,6 @@
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
-const Image = require('./../models/ImageModel')
+const Image = require('../models/FileModel')
 
 // MIDLEWARE FOR IMAGES
 exports.checkForImages = catchAsync(async (req, res, next) => {

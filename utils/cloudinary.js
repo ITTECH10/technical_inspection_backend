@@ -50,15 +50,12 @@ const AppError = require('./appError');
 // }
 
 // PRODUCTION
-exports.uploadSingleImage = req => {
+exports.uploadSingleFile = req => {
     const ext = req.files.photo.mimetype.split('/')[1];
     const filename = `user-${req.user._id}-${new Date().getTime() * 1000}.${ext}`;
 
-    if (!req.files.photo.mimetype.startsWith('image')) {
-        return next(new AppError('Invalid file type. Please upload only images.', 400))
-
-    } else if (req.files.photo.mimetype !== 'image/jpeg' && req.files.photo.mimetype !== 'image/png') {
-        return next(new AppError('Please provide an image type with jpg or png file extension.', 400));
+    if (req.files.photo.mimetype !== 'image/jpeg' && req.files.photo.mimetype !== 'image/png' && req.files.photo.mimetype !== 'application/pdf') {
+        return next(new AppError('Only files with PNG,JPEG and PDF extensions are allowed.', 400));
     }
 
     let temp = req.files.photo.tempFilePath.split('/')
@@ -91,7 +88,7 @@ exports.uploadMultipleImages = req => {
         if (p.mimetype !== 'image/jpeg' && p.mimetype !== 'image/png') {
             return next(new AppError('Please provide an image type with jpg or png file extension.', 400));
         }
-        
+
         oldTempFiles.push(p.tempFilePath)
     })
 
@@ -99,14 +96,14 @@ exports.uploadMultipleImages = req => {
         const tempDirectory = tf.split('\\')
         const index = tempDirectory.length - 1
         const newFilename = filename.replace('PLACEHOLDER', i)
-        
+
         tempDirectory.splice(index, 1, newFilename)
 
         const newTempDirectory = tempDirectory.join('\\')
-        
+
         req.files.photo.map(p => {
             p.mv(newTempDirectory, (err) => {
-                if(err) console.log(err)
+                if (err) console.log(err)
             })
         })
 

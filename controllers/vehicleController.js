@@ -2,15 +2,15 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Vehicle = require('./../models/VehicleModel')
 const cloudinary = require('cloudinary').v2
-const { uploadSingleImage } = require('./../utils/cloudinary')
+const { uploadSingleFile } = require('./../utils/cloudinary')
 const Email = require('./../utils/nodemailer')
-const Image = require('./../models/ImageModel')
+const File = require('./../models/FileModel')
 
 // MIDLEWARE FOR IMAGES
-exports.checkForImages = catchAsync(async (req, res, next) => {
+exports.checkForFiles = catchAsync(async (req, res, next) => {
     // if(!req.files) next()
     if (req.files) {
-        uploadSingleImage(req)
+        uploadSingleFile(req)
 
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
             if (img) {
@@ -70,12 +70,12 @@ exports.getMyVehicles = catchAsync(async (req, res, next) => {
 
 exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
     if (req.files) {
-        uploadSingleImage(req)
+        uploadSingleFile(req)
         // console.log(req.files)
-        await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
-            if (img) {
-                // console.log(img)
-                req.files.image = img.secure_url
+        await cloudinary.uploader.upload(req.files.joinedTemp, (err, file) => {
+            if (file) {
+                req.files.file = file.secure_url
+                req.files.format = file.format
             }
             if (err) {
                 console.log(err)
@@ -83,9 +83,10 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         })
     }
 
-    const newImage = await Image.create({
+    const newFile = await File.create({
         uploadedFor: req.params.carId,
-        url: req.files ? req.files.image : req.body.image,
+        url: req.files ? req.files.file : req.body.image,
+        format: req.files ? req.files.format : req.body.format
     })
 
     // OLD LOGIC
@@ -108,12 +109,12 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
 
     res.status(201).json({
         message: 'success',
-        newImage
+        newFile
     })
 })
 
 exports.getCarImages = catchAsync(async (req, res, next) => {
-    const images = await Image.find({ uploadedFor: req.params.carId })
+    const images = await File.find({ uploadedFor: req.params.carId })
 
     if (!images) {
         return next(new AppError('No images for this car found.', 404))
@@ -129,7 +130,7 @@ exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     await Vehicle.findByIdAndDelete(req.params.id)
 
     res.status(204).json({
-        messag: 'success'
+        message: 'success'
     })
 })
 
@@ -164,5 +165,14 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: 'success',
         vehicle
+    })
+})
+
+exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
+    console.log(req.params.fileId)
+    await File.findByIdAndDelete(req.params.fileId)
+
+    res.status(204).json({
+        message: 'success'
     })
 })

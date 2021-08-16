@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const imageSchema = new mongoose.Schema({
+const fileSchema = new mongoose.Schema({
     // uploadedBy: {
     //     type: mongoose.Schema.ObjectId,
     //     ref: 'User'
@@ -8,6 +8,9 @@ const imageSchema = new mongoose.Schema({
     uploadedFor: {
         type: mongoose.Schema.ObjectId,
         ref: 'Vehicle'
+    },
+    format: {
+        type: String,
     },
     url: {
         type: String
@@ -18,6 +21,6 @@ const imageSchema = new mongoose.Schema({
     }
 })
 
-const Image = mongoose.model('Image', imageSchema)
+const File = mongoose.model('File', fileSchema)
 
-module.exports = Image
+module.exports = File
