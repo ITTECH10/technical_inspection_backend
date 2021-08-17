@@ -22,6 +22,18 @@ const userSchema = new mongoose.Schema({
         },
         unique: true
     },
+    phoneNumber: {
+        type: String,
+        required: [true, 'Please provide a phone number.']
+    },
+    address: {
+        type: String,
+        required: [true, 'Please provide an address.']
+    },
+    birthDate: {
+        type: Date,
+        required: [true, 'Please provide birth date.']
+    },
     role: {
         type: String,
         default: 'user'

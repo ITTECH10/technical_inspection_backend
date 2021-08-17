@@ -169,8 +169,10 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
-    console.log(req.params.fileId)
     await File.findByIdAndDelete(req.params.fileId)
+
+    // await cloudinary.v2.uploader.destroy('sample', function(error,result) {
+    //     console.log(result, error) });
 
     res.status(204).json({
         message: 'success'
