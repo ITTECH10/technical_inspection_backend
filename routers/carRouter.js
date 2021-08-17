@@ -7,7 +7,7 @@ const router = express.Router()
 // BELOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
-router.route('/:fileId')
+router.route('/files/:fileId')
     .delete(vehicleController.deleteVehicleFiles)
 
 router.route('/images/:carId')
