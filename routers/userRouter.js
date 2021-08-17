@@ -5,26 +5,32 @@ const userController = require('./../controllers/userController')
 const router = express.Router()
 
 router.route('/login')
-.post(authController.login)
+    .post(authController.login)
+
+router.route('/forgotPassword')
+    .post(authController.forgotPassword)
+
+router.route('/resetPassword/:token')
+    .post(authController.resetPassword)
 
 // BELLOW ROUTES ARE ALL PROTECTED
 router.use(authController.protect)
 
 router.route('/me')
-.get(userController.getMyCredentials)
+    .get(userController.getMyCredentials)
 
 router.route('/:id')
-.get(userController.getOneUser)
-.patch(userController.editUserInfo)
-.delete(userController.deleteUser)
+    .get(userController.getOneUser)
+    .patch(userController.editUserInfo)
+    .delete(userController.deleteUser)
 
 // BELLOW ROUTES FOR ADMIN ONLY
 router.use(authController.restrictTo('admin'))
 
 router.route('/signup')
-.post(authController.signup)
+    .post(authController.signup)
 
 router.route('/')
-.get(userController.getAllUsers)
+    .get(userController.getAllUsers)
 
 module.exports = router

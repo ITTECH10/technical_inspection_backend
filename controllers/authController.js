@@ -4,6 +4,8 @@ const AppError = require('./../utils/appError')
 const signToken = require('./../utils/signToken')
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
+const Email = require('./../utils/nodemailer')
+const crypto = require('crypto')
 
 exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
@@ -17,6 +19,13 @@ exports.signup = catchAsync(async (req, res, next) => {
         password: req.body.password,
         confirmPassword: req.body.confirmPassword
     })
+
+    // try {
+    //     await new Email(newUser).customerCreated(req.body.password)
+    // }
+    // catch (err) {
+    //     console.log(err)
+    // }
 
     res.status(201).json({
         message: 'success',
@@ -77,3 +86,62 @@ exports.restrictTo = (...roles) => {
         next();
     };
 };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const user = await User.findOne({ email: req.body.email })
+
+    if (!user) {
+        return next(new AppError('Customer associated with this email does not exist.', 404))
+    }
+
+    const resetToken = user.createPasswordResetToken()
+    // const resetURL = `${req.protocol}://${req.get('host')}/users/resetPassword/${resetToken}`;
+    // FOR TESTING BELLOW
+    const resetURL = `https://technical-inspection-frontend.vercel.app/resetPassword/${resetToken}`
+
+    await user.save({ validateBeforeSave: false })
+
+    try {
+        await new Email(user).sendPasswordReset(resetURL);
+
+        res.status(200).json({
+            message: 'success'
+        })
+
+    } catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpiresIn = undefined;
+        await user.save({ validateBeforeSave: false })
+
+        return next(new AppError('There was an error sending the email. Please try again later.', 500))
+    }
+})
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const encryptedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    console.log(encryptedToken)
+
+    const user = await User.findOne({
+        passwordResetToken: encryptedToken,
+        passwordResetTokenExpiresIn: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return next(new AppError('Token is invalid or it is expired.', 400));
+    }
+
+    user.password = req.body.password;
+    user.confirmPassword = req.body.confirmPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiresIn = undefined;
+
+    await user.save();
+
+    const token = signToken(user._id);
+
+    res.status(200).json({
+        message: 'success',
+        token
+    })
+});

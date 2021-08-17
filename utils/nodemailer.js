@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 module.exports = class Email {
   constructor(user) {
-    this.to = process.env.EMAIL_TO
+    this.to = user.email
     this.from = process.env.EMAIL_FROM
     this.user = user;
   }
@@ -35,5 +35,13 @@ module.exports = class Email {
 
   async carAdded() {
     await this.send(`New car added`, `${this.user.email} added a new car.`)
+  }
+
+  async customerCreated(password) {
+    await this.send('Profile created', `Your profile credentials: E-mail: ${this.user.email} Password: ${password}`)
+  }
+
+  async sendPasswordReset(resetUrl) {
+    await this.send("Reset Password", `Hi ${this.user.firstName} here is your password reset URL ${resetUrl}. (Valid for only 10 minutes.)`)
   }
 };
