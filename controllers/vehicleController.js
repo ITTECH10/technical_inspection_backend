@@ -35,6 +35,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         HSN: req.body.HSN,
         TSN: req.body.TSN,
         kilometersDriven: req.body.kilometersDriven,
+        registrationNumber: req.body.registrationNumber,
         // insuranceHouse: req.body.insuranceHouse,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
         allowedYearlyKilometers: req.body.allowedYearlyKilometers,
@@ -52,6 +53,19 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     res.status(201).json({
         message: 'success',
         newVehicle
+    })
+})
+
+exports.getAllVehicles = catchAsync(async (req, res, next) => {
+    const vehicles = await Vehicle.find()
+
+    if (!vehicles) {
+        return next(new AppError('There are no vehicles found', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        vehicles
     })
 })
 

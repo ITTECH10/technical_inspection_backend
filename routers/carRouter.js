@@ -28,5 +28,10 @@ router.route('/:id')
 router.route('/car/:id')
     .get(vehicleController.getVehicle)
 
+// ADMIN ROUTES BELLOW
+router.use(authController.restrictTo('admin'))
+
+router.route('/')
+    .get(vehicleController.getAllVehicles)
 
 module.exports = router

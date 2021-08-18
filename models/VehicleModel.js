@@ -24,6 +24,10 @@ const vehicleSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter the vehicle model.']
     },
+    registrationNumber: {
+        type: String,
+        required: [true, 'Please enter the vehicle registration number.']
+    },
     HSN: {
         type: String,
         minLength: [4, 'HSN must be at least 4 characters, got {VALUE}'],
