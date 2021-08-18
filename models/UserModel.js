@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user'
     },
+    policiesAccepted: {
+        type: Boolean,
+        default: false
+    },
     password: {
         type: String,
         required: [true, 'Please provide a password.'],

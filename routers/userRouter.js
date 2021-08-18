@@ -15,6 +15,9 @@ router.route('/resetPassword/:token')
 // BELLOW ROUTES ARE ALL PROTECTED
 router.use(authController.protect)
 
+router.route('/me/privacyPolicy/:userId')
+    .get(authController.acceptPrivacyPolicy)
+
 router.route('/me')
     .get(userController.getMyCredentials)
 

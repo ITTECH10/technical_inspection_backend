@@ -34,7 +34,11 @@ exports.signup = catchAsync(async (req, res, next) => {
 })
 
 exports.login = catchAsync(async (req, res, next) => {
-    const { email, password } = req.body
+    const { password, email } = req.body
+
+    // if (!policiesAccepted) {
+    //     return next(new AppError('Please accept our privacy policy first.', 401))
+    // }
 
     if (!email || !password) {
         return next(new AppError('Please provide email and password.', 401))
@@ -73,6 +77,32 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     req.user = currentUser
     next()
+})
+
+// exports.protectPrivacyPolicy = catchAsync(async (req, res, next) => {
+//     const user = await User.findOne({ email: req.body.email })
+//     console.log(user)
+
+//     req.userLoggingIn = user
+
+//     next()
+// })
+
+exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.params.userId)
+
+    if (!user) {
+        return next(new AppError('User not found', 404))
+    }
+
+    user.policiesAccepted = true
+
+    user.save({ validateBeforeSave: false })
+
+    res.status(200).json({
+        message: 'success',
+        user
+    })
 })
 
 exports.restrictTo = (...roles) => {
