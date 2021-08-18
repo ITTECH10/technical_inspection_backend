@@ -36,10 +36,6 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
     const { password, email } = req.body
 
-    // if (!policiesAccepted) {
-    //     return next(new AppError('Please accept our privacy policy first.', 401))
-    // }
-
     if (!email || !password) {
         return next(new AppError('Please provide email and password.', 401))
     }
