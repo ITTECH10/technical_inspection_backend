@@ -61,10 +61,12 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
         }
     }
 
+    user.firstName = req.body.firstName || user.firstName
+    user.lastName = req.body.lastName || user.lastName
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber
+    user.address = req.body.address || user.address
+    user.birthDate = req.body.birthDate || user.birthDate
     user.email = req.body.email || user.email
-    user.password = req.body.password || user.password
-    user.confirmPassword = req.body.confirmPassword || undefined
-    user.vehicleModel = req.body.vehicleModel || user.vehicleModel
 
     await user.save({
         new: true,
