@@ -20,12 +20,14 @@ exports.signup = catchAsync(async (req, res, next) => {
         confirmPassword: req.body.confirmPassword
     })
 
-    // try {
-    //     await new Email(newUser).customerCreated(req.body.password)
-    // }
-    // catch (err) {
-    //     console.log(err)
-    // }
+    const url = 'https://technical-inspection-frontend.vercel.app/'
+
+    try {
+        await new Email(newUser).customerCreated(req.body.password, url)
+    }
+    catch (err) {
+        console.log(err)
+    }
 
     res.status(201).json({
         message: 'success',

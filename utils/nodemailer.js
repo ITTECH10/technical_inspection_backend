@@ -37,8 +37,8 @@ module.exports = class Email {
     await this.send(`New car added`, `${this.user.email} added a new car.`)
   }
 
-  async customerCreated(password) {
-    await this.send('Profile created', `Your profile credentials: E-mail: ${this.user.email} Password: ${password}`)
+  async customerCreated(password, url) {
+    await this.send('Profile created', `Your profile credentials: E-mail: ${this.user.email} Password: ${password}. Please visit this url to get started ${url}`)
   }
 
   async sendPasswordReset(resetUrl) {
