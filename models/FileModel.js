@@ -5,6 +5,9 @@ const fileSchema = new mongoose.Schema({
     //     type: mongoose.Schema.ObjectId,
     //     ref: 'User'
     // },
+    name: {
+        type: String
+    },
     uploadedFor: {
         type: mongoose.Schema.ObjectId,
         ref: 'Vehicle'

@@ -90,6 +90,7 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
             if (file) {
                 req.files.file = file.secure_url
                 req.files.format = file.format
+                req.files.fileName = req.files.photo.name
             }
             if (err) {
                 console.log(err)
@@ -100,7 +101,8 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
     const newFile = await File.create({
         uploadedFor: req.params.carId,
         url: req.files ? req.files.file : req.body.image,
-        format: req.files ? req.files.format : req.body.format
+        format: req.files ? req.files.format : req.body.format,
+        name: req.files ? req.files.fileName : req.body.fileName
     })
 
     // OLD LOGIC
