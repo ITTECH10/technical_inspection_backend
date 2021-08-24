@@ -80,15 +80,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     next()
 })
 
-// exports.protectPrivacyPolicy = catchAsync(async (req, res, next) => {
-//     const user = await User.findOne({ email: req.body.email })
-//     console.log(user)
-
-//     req.userLoggingIn = user
-
-//     next()
-// })
-
 exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.params.userId)
 
