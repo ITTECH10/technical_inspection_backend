@@ -4,7 +4,7 @@ const User = require('./../models/UserModel')
 const validator = require('validator')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-    const users = await User.find()
+    const users = await User.find().select('-__v')
 
     res.status(200).json({
         message: 'success',

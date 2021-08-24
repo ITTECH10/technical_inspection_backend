@@ -24,6 +24,9 @@ exports.signup = catchAsync(async (req, res, next) => {
 
     try {
         await new Email(newUser).customerCreated(req.body.password, url)
+
+        newUser.password = undefined
+        newUser.__v = undefined
     }
     catch (err) {
         console.log(err)
