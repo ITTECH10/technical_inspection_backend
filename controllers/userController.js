@@ -39,16 +39,10 @@ exports.getMyCredentials = catchAsync(async (req, res, next) => {
 })
 
 exports.editUserInfo = catchAsync(async (req, res, next) => {
-    const user = await User.findById(req.params.id).select('+password')
+    const user = await User.findById(req.params.id)
 
     if (!user) {
         return next(new AppError('Editing user went wrong', 404))
-    }
-
-    if (req.body.password) {
-        if (!await user.comparePasswords(req.body.currentPassword, user.password)) {
-            return next(new AppError('Current password is wrong', 400))
-        }
     }
 
     if (req.body.role) {
