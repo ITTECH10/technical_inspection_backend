@@ -12,7 +12,8 @@ const cookieParser = require('cookie-parser')
 
 const app = express()
 
-const origin = process.env.NODE_ENV === 'production' ? 'https://technical-inspection-frontend.vercel.app/' : 'http://localhost:3000'
+// const origin = process.env.NODE_ENV === 'production' ? 'https://technical-inspection-frontend.vercel.app/' : 'http://localhost:3000'
+const origin = 'https://technical-inspection-frontend.vercel.app/'
 
 app.use(cors({ credentials: true, origin }));
 app.use(cookieParser())
