@@ -62,7 +62,7 @@ const vehicleSchema = new mongoose.Schema({
     },
     TUV: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Please enter the TUV information.']
     },
     AU: {
         type: Date,

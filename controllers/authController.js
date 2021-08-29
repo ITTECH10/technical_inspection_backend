@@ -1,7 +1,7 @@
 const User = require('./../models/UserModel')
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
-const signToken = require('./../utils/signToken')
+const createSendToken = require('./../utils/signToken')
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const Email = require('./../utils/nodemailer')
@@ -51,18 +51,19 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Netačan e-mail ili lozinka.', 401))
     }
 
-    const token = signToken(user._id)
-
-    res.status(201).json({
-        message: 'success',
-        token
-    })
+    createSendToken(user, 201, res)
 })
 
 exports.protect = catchAsync(async (req, res, next) => {
     let token
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1]
+    }
+
+    console.log(req.cookies.jwt)
+
+    if (req.cookies.jwt) {
+        token = req.cookies.jwt
     }
 
     if (!token) {
