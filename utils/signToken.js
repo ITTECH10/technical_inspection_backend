@@ -17,7 +17,7 @@ const createSendToken = (user, statusCode, res) => {
     }
 
     if (process.env.NODE_ENV === 'production') {
-        cookieOptons.sameSite = 'none'
+        cookieOptions.sameSite = 'none'
         cookieOptions.secure = true
     }
 
