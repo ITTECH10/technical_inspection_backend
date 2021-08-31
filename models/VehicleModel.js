@@ -97,6 +97,14 @@ const vehicleSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please specify when your payment contract expires.']
     },
+    contractExpirationDate: {
+        type: Date,
+        required: [true, 'Please specify the date when your contract expires.']
+    },
+    contractExpiresInNextTwoMonths: {
+        type: Boolean,
+        required: [true, 'Credit calculation for two months ahead failed...']
+    },
     yearlyTax: {
         type: Number,
         required: [true, 'Please provide your yearly tax.']

@@ -36,9 +36,13 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
         closingRate: req.body.closingRate
     })
 
+    const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
+
     const vehicle = await Vehicle.findById(req.params.carId)
     vehicle.vehiclePaymentType = newCreditPayment._id
     vehicle.contractExpiresOn = newCreditPayment.creditLastsFor
+    vehicle.contractExpirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
+    vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'credit'
     vehicle.save({ validateBeforeSave: false })
 
@@ -63,9 +67,13 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
         costsForLessKilometers: req.body.costsForLessKilometers
     })
 
+    const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newLeasingPayment.leasingLastsFor))
+
     const vehicle = await Vehicle.findById(req.params.carId)
     vehicle.vehiclePaymentType = newLeasingPayment._id
     vehicle.contractExpiresOn = newLeasingPayment.leasingLastsFor
+    vehicle.contractExpirationDate = expirationDate
+    vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'leasing'
     vehicle.save({ validateBeforeSave: false })
 
