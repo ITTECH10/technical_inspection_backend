@@ -1,6 +1,7 @@
 const express = require('express')
 const authController = require('./../controllers/authController')
 const vehicleController = require('./../controllers/vehicleController')
+const paymentController = require('./../controllers/paymentController')
 
 const router = express.Router()
 
@@ -17,6 +18,18 @@ router.route('/images/:carId')
 router.route('/:updateId')
     .patch(vehicleController.connectInsuranceHouse)
 
+// PAYMENTS
+router.route('/:carId/contracts/cash')
+    .post(paymentController.createCashPayment)
+
+router.route('/:carId/contracts/credit')
+    .post(paymentController.createCreditPayment)
+
+router.route('/:carId/contracts/leasing')
+    .post(paymentController.createLeasingPayment)
+
+router.route('/payments/:paymentId')
+    .get(paymentController.getCorespondingPayment)
 
 // REMEMBER LATER
 // if encountering deletion issues check /:fileId route is first

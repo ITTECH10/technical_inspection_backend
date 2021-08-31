@@ -83,11 +83,18 @@ const vehicleSchema = new mongoose.Schema({
     },
     vehiclePaymentType: {
         type: mongoose.Schema.Types.Mixed,
-        ref: 'BanksLeasing',
         // required: [true, 'Please provide your vehicle payment type.']
     },
+    vehiclePaymentTypeVariant: {
+        type: String
+    },
+    // DELETE LATER
     paymentContractExpires: {
         type: Date,
+        required: [true, 'Please specify when your payment contract expires.']
+    },
+    contractExpiresOn: {
+        type: Number,
         required: [true, 'Please specify when your payment contract expires.']
     },
     yearlyTax: {
