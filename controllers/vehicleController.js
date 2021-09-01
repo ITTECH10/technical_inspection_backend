@@ -37,6 +37,11 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         TUV: req.body.TUV,
         TUVExpiresInOneMonth: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)),
         TUVExpiresInFourteenDays: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)),
+        firstVehicleRegistration: req.body.firstVehicleRegistration,
+        firstVehicleRegistrationOnOwner: req.body.firstVehicleRegistrationOnOwner,
+        lastTechnicalInspection: req.body.lastTechnicalInspection,
+        nextTechnicalInspection: req.body.nextTechnicalInspection,
+        AU: req.body.AU,
         kilometersDriven: req.body.kilometersDriven,
         registrationNumber: req.body.registrationNumber,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
@@ -193,5 +198,34 @@ exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
 
     res.status(204).json({
         message: 'success'
+    })
+})
+
+exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
+    const updatedVehicle = await Vehicle.findById(req.params.id)
+
+    updatedVehicle.mark = req.body.mark || updatedVehicle.mark
+    updatedVehicle.model = req.body.model || updatedVehicle.model
+    updatedVehicle.registrationNumber = req.body.registrationNumber || updatedVehicle.registrationNumber
+    updatedVehicle.HSN = req.body.HSN || updatedVehicle.HSN
+    updatedVehicle.TSN = req.body.TSN || updatedVehicle.TSN
+    updatedVehicle.firstVehicleRegistration = req.body.firstVehicleRegistration || updatedVehicle.firstVehicleRegistration
+    updatedVehicle.firstVehicleRegistrationOnOwner = req.body.firstVehicleRegistrationOnOwner || updatedVehicle.firstVehicleRegistrationOnOwner
+    updatedVehicle.kilometersDriven = req.body.kilometersDriven || updatedVehicle.kilometersDriven
+    updatedVehicle.lastTechnicalInspection = req.body.lastTechnicalInspection || updatedVehicle.lastTechnicalInspection
+    updatedVehicle.nextTechnicalInspection = req.body.nextTechnicalInspection || updatedVehicle.nextTechnicalInspection
+    updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
+        updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)) : updatedVehicle.TUVExpiresInOneMonth,
+        updatedVehicle.TUVExpiresInFourteenDays = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)) : updatedVehicle.TUVExpiresInFourteenDays,
+        updatedVehicle.AU = req.body.AU || updatedVehicle.AU
+    updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
+    updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
+    updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
+
+    await updatedVehicle.save({ validateBeforeSave: true })
+
+    res.status(200).json({
+        message: 'success',
+        updatedVehicle
     })
 })

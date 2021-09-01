@@ -88,7 +88,7 @@ exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
 
     user.policiesAccepted = true
 
-    user.save({ validateBeforeSave: false })
+    await user.save({ validateBeforeSave: false })
 
     res.status(200).json({
         message: 'success',

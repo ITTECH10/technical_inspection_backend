@@ -12,10 +12,6 @@ const vehicleSchema = new mongoose.Schema({
     images: {
         type: Array
     },
-    imageCreatedAt: {
-        type: Date,
-        default: Date.now()
-    },
     mark: {
         type: String,
         required: [true, 'Please enter the vehicle mark.']
@@ -41,11 +37,11 @@ const vehicleSchema = new mongoose.Schema({
     },
     firstVehicleRegistration: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Please provide first vehicle registration date.']
     },
     firstVehicleRegistrationOnOwner: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Please provide first vehicle registration on owner date.']
     },
     kilometersDriven: {
         type: Number,
@@ -53,12 +49,11 @@ const vehicleSchema = new mongoose.Schema({
     },
     lastTechnicalInspection: {
         type: Date,
-        // required: [true, 'Please tell us the last time the vehicle was on inspection.'],
-        default: Date.now()
+        required: [true, 'Please tell us the last time the vehicle was on inspection.']
     },
     nextTechnicalInspection: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Please specify next vehicle registration date.']
     },
     TUV: {
         type: Date,
@@ -74,12 +69,11 @@ const vehicleSchema = new mongoose.Schema({
     },
     AU: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Please provide AU date.']
     },
     insuranceHouse: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Insurance',
-        // required: [true, 'Please provide insurance house information.']
+        ref: 'Insurance'
     },
     monthlyInsurancePayment: {
         type: Number,
@@ -91,15 +85,10 @@ const vehicleSchema = new mongoose.Schema({
     },
     vehiclePaymentType: {
         type: mongoose.Schema.Types.Mixed,
-        // required: [true, 'Please provide your vehicle payment type.']
     },
+    // IMPROVE LATER THINGS BELLOW
     vehiclePaymentTypeVariant: {
         type: String
-    },
-    // DELETE LATER
-    paymentContractExpires: {
-        type: Date,
-        // required: [true, 'Please specify when your payment contract expires.']
     },
     contractExpiresOn: {
         type: Number,

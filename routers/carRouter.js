@@ -36,6 +36,7 @@ router.route('/payments/:paymentId')
 router.route('/:id')
     .post(vehicleController.checkForFiles, vehicleController.createVehicle)
     .get(vehicleController.getMyVehicles)
+    .put(vehicleController.updateVehicleInformation)
     .delete(vehicleController.deleteMyVehicles)
 
 router.route('/car/:id')

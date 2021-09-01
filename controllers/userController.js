@@ -2,6 +2,7 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const User = require('./../models/UserModel')
 const validator = require('validator')
+const Vehicle = require('../models/VehicleModel')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find().select('-__v')
@@ -75,6 +76,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
     await User.findByIdAndDelete(req.params.id)
+    await Vehicle.deleteMany({ vehicleOwner: req.params.id })
 
     res.status(204).json({
         message: 'success'

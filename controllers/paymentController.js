@@ -15,7 +15,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.params.carId)
     vehicle.vehiclePaymentType = newCashPayment._id
     vehicle.vehiclePaymentTypeVariant = 'cash'
-    vehicle.save({ validateBeforeSave: false })
+    await vehicle.save({ validateBeforeSave: false })
 
     res.status(201).json({
         message: 'success',
@@ -44,7 +44,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     vehicle.contractExpirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
     vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'credit'
-    vehicle.save({ validateBeforeSave: false })
+    await vehicle.save({ validateBeforeSave: false })
 
     res.status(201).json({
         message: 'success',
@@ -75,7 +75,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     vehicle.contractExpirationDate = expirationDate
     vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'leasing'
-    vehicle.save({ validateBeforeSave: false })
+    await vehicle.save({ validateBeforeSave: false })
 
     res.status(201).json({
         message: 'success',
@@ -105,7 +105,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
     cashPayment.payedAt = req.body.payedAt || cashPayment.payedAt
     cashPayment.cashSum = req.body.cashSum || cashPayment.cashSum
-    cashPayment.save()
+    await cashPayment.save()
 
     res.status(202).json({
         message: 'success',
@@ -124,7 +124,7 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     creditPayment.interestRate = req.body.interestRate || creditPayment.interestRate
     creditPayment.creditLastsFor = req.body.creditLastsFor || creditPayment.creditLastsFor
     creditPayment.closingRate = req.body.closingRate || creditPayment.closingRate
-    creditPayment.save()
+    await creditPayment.save()
 
     res.status(202).json({
         message: 'success',
@@ -145,7 +145,7 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     leasingPayment.allowedYearlyKilometers = req.body.allowedYearlyKilometers || leasingPayment.allowedYearlyKilometers
     leasingPayment.costsForMoreKilometers = req.body.costsForMoreKilometers || leasingPayment.costsForMoreKilometers
     leasingPayment.costsForLessKilometers = req.body.costsForLessKilometers || leasingPayment.costsForLessKilometers
-    leasingPayment.save()
+    await leasingPayment.save()
 
     res.status(202).json({
         message: 'success',
