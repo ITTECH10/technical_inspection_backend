@@ -34,12 +34,13 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
+        TUV: req.body.TUV,
+        TUVExpiresInOneMonth: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        TUVExpiresInFourteenDays: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)),
         kilometersDriven: req.body.kilometersDriven,
         registrationNumber: req.body.registrationNumber,
-        // insuranceHouse: req.body.insuranceHouse,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
         allowedYearlyKilometers: req.body.allowedYearlyKilometers,
-        // vehiclePaymentType: req.body.vehiclePaymentType,
         yearlyTax: req.body.yearlyTax
     })
 

@@ -7,13 +7,13 @@ const router = express.Router()
 // Routes bellow this middleware are protected
 router.use(authController.protect)
 
-// router.route('/cash/:vehicleId')
-//     .post(paymentController.createCashPayment)
+router.route('/cash/:paymentId')
+    .put(paymentController.updateCashPayment)
 
-router.route('/credit')
-    .post(paymentController.createCreditPayment)
+router.route('/credit/:paymentId')
+    .put(paymentController.updateCreditPayment)
 
-router.route('/leasing')
-    .post(paymentController.createLeasingPayment)
+router.route('/leasing/:paymentId')
+    .put(paymentController.updateLeasingPayment)
 
 module.exports = router

@@ -98,3 +98,57 @@ exports.getCorespondingPayment = catchAsync(async (req, res, next) => {
         }
     })
 })
+
+exports.updateCashPayment = catchAsync(async (req, res, next) => {
+    const cashPayment = await CashPayment.findById(req.params.paymentId)
+
+    cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
+    cashPayment.payedAt = req.body.payedAt || cashPayment.payedAt
+    cashPayment.cashSum = req.body.cashSum || cashPayment.cashSum
+    cashPayment.save()
+
+    res.status(202).json({
+        message: 'success',
+        cashPayment
+    })
+})
+
+exports.updateCreditPayment = catchAsync(async (req, res, next) => {
+    const creditPayment = await CreditPayment.findById(req.params.paymentId)
+
+    creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
+    creditPayment.creditInstitute = req.body.creditInstitute || creditPayment.creditInstitute
+    creditPayment.contractNumber = req.body.contractNumber || creditPayment.contractNumber
+    creditPayment.creditStartDate = req.body.creditStartDate || creditPayment.creditStartDate
+    creditPayment.monthlyCreditPayment = req.body.monthlyCreditPayment || creditPayment.monthlyCreditPayment
+    creditPayment.interestRate = req.body.interestRate || creditPayment.interestRate
+    creditPayment.creditLastsFor = req.body.creditLastsFor || creditPayment.creditLastsFor
+    creditPayment.closingRate = req.body.closingRate || creditPayment.closingRate
+    creditPayment.save()
+
+    res.status(202).json({
+        message: 'success',
+        creditPayment
+    })
+})
+
+exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
+    const leasingPayment = await LeasingPayment.findById(req.params.paymentId)
+
+    leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
+    leasingPayment.leasingGiver = req.body.leasingGiver || leasingPayment.leasingGiver
+    leasingPayment.contractNumber = req.body.contractNumber || leasingPayment.contractNumber
+    leasingPayment.leasingStartDate = req.body.leasingStartDate || leasingPayment.leasingStartDate
+    leasingPayment.monthlyLeasingPayment = req.body.monthlyLeasingPayment || leasingPayment.monthlyLeasingPayment
+    leasingPayment.leasingLastsFor = req.body.leasingLastsFor || leasingPayment.leasingLastsFor
+    leasingPayment.remainingPayment = req.body.remainingPayment || leasingPayment.remainingPayment
+    leasingPayment.allowedYearlyKilometers = req.body.allowedYearlyKilometers || leasingPayment.allowedYearlyKilometers
+    leasingPayment.costsForMoreKilometers = req.body.costsForMoreKilometers || leasingPayment.costsForMoreKilometers
+    leasingPayment.costsForLessKilometers = req.body.costsForLessKilometers || leasingPayment.costsForLessKilometers
+    leasingPayment.save()
+
+    res.status(202).json({
+        message: 'success',
+        leasingPayment
+    })
+})

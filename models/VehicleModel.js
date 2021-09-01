@@ -64,6 +64,14 @@ const vehicleSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'Please enter the TUV information.']
     },
+    TUVExpiresInOneMonth: {
+        type: Boolean,
+        required: [true, 'Calculation if TUV expires in next month went wrong...']
+    },
+    TUVExpiresInFourteenDays: {
+        type: Boolean,
+        required: [true, 'Calculation if TUV expires in fourteen days went wrong...']
+    },
     AU: {
         type: Date,
         default: Date.now()
@@ -91,19 +99,19 @@ const vehicleSchema = new mongoose.Schema({
     // DELETE LATER
     paymentContractExpires: {
         type: Date,
-        required: [true, 'Please specify when your payment contract expires.']
+        // required: [true, 'Please specify when your payment contract expires.']
     },
     contractExpiresOn: {
         type: Number,
-        required: [true, 'Please specify when your payment contract expires.']
+        // required: [true, 'Please specify when your payment contract expires.']
     },
     contractExpirationDate: {
         type: Date,
-        required: [true, 'Please specify the date when your contract expires.']
+        // required: [true, 'Please specify the date when your contract expires.']
     },
     contractExpiresInNextTwoMonths: {
         type: Boolean,
-        required: [true, 'Credit calculation for two months ahead failed...']
+        // required: [true, 'Credit calculation for two months ahead failed...']
     },
     yearlyTax: {
         type: Number,
