@@ -18,7 +18,7 @@ exports.checkForFiles = catchAsync(async (req, res, next) => {
                 req.files.image = img.secure_url
             }
             if (err) {
-                console.log(err)
+                // console.log(err)
             }
         })
     }
