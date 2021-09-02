@@ -27,9 +27,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a phone number.']
     },
-    address: {
+    street: {
         type: String,
-        required: [true, 'Please provide an address.']
+        required: [true, 'Please provide the street.']
+    },
+    postCode: {
+        type: String,
+        required: [true, 'Please provide the post code.']
+    },
+    city: {
+        type: String,
+        required: [true, 'Please provide the city.']
     },
     birthDate: {
         type: Date,

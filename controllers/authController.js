@@ -13,14 +13,16 @@ exports.signup = catchAsync(async (req, res, next) => {
         lastName: req.body.lastName,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
-        address: req.body.address,
+        street: req.body.street,
+        postCode: req.body.postCode,
+        city: req.body.city,
         birthDate: req.body.birthDate,
         role: req.body.role,
         password: req.body.password,
         confirmPassword: req.body.confirmPassword
     })
 
-    const url = 'https://technical-inspection-frontend.vercel.app/'
+    const url = 'https://secarmanagement.vercel.app/'
 
     try {
         await new Email(newUser).customerCreated(req.body.password, url)
@@ -118,7 +120,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     const resetToken = user.createPasswordResetToken()
     // const resetURL = `${req.protocol}://${req.get('host')}/users/resetPassword/${resetToken}`;
     // FOR TESTING BELLOW
-    const resetURL = `https://technical-inspection-frontend.vercel.app/resetPassword/${resetToken}`
+    const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
 
     await user.save({ validateBeforeSave: false })
 
