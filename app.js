@@ -1,4 +1,5 @@
 const express = require('express')
+const AppError = require('./utils/appError')
 const userRouter = require('./routers/userRouter')
 const carRouter = require('./routers/carRouter')
 const bankRouter = require('./routers/bankRouter')
@@ -13,7 +14,7 @@ const cookieParser = require('cookie-parser')
 
 const app = express()
 
-const origin = process.env.NODE_ENV === 'production' ? 'https://technical-inspection-frontend.vercel.app' : 'http://localhost:3000'
+const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
 
 app.use(cors({ credentials: true, origin }));
 app.use(cookieParser())
@@ -37,9 +38,7 @@ app.use('/api/v1/contracts', paymentRouter)
 // app.use('/api/v1/upload', fileRouter)
 
 app.all('*', (req, res, next) => {
-    res.status(404).json({
-        message: `The requested url ${req.originalUrl} could not be found.`
-    })
+    next(new AppError(`The requested url ${req.originalUrl} could not be found.`, 404))
 })
 
 app.use(globalErrorHandler)
