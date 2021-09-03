@@ -13,10 +13,12 @@ const handleDuplicateFieldsDB = err => {
 };
 
 const handleValidationErrorDB = err => {
-    const errors = Object.values(err.errors).map(el => el.message);
+    const errors = Object.entries(err.errors).map(el => `${el[0]}: ${el[1]}`);
+    // Object.fromEntries(err.response.data.message.split(',').map(el => el.split(':')))
 
-    const message = `Invalid input data. ${errors.join('. ')}`;
-    return new AppError(message, 400);
+    let message = `${errors}`
+    let clientFormatedMessage = JSON.stringify(Object.fromEntries(message.split(',').map(el => el.split(':'))))
+    return new AppError(clientFormatedMessage, 400);
 };
 
 const handleJWTError = () =>
