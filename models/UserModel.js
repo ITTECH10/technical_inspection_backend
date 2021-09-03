@@ -6,42 +6,42 @@ const crypto = require('crypto')
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: [true, 'Please enter customers name.']
+        required: [true, 'Please enter customers name']
     },
     lastName: {
         type: String,
-        required: [true, 'Please enter customers last name.']
+        required: [true, 'Please enter customers last name']
     },
     email: {
         type: String,
-        required: [true, 'Please provide an email.'],
+        required: [true, 'Please provide an email'],
         validate: {
             validator: function (val) {
                 return validatorPackage.isEmail(val)
             },
-            message: 'Please use a correct email format.'
+            message: 'Please use a correct email format'
         },
         unique: true
     },
     phoneNumber: {
         type: String,
-        required: [true, 'Please provide a phone number.']
+        required: [true, 'Please provide a phone number']
     },
     street: {
         type: String,
-        required: [true, 'Please provide the street.']
+        required: [true, 'Please provide the street']
     },
     postCode: {
         type: String,
-        required: [true, 'Please provide the post code.']
+        required: [true, 'Please provide the post code']
     },
     city: {
         type: String,
-        required: [true, 'Please provide the city.']
+        required: [true, 'Please provide the city']
     },
     birthDate: {
         type: Date,
-        required: [true, 'Please provide birth date.']
+        required: [true, 'Please provide birth date']
     },
     role: {
         type: String,
@@ -53,17 +53,17 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Please provide a password.'],
+        required: [true, 'Please provide a password'],
         select: false
     },
     confirmPassword: {
         type: String,
-        required: [true, 'Please confirm the password.'],
+        required: [true, 'Please confirm the password'],
         validate: {
             validator: function (val) {
                 return val === this.password
             },
-            message: "Passwords do not match."
+            message: "Passwords do not match"
         }
     },
     passwordResetToken: {

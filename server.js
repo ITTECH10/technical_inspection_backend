@@ -23,7 +23,7 @@ mongoose.connect(DB, {
     useFindAndModify: false,
     useCreateIndex: true
 }).then(() => console.log('Konekcija ka bazi podataka uspješna...'))
-.catch(err => console.log(err))
+    .catch(err => console.log(err))
 
 app.listen(PORT, () => {
     console.log(`Server pokrenut na portu ${PORT}...`)
