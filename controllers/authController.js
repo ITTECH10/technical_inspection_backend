@@ -160,5 +160,34 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
     await user.save();
 
-    const token = createSendToken(user, 200, res)
+    createSendToken(user, 200, res)
 });
+
+exports.changeGeneratedPassword = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user._id).select('+password')
+
+    if (!user.firstLogIn) {
+        return next(new AppError('You can only set a new password after first loging in.', 403))
+    }
+
+    if (!await user.comparePasswords(req.body.currentPassword, user.password)) {
+        return next(new AppError('Your current password is wrong!', 400))
+    }
+
+    user.password = req.body.password
+    user.confirmPassword = req.body.confirmPassword
+    user.firstLogIn = false
+    await user.save()
+
+    createSendToken(user, 200, res)
+})
+
+exports.skipPasswordChange = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user._id).select('+password')
+
+    user.password = user.password
+    user.firstLogIn = false
+    await user.save({ validateBeforeSave: false })
+
+    createSendToken(user, 200, res)
+})

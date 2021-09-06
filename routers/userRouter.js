@@ -15,6 +15,9 @@ router.route('/resetPassword/:token')
 // BELLOW ROUTES ARE ALL PROTECTED
 router.use(authController.protect)
 
+router.route('/skipPasswordChange')
+    .get(authController.skipPasswordChange)
+
 router.route('/me/privacyPolicy/:userId')
     .get(authController.acceptPrivacyPolicy)
 
@@ -25,6 +28,9 @@ router.route('/:id')
     .get(userController.getOneUser)
     .patch(userController.editUserInfo)
     .delete(userController.deleteUser)
+
+router.route('/changePassword')
+    .put(authController.changeGeneratedPassword)
 
 // BELLOW ROUTES FOR ADMIN ONLY
 router.use(authController.restrictTo('admin'))

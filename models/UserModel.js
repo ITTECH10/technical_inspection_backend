@@ -51,6 +51,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    firstLogIn: {
+        type: Boolean,
+        default: true
+    },
     password: {
         type: String,
         required: [true, 'Please provide a password'],
