@@ -118,9 +118,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     const resetToken = user.createPasswordResetToken()
-    // const resetURL = `${req.protocol}://${req.get('host')}/users/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+
     // FOR TESTING BELLOW
-    const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
+    // const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
 
     await user.save({ validateBeforeSave: false })
 
@@ -159,10 +160,5 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
     await user.save();
 
-    const token = signToken(user._id);
-
-    res.status(200).json({
-        message: 'success',
-        token
-    })
+    const token = createSendToken(user, 200, res)
 });
