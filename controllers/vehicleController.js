@@ -12,10 +12,12 @@ exports.checkForFiles = catchAsync(async (req, res, next) => {
     if (req.files) {
         uploadSingleFile(req)
 
-        await cloudinary.uploader.upload(req.files.joinedTemp, (err, img) => {
-            if (img) {
+        await cloudinary.uploader.upload(req.files.joinedTemp, (err, file) => {
+            if (file) {
                 // console.log(img)
-                req.files.image = img.secure_url
+                req.files.file = file.secure_url
+                req.files.format = file.format
+                req.files.fileName = req.files.photo.name
             }
             if (err) {
                 // console.log(err)
@@ -30,13 +32,14 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     const newVehicle = await Vehicle.create({
         vehicleOwner: req.params.id,
         model: req.body.model,
-        thumbnail: req.files ? req.files.image : req.body.image,
+        thumbnail: req.files ? req.files.file : req.body.image,
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
         TUV: req.body.TUV,
         TUVExpiresInOneMonth: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)),
         TUVExpiresInFourteenDays: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)),
+        TUVAUExpiresInTwoMonths: new Date(req.body.TUV && req.body.AU) > new Date() && new Date(req.body.TUV && req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
         firstVehicleRegistration: req.body.firstVehicleRegistration,
         firstVehicleRegistrationOnOwner: req.body.firstVehicleRegistrationOnOwner,
         lastTechnicalInspection: req.body.lastTechnicalInspection,
@@ -48,6 +51,15 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         allowedYearlyKilometers: req.body.allowedYearlyKilometers,
         yearlyTax: req.body.yearlyTax
     })
+
+    if (req.files) {
+        await File.create({
+            uploadedFor: newVehicle._id,
+            url: req.files ? req.files.file : req.body.image,
+            format: req.files ? req.files.format : req.body.format,
+            name: req.files ? req.files.fileName : req.body.fileName
+        })
+    }
 
     // try{
     //     await new Email(req.user).carAdded()
@@ -216,6 +228,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.nextTechnicalInspection = req.body.nextTechnicalInspection || updatedVehicle.nextTechnicalInspection
     updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
         updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)) : updatedVehicle.TUVExpiresInOneMonth,
+        updatedVehicle.TUVAUExpiresInTwoMonths = req.body.TUV && req.body.AU ? new Date(req.body.TUV && req.body.AU) > new Date() && new Date(req.body.TUV && req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.TUVAUExpiresInTwoMonths,
         updatedVehicle.TUVExpiresInFourteenDays = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)) : updatedVehicle.TUVExpiresInFourteenDays,
         updatedVehicle.AU = req.body.AU || updatedVehicle.AU
     updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
