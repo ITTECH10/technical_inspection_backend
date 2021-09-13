@@ -55,6 +55,9 @@ const vehicleSchema = new mongoose.Schema({
         type: Date,
         // required: [true, 'Please specify next vehicle registration date.']
     },
+    technicalInspectionInNextTwoMonths: {
+        type: Boolean,
+    },
     TUV: {
         type: Date,
         // required: [true, 'Please enter the TUV information.']
@@ -63,7 +66,7 @@ const vehicleSchema = new mongoose.Schema({
         type: Boolean,
         // required: [true, 'Calculation if TUV expires in next month went wrong...']
     },
-    TUVAUExpiresInTwoMonths: {
+    TUVExpiresInTwoMonths: {
         type: Boolean
     },
     TUVExpiresInFourteenDays: {
@@ -73,6 +76,9 @@ const vehicleSchema = new mongoose.Schema({
     AU: {
         type: Date,
         // required: [true, 'Please provide AU date.']
+    },
+    AUExpiresInTwoMonths: {
+        type: Boolean
     },
     insuranceHouse: {
         type: mongoose.Schema.ObjectId,

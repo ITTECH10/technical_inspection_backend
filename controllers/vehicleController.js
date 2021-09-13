@@ -39,12 +39,14 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         TUV: req.body.TUV,
         TUVExpiresInOneMonth: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)),
         TUVExpiresInFourteenDays: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)),
-        TUVAUExpiresInTwoMonths: new Date(req.body.TUV && req.body.AU) > new Date() && new Date(req.body.TUV && req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        TUVExpiresInTwoMonths: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
         firstVehicleRegistration: req.body.firstVehicleRegistration,
         firstVehicleRegistrationOnOwner: req.body.firstVehicleRegistrationOnOwner,
         lastTechnicalInspection: req.body.lastTechnicalInspection,
         nextTechnicalInspection: req.body.nextTechnicalInspection,
+        technicalInspectionInNextTwoMonths: new Date(req.body.nextTechnicalInspection) > new Date() && new Date(req.body.nextTechnicalInspection) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
         AU: req.body.AU,
+        AUExpiresInTwoMonths: new Date(req.body.AU) > new Date() && new Date(req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
         kilometersDriven: req.body.kilometersDriven,
         registrationNumber: req.body.registrationNumber,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
@@ -88,6 +90,10 @@ exports.getAllVehicles = catchAsync(async (req, res, next) => {
 })
 
 exports.getMyVehicles = catchAsync(async (req, res, next) => {
+    if (req.params.id.toString() !== req.user._id.toString()) {
+        return next(new AppError('You do not have permissions to perform this action!', 400))
+    }
+
     const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id })
 
     if (!userVehicles) {
@@ -228,10 +234,11 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.nextTechnicalInspection = req.body.nextTechnicalInspection || updatedVehicle.nextTechnicalInspection
     updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
         updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)) : updatedVehicle.TUVExpiresInOneMonth,
-        updatedVehicle.TUVAUExpiresInTwoMonths = req.body.TUV && req.body.AU ? new Date(req.body.TUV && req.body.AU) > new Date() && new Date(req.body.TUV && req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.TUVAUExpiresInTwoMonths,
+        updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.TUVExpiresInTwoMonths,
         updatedVehicle.TUVExpiresInFourteenDays = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)) : updatedVehicle.TUVExpiresInFourteenDays,
         updatedVehicle.AU = req.body.AU || updatedVehicle.AU
-    updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
+    updatedVehicle.AUExpiresInTwoMonths = req.body.AU ? new Date(req.body.AU) > new Date() && new Date(req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.AUExpiresInTwoMonths,
+        updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
     updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
     updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
 
