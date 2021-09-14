@@ -15,6 +15,10 @@ const fileSchema = new mongoose.Schema({
     format: {
         type: String,
     },
+    category: {
+        type: String,
+        required: [true, 'Please choose file category.']
+    },
     url: {
         type: String
     },

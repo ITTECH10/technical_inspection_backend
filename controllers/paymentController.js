@@ -94,6 +94,19 @@ exports.getCorespondingPayment = catchAsync(async (req, res, next) => {
     const creditPayment = await CreditPayment.findById(req.params.paymentId)
     const leasingPayment = await LeasingPayment.findById(req.params.paymentId)
 
+    // !!FINISH LATER
+    // if (cashPayment && cashPayment._id.toString() !== req.params.paymentId.toString()) {
+    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    // }
+
+    // if (creditPayment._id.toString() !== req.params.paymentId.toString()) {
+    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    // }
+
+    // if (leasingPayment && leasingPayment._id.toString() !== req.params.paymentId.toString()) {
+    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    // }
+
     res.status(200).json({
         message: 'success',
         payments: {

@@ -76,6 +76,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     })
 })
 
+// FIX LATER
 exports.deleteUser = catchAsync(async (req, res, next) => {
     await User.findByIdAndDelete(req.params.id)
     await Vehicle.deleteMany({ vehicleOwner: req.params.id })

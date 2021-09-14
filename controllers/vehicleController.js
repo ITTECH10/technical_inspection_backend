@@ -91,7 +91,7 @@ exports.getAllVehicles = catchAsync(async (req, res, next) => {
 
 exports.getMyVehicles = catchAsync(async (req, res, next) => {
     if (req.params.id.toString() !== req.user._id.toString()) {
-        return next(new AppError('You do not have permissions to perform this action!', 400))
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
     }
 
     const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id })
@@ -114,7 +114,8 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
             if (file) {
                 req.files.file = file.secure_url
                 req.files.format = file.format
-                req.files.fileName = req.files.photo.name
+                // req.files.fileName = req.files.photo.name
+                // req.files.fileName = req.body.photoName
             }
             if (err) {
                 console.log(err)
@@ -126,7 +127,8 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         uploadedFor: req.params.carId,
         url: req.files ? req.files.file : req.body.image,
         format: req.files ? req.files.format : req.body.format,
-        name: req.files ? req.files.fileName : req.body.fileName
+        name: req.body.photoName,
+        category: req.body.fileCategory
     })
 
     // OLD LOGIC
