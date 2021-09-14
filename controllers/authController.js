@@ -82,6 +82,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 })
 
 exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
+    if (req.params.userId.toString() !== req.user._id.toString()) {
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
     const user = await User.findById(req.params.userId)
 
     if (!user) {
