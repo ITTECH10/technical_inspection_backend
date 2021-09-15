@@ -12,6 +12,10 @@ const fileSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Vehicle'
     },
+    documentPublisher: {
+        type: String,
+        required: [true, 'Please tell us who is the document publisher.']
+    },
     format: {
         type: String,
     },

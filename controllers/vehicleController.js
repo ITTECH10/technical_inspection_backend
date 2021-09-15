@@ -57,6 +57,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     if (req.files) {
         await File.create({
             uploadedFor: newVehicle._id,
+            documentPublisher: req.user.role,
             url: req.files ? req.files.file : req.body.image,
             format: req.files ? req.files.format : req.body.format,
             name: req.files ? req.files.fileName : req.body.fileName
@@ -124,6 +125,7 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
 
     const newFile = await File.create({
         uploadedFor: req.params.carId,
+        documentPublisher: req.user.role,
         url: req.files ? req.files.file : req.body.image,
         format: req.files ? req.files.format : req.body.format,
         name: req.body.photoName || req.files.fileName,
