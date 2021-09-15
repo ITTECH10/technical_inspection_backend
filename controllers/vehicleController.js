@@ -126,7 +126,7 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         uploadedFor: req.params.carId,
         url: req.files ? req.files.file : req.body.image,
         format: req.files ? req.files.format : req.body.format,
-        name: req.body.photoName || req.files ? req.files.fileName : req.body.fileName,
+        name: req.body.photoName || req.files.fileName,
         category: req.body.fileCategory
     })
 
