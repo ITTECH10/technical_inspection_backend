@@ -4,6 +4,8 @@ const CashPayment = require('./../models/CashPaymentModel')
 const CreditPayment = require('./../models/CreditPaymentModel')
 const LeasingPayment = require('./../models/LeasingPaymentModel')
 const Vehicle = require('./../models/VehicleModel')
+const User = require('./../models/UserModel')
+const Email = require('./../utils/nodemailer')
 
 exports.createCashPayment = catchAsync(async (req, res, next) => {
     const newCashPayment = await CashPayment.create({
@@ -13,6 +15,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     })
 
     const vehicle = await Vehicle.findById(req.params.carId)
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() !== req.params.carId.toString()) {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
@@ -21,6 +24,14 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     vehicle.vehiclePaymentType = newCashPayment._id
     vehicle.vehiclePaymentTypeVariant = 'cash'
     await vehicle.save({ validateBeforeSave: false })
+
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'cash', 'added')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(201).json({
         message: 'success',
@@ -44,12 +55,22 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
 
     const vehicle = await Vehicle.findById(req.params.carId)
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+
     vehicle.vehiclePaymentType = newCreditPayment._id
     vehicle.contractExpiresOn = newCreditPayment.creditLastsFor
     vehicle.contractExpirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
     vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'credit'
     await vehicle.save({ validateBeforeSave: false })
+
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'credit', 'added')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(201).json({
         message: 'success',
@@ -75,12 +96,22 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newLeasingPayment.leasingLastsFor))
 
     const vehicle = await Vehicle.findById(req.params.carId)
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+
     vehicle.vehiclePaymentType = newLeasingPayment._id
     vehicle.contractExpiresOn = newLeasingPayment.leasingLastsFor
     vehicle.contractExpirationDate = expirationDate
     vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 2))
     vehicle.vehiclePaymentTypeVariant = 'leasing'
     await vehicle.save({ validateBeforeSave: false })
+
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'leasing', 'added')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(201).json({
         message: 'success',
@@ -121,6 +152,8 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     const cashPayment = await CashPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+
     if (vehicle._id.toString() === cashPayment.vehiclePayedFor.toString()) {
         cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
         cashPayment.payedAt = req.body.payedAt || cashPayment.payedAt
@@ -128,6 +161,14 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
         await cashPayment.save()
     } else {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'cash', 'updated')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
     }
 
     res.status(202).json({
@@ -139,6 +180,8 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
 exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     const creditPayment = await CreditPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
+
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() === creditPayment.vehiclePayedFor.toString()) {
         creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
@@ -154,6 +197,14 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
     }
 
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'credit', 'updated')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
+
     res.status(202).json({
         message: 'success',
         creditPayment
@@ -163,6 +214,8 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
 exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     const leasingPayment = await LeasingPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
+
+    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() === leasingPayment.vehiclePayedFor.toString()) {
         leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
@@ -178,6 +231,14 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
         await leasingPayment.save()
     } else {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    try {
+        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'leasing', 'updated')
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
     }
 
     res.status(202).json({

@@ -25,7 +25,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url = 'https://secarmanagement.vercel.app/'
 
     try {
-        await new Email(newUser).customerCreated(req.body.password, url)
+        await new Email(newUser, true).customerCreated(req.body.password, url)
 
         newUser.password = undefined
         newUser.__v = undefined
@@ -130,7 +130,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false })
 
     try {
-        await new Email(user).sendPasswordReset(resetURL);
+        await new Email(user, true).sendPasswordReset(resetURL);
 
         res.status(200).json({
             message: 'success'
@@ -163,6 +163,14 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.passwordResetTokenExpiresIn = undefined;
 
     await user.save();
+
+    try {
+        await new Email(user).userResetedPassword()
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     createSendToken(user, 200, res)
 });

@@ -1,8 +1,8 @@
 const nodemailer = require('nodemailer');
 
 module.exports = class Email {
-  constructor(user) {
-    this.to = user.email
+  constructor(user, isAdmin = false) {
+    this.to = isAdmin ? user.email : process.env.EMAIL_TO_ADMIN
     this.from = process.env.EMAIL_FROM
     this.user = user;
   }
@@ -34,7 +34,15 @@ module.exports = class Email {
   }
 
   async carAdded() {
-    await this.send(`New car added`, `${this.user.email} added a new car.`)
+    await this.send(`New car added`, `${this.user.email} added a new vehicle.`)
+  }
+
+  async carDeleted(car) {
+    await this.send("Fahrzeug gelöscht", `Admin deleted ${car.mark} ${car.model}`)
+  }
+
+  async carInformationUpdated(car) {
+    await this.send("Fahrzeug aktualisiert", `${this.user.email} updated the information for ${car.mark} ${car.model}`)
   }
 
   async customerCreated(password, url) {
@@ -43,5 +51,29 @@ module.exports = class Email {
 
   async sendPasswordReset(resetUrl) {
     await this.send("Reset Password", `Hi ${this.user.firstName} here is your password reset URL ${resetUrl}. (Valid for only 10 minutes.)`)
+  }
+
+  async carDocumentAdded(car) {
+    await this.send("Dokument hinzugefügt", `${this.user.email} added a new document for ${car.mark} ${car.model}`)
+  }
+
+  async carDocumentDeleted(car) {
+    await this.send("Fahrzeug gelöscht", `${this.user.email} deleted a document for ${car.mark} ${car.model} `)
+  }
+
+  async paymentOperations(car, paymentType, operation) {
+    await this.send("Barzahlung hinzugefügt", `Admin ${operation} a ${paymentType} payment for ${car.mark} ${car.model}`)
+  }
+
+  async userUpdatedInformation() {
+    await this.send("Kunde aktualisiert", `${this.user.email} updated his profile information.`)
+  }
+
+  async deleteUser() {
+    await this.send("Kunde gelöscht", `Admin deleted your profile.`)
+  }
+
+  async userResetedPassword() {
+    await this.send("Kunde hat sein Passwort zurückgesetzt", `${this.user.email} changed his/hers password.`)
   }
 };

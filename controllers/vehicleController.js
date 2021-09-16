@@ -5,6 +5,7 @@ const cloudinary = require('cloudinary').v2
 const { uploadSingleFile } = require('./../utils/cloudinary')
 const Email = require('./../utils/nodemailer')
 const File = require('./../models/FileModel')
+const User = require('./../models/UserModel')
 
 // MIDLEWARE FOR IMAGES
 exports.checkForFiles = catchAsync(async (req, res, next) => {
@@ -64,12 +65,12 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         })
     }
 
-    // try{
-    //     await new Email(req.user).carAdded()
-    // }
-    // catch(err) {
-    //     console.log(err)
-    // }
+    try {
+        await new Email(req.user).carAdded()
+    }
+    catch (err) {
+        console.log(err)
+    }
 
     res.status(201).json({
         message: 'success',
@@ -108,9 +109,10 @@ exports.getMyVehicles = catchAsync(async (req, res, next) => {
 })
 
 exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
+    const car = await Vehicle.findById(req.params.carId)
+
     if (req.files) {
         uploadSingleFile(req)
-        // console.log(req.files)
         await cloudinary.uploader.upload(req.files.joinedTemp, (err, file) => {
             if (file) {
                 req.files.file = file.secure_url
@@ -132,23 +134,14 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         category: req.body.fileCategory
     })
 
-    // OLD LOGIC
-    // const vehicle = await Vehicle.findById(req.params.carId)
-
-    // const newImages = [
-    //     ...vehicle.images,
-    //     {
-    //         newImage: req.files.image,
-    //         createdAt: Date.now()
-    //     }
-    // ]
-
-    // vehicle.images = newImages
-
-    // await vehicle.save({
-    //     new: true,
-    //     validateBeforeSave: false
-    // })
+    try {
+        await new Email(req.user).carDocumentAdded(car)
+    }
+    catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(201).json({
         message: 'success',
@@ -170,7 +163,16 @@ exports.getCarImages = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
-    await Vehicle.findByIdAndDelete(req.params.id)
+    const vehicleToDelete = await Vehicle.findByIdAndDelete(req.params.id)
+    const userEmailRecipient = await User.findById(vehicleToDelete.vehicleOwner)
+
+    try {
+        await new Email(userEmailRecipient, true).carDeleted(vehicleToDelete)
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(204).json({
         message: 'success'
@@ -212,10 +214,20 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
-    await File.findByIdAndDelete(req.params.fileId)
+    const fileToDelete = await File.findByIdAndDelete(req.params.fileId)
+    const emailCarDeletion = await Vehicle.findById(fileToDelete.uploadedFor)
 
+    // LATER THIS BELOOW // IMPORTANT
     // await cloudinary.v2.uploader.destroy('sample', function(error,result) {
     //     console.log(result, error) });
+
+    try {
+        await new Email(req.user).carDocumentDeleted(emailCarDeletion)
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(204).json({
         message: 'success'
@@ -246,6 +258,14 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
 
     await updatedVehicle.save({ validateBeforeSave: true })
+
+    try {
+        await new Email(req.user).carInformationUpdated(updatedVehicle)
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(200).json({
         message: 'success',

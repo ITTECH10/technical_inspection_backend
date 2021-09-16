@@ -3,6 +3,7 @@ const AppError = require('./../utils/appError')
 const User = require('./../models/UserModel')
 const validator = require('validator')
 const Vehicle = require('../models/VehicleModel')
+const Email = require('./../utils/nodemailer')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find().select('-__v')
@@ -70,6 +71,14 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
         validateBeforeSave: false
     })
 
+    try {
+        await new Email(req.user).userUpdatedInformation()
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
+
     res.status(202).json({
         message: 'success',
         user
@@ -78,8 +87,16 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
 
 // FIX LATER
 exports.deleteUser = catchAsync(async (req, res, next) => {
-    await User.findByIdAndDelete(req.params.id)
+    const userToDelete = await User.findByIdAndDelete(req.params.id)
     await Vehicle.deleteMany({ vehicleOwner: req.params.id })
+
+    try {
+        await new Email(userToDelete, true).deleteUser()
+    } catch (err) {
+        if (err) {
+            console.log(err)
+        }
+    }
 
     res.status(204).json({
         message: 'success'
