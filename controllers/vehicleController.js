@@ -6,6 +6,9 @@ const { uploadSingleFile } = require('./../utils/cloudinary')
 const Email = require('./../utils/nodemailer')
 const File = require('./../models/FileModel')
 const User = require('./../models/UserModel')
+const DateGenerator = require('./../utils/DateGenerator')
+
+// console.log(new DateGenerator().expiresInOneMonth())
 
 // MIDLEWARE FOR IMAGES
 exports.checkForFiles = catchAsync(async (req, res, next) => {
@@ -38,16 +41,16 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         HSN: req.body.HSN,
         TSN: req.body.TSN,
         TUV: req.body.TUV,
-        TUVExpiresInOneMonth: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)),
-        TUVExpiresInFourteenDays: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)),
-        TUVExpiresInTwoMonths: new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        AU: req.body.AU,
+        TUVExpiresInOneMonth: new DateGenerator(req.body.TUV).expiresInGivenMonths(1),
+        TUVExpiresInFourteenDays: new DateGenerator(req.body.TUV).expiresInGivenDays(14),
+        TUVExpiresInTwoMonths: new DateGenerator(req.body.TUV).expiresInGivenMonths(2),
+        technicalInspectionInNextTwoMonths: new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2),
+        AUExpiresInTwoMonths: new DateGenerator(req.body.AU).expiresInGivenMonths(2),
         firstVehicleRegistration: req.body.firstVehicleRegistration,
         firstVehicleRegistrationOnOwner: req.body.firstVehicleRegistrationOnOwner,
         lastTechnicalInspection: req.body.lastTechnicalInspection,
         nextTechnicalInspection: req.body.nextTechnicalInspection,
-        technicalInspectionInNextTwoMonths: new Date(req.body.nextTechnicalInspection) > new Date() && new Date(req.body.nextTechnicalInspection) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
-        AU: req.body.AU,
-        AUExpiresInTwoMonths: new Date(req.body.AU) > new Date() && new Date(req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)),
         kilometersDriven: req.body.kilometersDriven,
         registrationNumber: req.body.registrationNumber,
         monthlyInsurancePayment: req.body.monthlyInsurancePayment,
@@ -66,7 +69,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(req.user).carAdded()
+        await new Email(req.user, false).carOperations("hinzugefügt", newVehicle)
     }
     catch (err) {
         console.log(err)
@@ -135,7 +138,7 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
     })
 
     try {
-        await new Email(req.user).carDocumentAdded(car)
+        await new Email(req.user).documentOperations("added", car)
     }
     catch (err) {
         if (err) {
@@ -167,7 +170,7 @@ exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     const userEmailRecipient = await User.findById(vehicleToDelete.vehicleOwner)
 
     try {
-        await new Email(userEmailRecipient, true).carDeleted(vehicleToDelete)
+        await new Email(userEmailRecipient, true).carOperations("gelöscht", vehicleToDelete)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -222,7 +225,7 @@ exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
     //     console.log(result, error) });
 
     try {
-        await new Email(req.user).carDocumentDeleted(emailCarDeletion)
+        await new Email(req.user).documentOperations("deleted", emailCarDeletion)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -247,20 +250,21 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.kilometersDriven = req.body.kilometersDriven || updatedVehicle.kilometersDriven
     updatedVehicle.lastTechnicalInspection = req.body.lastTechnicalInspection || updatedVehicle.lastTechnicalInspection
     updatedVehicle.nextTechnicalInspection = req.body.nextTechnicalInspection || updatedVehicle.nextTechnicalInspection
-    updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
-        updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 1)) : updatedVehicle.TUVExpiresInOneMonth,
-        updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.TUVExpiresInTwoMonths,
-        updatedVehicle.TUVExpiresInFourteenDays = req.body.TUV ? new Date(req.body.TUV) > new Date() && new Date(req.body.TUV) < new Date(new Date().setDate(new Date().getDate() + 14)) : updatedVehicle.TUVExpiresInFourteenDays,
-        updatedVehicle.AU = req.body.AU || updatedVehicle.AU
-    updatedVehicle.AUExpiresInTwoMonths = req.body.AU ? new Date(req.body.AU) > new Date() && new Date(req.body.AU) < new Date(new Date().setMonth(new Date().getMonth() + 2)) : updatedVehicle.AUExpiresInTwoMonths,
-        updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
-    updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
+    updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.nextTechnicalInspection,
+        updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
+    updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
     updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
+    updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
+        updatedVehicle.AU = req.body.AU || updatedVehicle.AU
+    updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(1) : updatedVehicle.TUVExpiresInOneMonth,
+        updatedVehicle.TUVExpiresInFourteenDays = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenDays(14) : updatedVehicle.TUVExpiresInFourteenDays,
+        updatedVehicle.AUExpiresInTwoMonths = req.body.AU ? new DateGenerator(req.body.AU).expiresInGivenMonths(2) : updatedVehicle.AUExpiresInTwoMonths,
+        updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(2) : updatedVehicle.TUVExpiresInTwoMonths,
 
-    await updatedVehicle.save({ validateBeforeSave: true })
+        await updatedVehicle.save({ validateBeforeSave: true })
 
     try {
-        await new Email(req.user).carInformationUpdated(updatedVehicle)
+        await new Email(req.user, false).carOperations("aktualisiert", updatedVehicle)
     } catch (err) {
         if (err) {
             console.log(err)
