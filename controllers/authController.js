@@ -25,7 +25,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url = 'https://secarmanagement.vercel.app/'
 
     try {
-        await new Email(newUser, true).customerCreated(req.body.password, url)
+        await new Email(req.user, newUser).customerCreated(req.body.password, url)
 
         newUser.password = undefined
         newUser.__v = undefined
@@ -122,15 +122,15 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     const resetToken = user.createPasswordResetToken()
-    // const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
 
     // FOR TESTING BELLOW
-    const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
+    // const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
 
     await user.save({ validateBeforeSave: false })
 
     try {
-        await new Email(user, true).sendPasswordReset(resetURL);
+        await new Email(undefined, undefined, user).sendPasswordReset(resetURL);
 
         res.status(200).json({
             message: 'success'
@@ -165,7 +165,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     await user.save();
 
     try {
-        await new Email(user).userResetedPassword()
+        if (user.role !== 'admin') {
+            await new Email(user, user).userResetedPassword()
+        }
     } catch (err) {
         if (err) {
             console.log(err)

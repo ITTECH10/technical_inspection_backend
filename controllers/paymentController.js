@@ -15,7 +15,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     })
 
     const vehicle = await Vehicle.findById(req.params.carId)
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() !== req.params.carId.toString()) {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
@@ -26,7 +26,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'cash', 'added')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'cash', 'added')
     } catch (err) {
         if (err) {
             console.log(err)
@@ -55,7 +55,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
 
     const vehicle = await Vehicle.findById(req.params.carId)
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     vehicle.vehiclePaymentType = newCreditPayment._id
     vehicle.contractExpiresOn = newCreditPayment.creditLastsFor
@@ -65,7 +65,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'credit', 'added')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'credit', 'added')
     } catch (err) {
         if (err) {
             console.log(err)
@@ -96,7 +96,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newLeasingPayment.leasingLastsFor))
 
     const vehicle = await Vehicle.findById(req.params.carId)
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     vehicle.vehiclePaymentType = newLeasingPayment._id
     vehicle.contractExpiresOn = newLeasingPayment.leasingLastsFor
@@ -106,7 +106,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'leasing', 'added')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'leasing', 'added')
     } catch (err) {
         if (err) {
             console.log(err)
@@ -152,7 +152,10 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     const cashPayment = await CashPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(cashPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
+    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() === cashPayment.vehiclePayedFor.toString()) {
         cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
@@ -164,7 +167,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'cash', 'updated')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'cash', 'updated', formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -181,7 +184,10 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     const creditPayment = await CreditPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(creditPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
+    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() === creditPayment.vehiclePayedFor.toString()) {
         creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
@@ -198,7 +204,7 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'credit', 'updated')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'credit', 'updated', formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -215,7 +221,10 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     const leasingPayment = await LeasingPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
-    const userEmailRecipient = await User.findById(vehicle.vehicleOwner)
+    const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(leasingPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
+    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+
+    const customer = await User.findById(vehicle.vehicleOwner)
 
     if (vehicle._id.toString() === leasingPayment.vehiclePayedFor.toString()) {
         leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
@@ -234,7 +243,7 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(userEmailRecipient, true).paymentOperations(vehicle, 'leasing', 'updated')
+        await new Email(req.user, customer).paymentOperations(vehicle, 'leasing', 'updated', formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)

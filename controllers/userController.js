@@ -43,6 +43,9 @@ exports.getMyCredentials = catchAsync(async (req, res, next) => {
 exports.editUserInfo = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.params.id)
 
+    const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(user[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
+    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+
     if (!user) {
         return next(new AppError('Editing user went wrong', 404))
     }
@@ -72,7 +75,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     })
 
     try {
-        await new Email(req.user).userUpdatedInformation()
+        await new Email(req.user, user).userUpdatedInformation(formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -87,11 +90,11 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
 
 // FIX LATER
 exports.deleteUser = catchAsync(async (req, res, next) => {
-    const userToDelete = await User.findByIdAndDelete(req.params.id)
+    const customer = await User.findByIdAndDelete(req.params.id)
     await Vehicle.deleteMany({ vehicleOwner: req.params.id })
 
     try {
-        await new Email(userToDelete, true).deleteUser()
+        await new Email(req.user, customer).deleteUser()
     } catch (err) {
         if (err) {
             console.log(err)

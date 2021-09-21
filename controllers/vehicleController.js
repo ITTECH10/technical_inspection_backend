@@ -8,8 +8,6 @@ const File = require('./../models/FileModel')
 const User = require('./../models/UserModel')
 const DateGenerator = require('./../utils/DateGenerator')
 
-// console.log(new DateGenerator().expiresInOneMonth())
-
 // MIDLEWARE FOR IMAGES
 exports.checkForFiles = catchAsync(async (req, res, next) => {
     // if(!req.files) next()
@@ -69,7 +67,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(req.user, false).carOperations("hinzugefügt", newVehicle)
+        await new Email(req.user, true).carOperations("hinzugefügt", newVehicle)
     }
     catch (err) {
         console.log(err)
@@ -137,8 +135,10 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         category: req.body.fileCategory
     })
 
+    const customer = await User.findById(car.vehicleOwner)
+
     try {
-        await new Email(req.user).documentOperations("added", car)
+        await new Email(req.user, customer).documentOperations("added", car)
     }
     catch (err) {
         if (err) {
@@ -170,7 +170,7 @@ exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     const userEmailRecipient = await User.findById(vehicleToDelete.vehicleOwner)
 
     try {
-        await new Email(userEmailRecipient, true).carOperations("gelöscht", vehicleToDelete)
+        await new Email(userEmailRecipient, true, true).carOperations("gelöscht", vehicleToDelete)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -218,14 +218,15 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
 
 exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
     const fileToDelete = await File.findByIdAndDelete(req.params.fileId)
-    const emailCarDeletion = await Vehicle.findById(fileToDelete.uploadedFor)
+    const car = await Vehicle.findById(fileToDelete.uploadedFor)
+    const customer = await User.findById(car.vehicleOwner)
 
     // LATER THIS BELOOW // IMPORTANT
     // await cloudinary.v2.uploader.destroy('sample', function(error,result) {
     //     console.log(result, error) });
 
     try {
-        await new Email(req.user).documentOperations("deleted", emailCarDeletion)
+        await new Email(req.user, customer).documentOperations("deleted", car)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -239,6 +240,10 @@ exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
 
 exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     const updatedVehicle = await Vehicle.findById(req.params.id)
+    const user = await User.findById(updatedVehicle.vehicleOwner)
+
+    const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(updatedVehicle[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
+    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
 
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
     updatedVehicle.model = req.body.model || updatedVehicle.model
@@ -264,7 +269,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
         await updatedVehicle.save({ validateBeforeSave: true })
 
     try {
-        await new Email(req.user, false).carOperations("aktualisiert", updatedVehicle)
+        await new Email(req.user, user).carOperations("aktualisiert", updatedVehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)

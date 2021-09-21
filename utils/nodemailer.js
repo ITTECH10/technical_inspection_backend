@@ -1,12 +1,12 @@
 const nodemailer = require('nodemailer');
 
 module.exports = class Email {
-  constructor(user, notifyAdmin = true, isAdmin = false) {
-    this.to = !isAdmin && notifyAdmin ? process.env.EMAIL_TO_ADMIN : user.email
+  constructor(logedInUser, customer, logedOfUser) {
+    this.to = logedOfUser ? logedOfUser.email : logedInUser.role === 'admin' ? customer.email : process.env.EMAIL_TO_ADMIN
     this.from = process.env.EMAIL_FROM
-    this.user = user;
-    this.isAdmin = isAdmin
-    this.notifyAdmin = notifyAdmin
+    this.sender = logedInUser && customer && logedInUser.role === 'admin' ? "Admin" : customer.email
+    this.customer = customer
+    this.logedOfUser = logedOfUser
   }
 
   newTransport() {
@@ -22,7 +22,6 @@ module.exports = class Email {
 
   // Send the actual email
   async send(subject, text) {
-    if (!this.notifyAdmin) return
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -36,35 +35,35 @@ module.exports = class Email {
     })
   }
 
-  async carOperations(operation, car) {
-    await this.send(`Fahrzeug ${operation}`, `${this.isAdmin ? "Admin" : this.user.email} ${operation} a car ${car.mark} ${car.model}`)
+  async carOperations(operation, car, changedValues) {
+    await this.send(`Fahrzeug ${operation}`, `${this.sender} ${operation} a car ${car.mark} ${car.model} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
-  async paymentOperations(car, paymentType, operation) {
-    await this.send("Barzahlung hinzugefügt", `Admin ${operation} a ${paymentType} payment for ${car.mark} ${car.model}`)
+  async paymentOperations(car, paymentType, operation, changedValues) {
+    await this.send(`${paymentType} ${operation}`, `Admin ${operation} a ${paymentType} payment for ${car.mark} ${car.model} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
-  async documentOperations(operation, car) {
-    await this.send(`Dokument ${operation}`, `${this.isAdmin ? "Admin" : this.user.email} ${operation} a document for ${car.mark} ${car.model}`)
+  async documentOperations(operation, car, changedValues) {
+    await this.send(`Dokument ${operation}`, `${this.sender} ${operation} a document for ${car.mark} ${car.model} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
   async customerCreated(password, url) {
-    await this.send('Profile created', `Your profile credentials: E-mail: ${this.user.email} Password: ${password}. Please visit this url to get started ${url}`)
+    await this.send('Profile created', `Your profile credentials: E-mail: ${this.customer.email} Password: ${password}. Please visit this url to get started ${url}`)
   }
 
   async sendPasswordReset(resetUrl) {
-    await this.send("Reset Password", `Hi ${this.user.firstName} here is your password reset URL ${resetUrl}. (Valid for only 10 minutes.)`)
+    await this.send("Reset Password", `Hi ${this.logedOfUser.firstName} here is your password reset URL ${resetUrl}. (Valid for only 10 minutes.)`)
   }
 
-  async userUpdatedInformation() {
-    await this.send("Kunde aktualisiert", `${this.user.email} updated his profile information.`)
+  async userResetedPassword() {
+    await this.send("Passwort zurückgesetzt", `${this.sender} reseted his/hers password.`)
+  }
+
+  async userUpdatedInformation(changedValues) {
+    await this.send("Kunde aktualisiert", `${this.sender} updated profile information. ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
   async deleteUser() {
     await this.send("Kunde gelöscht", `Admin deleted your profile.`)
-  }
-
-  async userResetedPassword() {
-    await this.send("Kunde hat sein Passwort zurückgesetzt", `${this.user.email} changed his/hers password.`)
   }
 };
