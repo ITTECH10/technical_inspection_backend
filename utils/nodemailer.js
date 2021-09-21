@@ -4,7 +4,7 @@ module.exports = class Email {
   constructor(logedInUser, customer, logedOfUser) {
     this.to = logedOfUser ? logedOfUser.email : logedInUser.role === 'admin' ? customer.email : process.env.EMAIL_TO_ADMIN
     this.from = process.env.EMAIL_FROM
-    this.sender = logedInUser && customer && logedInUser.role === 'admin' ? "Admin" : customer.email
+    this.sender = logedInUser && logedInUser.role === 'admin' ? "Admin" : customer && customer.email
     this.customer = customer
     this.logedOfUser = logedOfUser
   }
