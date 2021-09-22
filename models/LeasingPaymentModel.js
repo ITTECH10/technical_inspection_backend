@@ -15,6 +15,12 @@ const leasingPaymentSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please provide the contract number.']
     },
+    boughtFrom: {
+        type: String
+    },
+    maintenancePackage: {
+        type: String
+    },
     leasingStartDate: {
         type: Date,
         required: [true, 'Please provide the date on which your credit has started.']

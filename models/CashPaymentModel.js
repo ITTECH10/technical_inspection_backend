@@ -10,6 +10,9 @@ const cashPaymentSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'Please provide the payed at date.']
     },
+    boughtFrom: {
+        type: String
+    },
     cashSum: {
         type: Number,
         required: [true, 'Please provide the payed sum.']

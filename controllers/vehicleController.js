@@ -35,6 +35,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         vehicleOwner: req.params.id,
         model: req.body.model,
         thumbnail: req.files ? req.files.file : req.body.image,
+        chassisNumber: req.body.chassisNumber,
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
@@ -56,18 +57,21 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         yearlyTax: req.body.yearlyTax
     })
 
+    const customer = await User.findById(req.params.id)
+
     if (req.files) {
         await File.create({
             uploadedFor: newVehicle._id,
             documentPublisher: req.user.role,
             url: req.files ? req.files.file : req.body.image,
             format: req.files ? req.files.format : req.body.format,
-            name: req.files ? req.files.fileName : req.body.fileName
+            name: req.files ? req.files.fileName : req.body.fileName,
+            category: "DOCUMENT_TYPE_FAHRZEUGSCHEIN"
         })
     }
 
     try {
-        await new Email(req.user, true).carOperations("hinzugefügt", newVehicle)
+        await new Email(req.user, customer).carOperations("hinzugefügt", newVehicle)
     }
     catch (err) {
         console.log(err)
@@ -245,6 +249,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(updatedVehicle[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
     const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
 
+    updatedVehicle.chassisNumber = req.body.chassisNumber || updatedVehicle.chassisNumber
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
     updatedVehicle.model = req.body.model || updatedVehicle.model
     updatedVehicle.registrationNumber = req.body.registrationNumber || updatedVehicle.registrationNumber

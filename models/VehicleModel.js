@@ -12,6 +12,9 @@ const vehicleSchema = new mongoose.Schema({
     images: {
         type: Array
     },
+    chassisNumber: {
+        type: String
+    },
     mark: {
         type: String,
         // required: [true, 'Please enter the vehicle mark.']
@@ -115,6 +118,10 @@ const vehicleSchema = new mongoose.Schema({
         type: Number,
         // required: [true, 'Please provide your yearly tax.']
     }
+})
+
+vehicleSchema.pre(/^find/, function () {
+    this.populate('vehicleOwner')
 })
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema)

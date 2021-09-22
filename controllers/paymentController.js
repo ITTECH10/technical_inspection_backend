@@ -11,7 +11,8 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     const newCashPayment = await CashPayment.create({
         vehiclePayedFor: req.params.carId,
         payedAt: req.body.payedAt,
-        cashSum: req.body.cashSum
+        cashSum: req.body.cashSum,
+        boughtFrom: req.body.boughtFrom
     })
 
     const vehicle = await Vehicle.findById(req.params.carId)
@@ -45,6 +46,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
         vehiclePayedFor: req.params.carId,
         creditInstitute: req.body.creditInstitute,
         contractNumber: req.body.contractNumber,
+        boughtFrom: req.body.boughtFrom,
         creditStartDate: req.body.creditStartDate,
         monthlyCreditPayment: req.body.monthlyCreditPayment,
         interestRate: req.body.interestRate,
@@ -84,6 +86,8 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
         vehiclePayedFor: req.params.carId,
         leasingGiver: req.body.leasingGiver,
         contractNumber: req.body.contractNumber,
+        boughtFrom: req.body.boughtFrom,
+        maintenancePackage: req.body.maintenancePackage,
         leasingStartDate: req.body.leasingStartDate,
         monthlyLeasingPayment: req.body.monthlyLeasingPayment,
         leasingLastsFor: req.body.leasingLastsFor,
@@ -161,6 +165,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
         cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
         cashPayment.payedAt = req.body.payedAt || cashPayment.payedAt
         cashPayment.cashSum = req.body.cashSum || cashPayment.cashSum
+        cashPayment.boughtFrom = req.body.boughtFrom || cashPayment.boughtFrom
         await cashPayment.save()
     } else {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
@@ -193,6 +198,7 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
         creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
         creditPayment.creditInstitute = req.body.creditInstitute || creditPayment.creditInstitute
         creditPayment.contractNumber = req.body.contractNumber || creditPayment.contractNumber
+        creditPayment.boughtFrom = req.body.boughtFrom || creditPayment.boughtFrom
         creditPayment.creditStartDate = req.body.creditStartDate || creditPayment.creditStartDate
         creditPayment.monthlyCreditPayment = req.body.monthlyCreditPayment || creditPayment.monthlyCreditPayment
         creditPayment.interestRate = req.body.interestRate || creditPayment.interestRate
@@ -230,6 +236,8 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
         leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
         leasingPayment.leasingGiver = req.body.leasingGiver || leasingPayment.leasingGiver
         leasingPayment.contractNumber = req.body.contractNumber || leasingPayment.contractNumber
+        leasingPayment.boughtFrom = req.body.boughtFrom || leasingPayment.boughtFrom
+        leasingPayment.maintenancePackage = req.body.maintenancePackage || leasingPayment.maintenancePackage
         leasingPayment.leasingStartDate = req.body.leasingStartDate || leasingPayment.leasingStartDate
         leasingPayment.monthlyLeasingPayment = req.body.monthlyLeasingPayment || leasingPayment.monthlyLeasingPayment
         leasingPayment.leasingLastsFor = req.body.leasingLastsFor || leasingPayment.leasingLastsFor

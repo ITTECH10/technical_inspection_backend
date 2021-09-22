@@ -36,7 +36,7 @@ module.exports = class Email {
   }
 
   async carOperations(operation, car, changedValues) {
-    await this.send(`Fahrzeug ${operation}`, `${this.sender} ${operation} a car ${car.mark} ${car.model} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
+    await this.send(`Fahrzeug ${operation}`, `${this.sender} ${operation} a car ${car.mark} ${car.model} Link: http://localhost:3000/cars/${car._id} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
   async paymentOperations(car, paymentType, operation, changedValues) {
@@ -60,7 +60,7 @@ module.exports = class Email {
   }
 
   async userUpdatedInformation(changedValues) {
-    await this.send("Kunde aktualisiert", `${this.sender} updated profile information. ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
+    await this.send("Kunde aktualisiert", `${this.sender} updated profile information. Link: http://localhost:3000/cars ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
 
   async deleteUser() {

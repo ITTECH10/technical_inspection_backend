@@ -13,6 +13,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         lastName: req.body.lastName,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
+        smartphoneNumber: req.body.smartphoneNumber,
         street: req.body.street,
         postCode: req.body.postCode,
         city: req.body.city,
