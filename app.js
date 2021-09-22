@@ -35,12 +35,6 @@ app.use(fileupload({
     tempFileDir: os.tmpdir()
 }));
 
-// TEST MIDLEWARE
-// app.use((req, res, next) => {
-//     console.log(req.cookies)
-//     next()
-// })
-
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/cars', carRouter)
 app.use('/api/v1/payment', bankRouter)
