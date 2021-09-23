@@ -257,6 +257,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.HSN = req.body.HSN || updatedVehicle.HSN
     updatedVehicle.TSN = req.body.TSN || updatedVehicle.TSN
     updatedVehicle.varantyExpiresAt = req.body.varantyExpiresAt || updatedVehicle.varantyExpiresAt
+    updatedVehicle.insuranceHouse = req.body.insuranceHouse || updatedVehicle.insuranceHouse
     updatedVehicle.firstVehicleRegistration = req.body.firstVehicleRegistration || updatedVehicle.firstVehicleRegistration
     updatedVehicle.firstVehicleRegistrationOnOwner = req.body.firstVehicleRegistrationOnOwner || updatedVehicle.firstVehicleRegistrationOnOwner
     updatedVehicle.kilometersDriven = req.body.kilometersDriven || updatedVehicle.kilometersDriven

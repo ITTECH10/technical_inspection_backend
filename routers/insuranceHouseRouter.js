@@ -8,10 +8,14 @@ const router = express.Router()
 router.use(authController.protect)
 
 router.route('/')
-.get(insuranceHouseController.getAllInsurances)
-.post(insuranceHouseController.createInsuranceHouse)
+    .get(insuranceHouseController.getAllInsurances)
+// .post(insuranceHouseController.createInsuranceHouse)
+
+router.route('/:creator/:vehicle')
+    .post(insuranceHouseController.createInsuranceHouse)
 
 router.route('/:insuranceId')
-.get(insuranceHouseController.getUsersInsuranceHouse)
+    .get(insuranceHouseController.getUsersInsuranceHouse)
+    .put(insuranceHouseController.updateInsuranceHouse)
 
 module.exports = router
