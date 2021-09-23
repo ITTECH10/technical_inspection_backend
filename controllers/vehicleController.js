@@ -266,7 +266,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.carIsSold = req.body.carIsSold || updatedVehicle.carIsSold
     updatedVehicle.carIsSoldTo = req.body.carIsSoldTo || updatedVehicle.carIsSoldTo
     updatedVehicle.carIsSoldDate = req.body.carIsSoldDate || updatedVehicle.carIsSoldDate
-    updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.nextTechnicalInspection,
+    updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.technicalInspectionInNextTwoMonths,
         updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
     updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
     updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
