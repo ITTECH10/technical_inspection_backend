@@ -38,6 +38,9 @@ const vehicleSchema = new mongoose.Schema({
         maxLength: [3, 'TSN length cannot exceed 3 characters.'],
         // required: [true, 'Please enter vehicle TSN information.']
     },
+    varantyExpiresAt: {
+        type: Date
+    },
     firstVehicleRegistration: {
         type: Date,
         // required: [true, 'Please provide first vehicle registration date.']
@@ -117,6 +120,16 @@ const vehicleSchema = new mongoose.Schema({
     yearlyTax: {
         type: Number,
         // required: [true, 'Please provide your yearly tax.']
+    },
+    carIsSold: {
+        type: Boolean,
+        default: false
+    },
+    carIsSoldTo: {
+        type: String
+    },
+    carIsSoldDate: {
+        type: Date
     }
 })
 

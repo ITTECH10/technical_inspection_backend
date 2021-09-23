@@ -39,6 +39,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
+        varantyExpiresAt: req.body.varantyExpiresAt,
         TUV: req.body.TUV,
         AU: req.body.AU,
         TUVExpiresInOneMonth: new DateGenerator(req.body.TUV).expiresInGivenMonths(1),
@@ -255,11 +256,15 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.registrationNumber = req.body.registrationNumber || updatedVehicle.registrationNumber
     updatedVehicle.HSN = req.body.HSN || updatedVehicle.HSN
     updatedVehicle.TSN = req.body.TSN || updatedVehicle.TSN
+    updatedVehicle.varantyExpiresAt = req.body.varantyExpiresAt || updatedVehicle.varantyExpiresAt
     updatedVehicle.firstVehicleRegistration = req.body.firstVehicleRegistration || updatedVehicle.firstVehicleRegistration
     updatedVehicle.firstVehicleRegistrationOnOwner = req.body.firstVehicleRegistrationOnOwner || updatedVehicle.firstVehicleRegistrationOnOwner
     updatedVehicle.kilometersDriven = req.body.kilometersDriven || updatedVehicle.kilometersDriven
     updatedVehicle.lastTechnicalInspection = req.body.lastTechnicalInspection || updatedVehicle.lastTechnicalInspection
     updatedVehicle.nextTechnicalInspection = req.body.nextTechnicalInspection || updatedVehicle.nextTechnicalInspection
+    updatedVehicle.carIsSold = req.body.carIsSold || updatedVehicle.carIsSold
+    updatedVehicle.carIsSoldTo = req.body.carIsSoldTo || updatedVehicle.carIsSoldTo
+    updatedVehicle.carIsSoldDate = req.body.carIsSoldDate || updatedVehicle.carIsSoldDate
     updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.nextTechnicalInspection,
         updatedVehicle.allowedYearlyKilometers = req.body.allowedYearlyKilometers || updatedVehicle.allowedYearlyKilometers
     updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment

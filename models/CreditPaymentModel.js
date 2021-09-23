@@ -7,8 +7,7 @@ const creditPaymentSchema = new mongoose.Schema({
         required: [true, 'Please provide for which vehicle you want to pay.']
     },
     creditInstitute: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'BanksLeasing',
+        type: String,
         required: [true, 'Please provide the bank in which the contract has been made.']
     },
     contractNumber: {
