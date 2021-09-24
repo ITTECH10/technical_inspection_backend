@@ -23,6 +23,16 @@ const userSchema = new mongoose.Schema({
         },
         unique: true
     },
+    customerType: {
+        type: String
+    },
+    corespondencePartner: {
+        type: String
+    },
+    corespondencePartnerEmail: {
+        type: String,
+        unique: true
+    },
     phoneNumber: {
         type: String,
         required: [true, 'Please provide a phone number (fax).']

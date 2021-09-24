@@ -17,7 +17,10 @@ const insuranceHouseSchema = new mongoose.Schema({
     contractNumber: {
         type: Number
     },
-    kasko: {
+    fullKasko: {
+        type: String
+    },
+    partKasko: {
         type: String
     }
     // streetAddress: {
