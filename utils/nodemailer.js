@@ -35,6 +35,34 @@ module.exports = class Email {
     })
   }
 
+  async sendToAdmin(subject, text) {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: process.env.EMAIL_TO_ADMIN,
+      subject,
+      text
+    };
+
+    await this.newTransport().sendMail(mailOptions, (err, info) => {
+      if (err) console.log(err)
+      // console.log(info)
+    })
+  }
+
+  async sendToCustomer(customer, subject, text) {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: customer,
+      subject,
+      text
+    };
+
+    await this.newTransport().sendMail(mailOptions, (err, info) => {
+      if (err) console.log(err)
+      // console.log(info)
+    })
+  }
+
   async carOperations(operation, car, changedValues) {
     await this.send(`Fahrzeug ${operation}`, `${this.sender} ${operation} a car ${car.mark} ${car.model} Link: http://localhost:3000/cars/${car._id} ${changedValues ? `Changed values are: ${changedValues}` : ''}`)
   }
@@ -66,4 +94,11 @@ module.exports = class Email {
   async deleteUser() {
     await this.send("Kunde gelöscht", `Admin deleted your profile.`)
   }
+
+  async expirationOperations(expirationIdentifier, car) {
+    await this.sendToAdmin(`${expirationIdentifier} expired`, `${expirationIdentifier} for ${car.mark} ${car.model} has been expired. http://localhost:3000/cars/${car._id}`)
+    await this.sendToCustomer(this.customer.email, `${expirationIdentifier} expired`, `${expirationIdentifier} for ${car.mark} ${car.model} has been expired. http://localhost:3000/cars/${car._id}`)
+  }
 };
+
+

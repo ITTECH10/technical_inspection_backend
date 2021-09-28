@@ -8,6 +8,9 @@ const router = express.Router()
 // BELOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 
+router.route('/csv/download')
+    .get(vehicleController.csvReadyVehicles)
+
 router.route('/files/:fileId')
     .delete(vehicleController.deleteVehicleFiles)
 

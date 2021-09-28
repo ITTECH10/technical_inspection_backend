@@ -62,7 +62,9 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
 
     user.firstName = req.body.firstName || user.firstName
     user.lastName = req.body.lastName || user.lastName
+    user.gender = req.body.gender || user.gender
     user.phoneNumber = req.body.phoneNumber || user.phoneNumber
+    user.smartphoneNumber = req.body.smartphoneNumber || user.smartphoneNumber
     user.street = req.body.street || user.street
     user.customerType = req.body.customerType || user.customerType
     user.postCode = req.body.postCode || user.postCode

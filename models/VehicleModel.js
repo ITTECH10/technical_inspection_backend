@@ -41,6 +41,12 @@ const vehicleSchema = new mongoose.Schema({
     varantyExpiresAt: {
         type: Date
     },
+    lastUUV: {
+        type: Date
+    },
+    nextUUV: {
+        type: Date
+    },
     firstVehicleRegistration: {
         type: Date,
         // required: [true, 'Please provide first vehicle registration date.']

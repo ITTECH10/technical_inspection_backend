@@ -13,6 +13,8 @@ const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
+// const cron = require('node-cron')
+// const SendMailOnMajorDatesExpiryJob = require('./services/jobs/SendMailOnMajorDatesExpiryJob')
 
 const app = express()
 const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
@@ -25,6 +27,10 @@ app.use(cookieParser())
 
 // CONSIDER LIMITING REQ.BODY
 app.use(express.json())
+
+// const sendMailOnMajorDatesExpiryJob = new SendMailOnMajorDatesExpiryJob()
+
+// cron.schedule('*/1 * * * *', sendMailOnMajorDatesExpiryJob.TUVExpiredCrone);
 
 // DATA SANITIZATION
 app.use(mongoSanitize())

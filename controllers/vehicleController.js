@@ -8,6 +8,21 @@ const File = require('./../models/FileModel')
 const User = require('./../models/UserModel')
 const DateGenerator = require('./../utils/DateGenerator')
 
+// GET "CSV-FRIENDLY" VEHICLES
+exports.csvReadyVehicles = catchAsync(async (req, res, next) => {
+    const vehicles = await Vehicle.find({}, {
+        _id: 0,
+        vehicleOwner: 1,
+        mark: 1,
+        model: 1
+    })
+
+    res.status(200).json({
+        message: 'success',
+        vehicles
+    })
+})
+
 // MIDLEWARE FOR IMAGES
 exports.checkForFiles = catchAsync(async (req, res, next) => {
     // if(!req.files) next()
@@ -40,6 +55,8 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         HSN: req.body.HSN,
         TSN: req.body.TSN,
         varantyExpiresAt: req.body.varantyExpiresAt,
+        lastUUV: req.body.lastUUV,
+        nextUUV: req.body.nextUUV,
         TUV: req.body.TUV,
         AU: req.body.AU,
         TUVExpiresInOneMonth: new DateGenerator(req.body.TUV).expiresInGivenMonths(1),
@@ -102,7 +119,7 @@ exports.getMyVehicles = catchAsync(async (req, res, next) => {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
     }
 
-    const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id })
+    const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id, carIsSold: { $ne: true } })
 
     if (!userVehicles) {
         return next(new AppError('No vehicles were found', 404))
@@ -256,6 +273,8 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.registrationNumber = req.body.registrationNumber || updatedVehicle.registrationNumber
     updatedVehicle.HSN = req.body.HSN || updatedVehicle.HSN
     updatedVehicle.TSN = req.body.TSN || updatedVehicle.TSN
+    updatedVehicle.lastUUV = req.body.lastUUV || updatedVehicle.lastUUV
+    updatedVehicle.nextUUV = req.body.nextUUV || updatedVehicle.nextUUV
     updatedVehicle.varantyExpiresAt = req.body.varantyExpiresAt || updatedVehicle.varantyExpiresAt
     updatedVehicle.insuranceHouse = req.body.insuranceHouse || updatedVehicle.insuranceHouse
     updatedVehicle.firstVehicleRegistration = req.body.firstVehicleRegistration || updatedVehicle.firstVehicleRegistration

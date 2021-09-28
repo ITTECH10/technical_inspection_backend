@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter customers last name']
     },
+    gender: {
+        type: String
+    },
     email: {
         type: String,
         required: [true, 'Please provide an email'],
