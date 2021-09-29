@@ -189,10 +189,10 @@ exports.getCarImages = catchAsync(async (req, res, next) => {
 
 exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     const vehicleToDelete = await Vehicle.findByIdAndDelete(req.params.id)
-    const userEmailRecipient = await User.findById(vehicleToDelete.vehicleOwner)
+    const customer = await User.findById(vehicleToDelete.vehicleOwner)
 
     try {
-        await new Email(userEmailRecipient, true, true).carOperations("gelöscht", vehicleToDelete)
+        await new Email(req.user, customer).carOperations("gelöscht", vehicleToDelete)
     } catch (err) {
         if (err) {
             console.log(err)
