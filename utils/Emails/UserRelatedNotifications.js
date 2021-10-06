@@ -9,7 +9,7 @@ class UserEmailNotifications extends EmailNotifications {
         const subject = "Fahrzeug gelöscht"
         const body = `Admin hat ein Fahrzeug gelöscht
         Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
-        Link: http://localhost:3000/cars/${car._id}
+        Link: https://secarmanagement.vercel.app/cars/${car._id}
         `
 
         await super.sendToCustomer(customer, subject, body)
@@ -35,7 +35,7 @@ class UserEmailNotifications extends EmailNotifications {
         const subject = `${paymentType} ${operation}`
         const body = `Admin hat ein ${paymentType} Zahlung ${operation}
         zum ${car.mark} ${car.model} ${car.registrationNumber}
-        Link: http://localhost:3000/cars/${car._id}
+        Link: https://secarmanagement.vercel.app/cars/${car._id}
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
 

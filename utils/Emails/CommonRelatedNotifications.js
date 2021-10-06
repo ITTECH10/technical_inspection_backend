@@ -11,7 +11,7 @@ class CommonEmailNotifications extends EmailNotifications {
         const body = `${this.role === 'admin' ? 'Admin' : 'Kunde'} hat ein Fahrzeug ${operation}
         ${this.role === 'user' ? `Kunde: ${customer.firstName} ${customer.lastName}` : ''}
         Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
-        Link: http://localhost:3000/cars/${car._id}
+        Link: https://secarmanagement.vercel.app/cars/${car._id}
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
 
@@ -33,7 +33,7 @@ class CommonEmailNotifications extends EmailNotifications {
         const body = `${this.role === 'admin' ? 'Admin' : 'Kunde'} hat das dokument ${operation}
         ${this.role === 'user' ? `Kunde: ${customer.firstName} ${customer.lastName}` : ''}
         Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
-        Link: http://localhost:3000/cars/${car._id}
+        Link: https://secarmanagement.vercel.app/cars/${car._id}
         `
 
         this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)

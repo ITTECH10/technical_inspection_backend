@@ -10,7 +10,7 @@ class AdminEmailNotifications extends EmailNotifications {
         const body = `Hallo, ich möchte dieses Auto verkaufen bitte schauen Sie es sich an 
         kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
         fahrzeug: ${car.mark} ${car.model}
-        link: http://localhost:3000/cars/${car._id}`
+        link: https://secarmanagement.vercel.app/cars/${car._id}`
 
         await super.sendToAdmin(subject, body)
     }
@@ -20,7 +20,7 @@ class AdminEmailNotifications extends EmailNotifications {
         const body = `Hallo, ich möchte NICHT dieses Auto verkaufen bitte entschuldige Sie mich
         kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
         fahrzeug: ${car.mark} ${car.model}
-        link: http://localhost:3000/cars/${car._id}`
+        link: https://secarmanagement.vercel.app/cars/${car._id}`
 
         await super.sendToAdmin(subject, body)
     }
@@ -30,7 +30,7 @@ class AdminEmailNotifications extends EmailNotifications {
         const body = `Hallo, hier ist mein Schadensbericht zu meinem Fahrzeug
         kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
         fahrzeug: ${car.mark} ${car.model}
-        link: http://localhost:3000/cars/${car._id}
+        link: https://secarmanagement.vercel.app/cars/${car._id}
         Schadensbeschreibung: ${damageDescription}`
 
         await super.sendToAdmin(subject, body)
