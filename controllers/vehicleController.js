@@ -379,11 +379,12 @@ exports.unmarkVehicleForSelling = catchAsync(async (req, res, next) => {
     }
 
     try {
+        pickedVehicle.markForSelling = false
+        pickedVehicle.adminNotifiedAboutCarSelling = undefined
+        await pickedVehicle.save({ validateBeforeSave: false })
+
         if (pickedVehicle.adminNotifiedAboutCarSelling) {
             await new AdminEmailNotifications().abortVehicleSellingToAdmin(pickedVehicle)
-            pickedVehicle.adminNotifiedAboutCarSelling = undefined
-            pickedVehicle.markForSelling = false
-            await pickedVehicle.save({ validateBeforeSave: false })
         }
 
     } catch (err) {
