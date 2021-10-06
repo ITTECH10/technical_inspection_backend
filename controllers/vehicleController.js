@@ -3,10 +3,16 @@ const AppError = require('./../utils/appError')
 const Vehicle = require('./../models/VehicleModel')
 const cloudinary = require('cloudinary').v2
 const { uploadSingleFile } = require('./../utils/cloudinary')
-const Email = require('./../utils/nodemailer')
 const File = require('./../models/FileModel')
 const User = require('./../models/UserModel')
+const CashPayment = require('./../models/CashPaymentModel')
+const CreditPayment = require('./../models/CreditPaymentModel')
+const LeasingPayment = require('./../models/LeasingPaymentModel')
+const Insurance = require('./../models/InsuranceHouseModel')
 const DateGenerator = require('./../utils/DateGenerator')
+const AdminEmailNotifications = require('./../utils/Emails/AdminRelatedNotifications')
+const UserEmailNotifications = require('./../utils/Emails/UserRelatedNotifications')
+const CommonEmailNotifications = require('./../utils/Emails/CommonRelatedNotifications')
 
 // GET "CSV-FRIENDLY" VEHICLES
 exports.csvReadyVehicles = catchAsync(async (req, res, next) => {
@@ -89,7 +95,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(req.user, customer).carOperations("hinzugefügt", newVehicle)
+        await new CommonEmailNotifications(req.user.role).carOperations('hinzugefügt', newVehicle, customer)
     }
     catch (err) {
         console.log(err)
@@ -157,10 +163,10 @@ exports.uploadVehicleImages = catchAsync(async (req, res, next) => {
         category: req.body.fileCategory
     })
 
-    const customer = await User.findById(car.vehicleOwner)
+    const customer = await User.findById(car.vehicleOwner._id)
 
     try {
-        await new Email(req.user, customer).documentOperations("added", car)
+        await new CommonEmailNotifications(req.user.role).documentOperations(customer, 'hinzugefügt', car)
     }
     catch (err) {
         if (err) {
@@ -189,10 +195,29 @@ exports.getCarImages = catchAsync(async (req, res, next) => {
 
 exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     const vehicleToDelete = await Vehicle.findByIdAndDelete(req.params.id)
-    const customer = await User.findById(vehicleToDelete.vehicleOwner)
+    const customer = await User.findById(vehicleToDelete.vehicleOwner._id)
+
+    const associatedFiles = await File.find({ uploadedFor: vehicleToDelete._id })
+
+    const publicIds = associatedFiles.map(associatedFile => {
+        return associatedFile.url.split('/')[7].split('.')[0]
+    })
 
     try {
-        await new Email(req.user, customer).carOperations("gelöscht", vehicleToDelete)
+        await new UserEmailNotifications().vehicleDeleted(vehicleToDelete, customer)
+        await File.deleteMany({ uploadedFor: vehicleToDelete._id })
+        await CashPayment.deleteMany({ vehiclePayedFor: vehicleToDelete._id })
+        await CreditPayment.deleteMany({ vehiclePayedFor: vehicleToDelete._id })
+        await LeasingPayment.deleteMany({ vehiclePayedFor: vehicleToDelete._id })
+        await Insurance.deleteMany({ insuranceConnectedVehicle: vehicleToDelete._id })
+
+        // DELETE ALL IMAGES ASSOCIATED WITH VEHICLE FROM CLOUDINARY
+        await cloudinary.api.delete_resources(publicIds, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
     } catch (err) {
         if (err) {
             console.log(err)
@@ -241,14 +266,24 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
 exports.deleteVehicleFiles = catchAsync(async (req, res, next) => {
     const fileToDelete = await File.findByIdAndDelete(req.params.fileId)
     const car = await Vehicle.findById(fileToDelete.uploadedFor)
-    const customer = await User.findById(car.vehicleOwner)
+    const customer = await User.findById(car.vehicleOwner._id)
 
-    // LATER THIS BELOOW // IMPORTANT
-    // await cloudinary.v2.uploader.destroy('sample', function(error,result) {
-    //     console.log(result, error) });
+    const cloudinaryPublicId = fileToDelete.url.split('/')[7].split('.')[0]
 
     try {
-        await new Email(req.user, customer).documentOperations("deleted", car)
+        if (cloudinaryPublicId) {
+            await cloudinary.uploader.destroy(cloudinaryPublicId, { invalidate: true }, function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+        }
+    } catch (err) {
+        console.log(err)
+    }
+
+    try {
+        await new CommonEmailNotifications(req.user.role).documentOperations(customer, 'gelöscht', car)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -265,7 +300,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     const user = await User.findById(updatedVehicle.vehicleOwner)
 
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(updatedVehicle[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
-    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+    const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
     updatedVehicle.chassisNumber = req.body.chassisNumber || updatedVehicle.chassisNumber
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
@@ -299,7 +334,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
         await updatedVehicle.save({ validateBeforeSave: true })
 
     try {
-        await new Email(req.user, user).carOperations("aktualisiert", updatedVehicle, formatedChangedValues)
+        await new CommonEmailNotifications(req.user.role).carOperations("aktualisiert", updatedVehicle, user, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -309,5 +344,108 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: 'success',
         updatedVehicle
+    })
+})
+
+exports.markVehicleForSelling = catchAsync(async (req, res, next) => {
+    const pickedVehicle = await Vehicle.findById(req.params.id)
+
+    if (!pickedVehicle) {
+        return next(new AppError('Picked vehicle not found', 404))
+    }
+
+    if (pickedVehicle._id.toString() !== req.params.id.toString()) {
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    pickedVehicle.markForSelling = true
+    await pickedVehicle.save({ validateBeforeSave: false })
+
+    res.status(200).json({
+        message: 'success',
+        pickedVehicle
+    })
+})
+
+exports.unmarkVehicleForSelling = catchAsync(async (req, res, next) => {
+    const pickedVehicle = await Vehicle.findById(req.params.id)
+
+    if (!pickedVehicle) {
+        return next(new AppError('Picked vehicle not found', 404))
+    }
+
+    if (pickedVehicle._id.toString() !== req.params.id.toString()) {
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    try {
+        if (pickedVehicle.adminNotifiedAboutCarSelling) {
+            await new AdminEmailNotifications().abortVehicleSellingToAdmin(pickedVehicle)
+            pickedVehicle.adminNotifiedAboutCarSelling = undefined
+            pickedVehicle.markForSelling = false
+            await pickedVehicle.save({ validateBeforeSave: false })
+        }
+
+    } catch (err) {
+        pickedVehicle.markForSelling = true
+        pickedVehicle.adminNotifiedAboutCarSelling = undefined
+        await pickedVehicle.save({ validateBeforeSave: false })
+    }
+
+    res.status(200).json({
+        message: 'success',
+        pickedVehicle
+    })
+})
+
+exports.recommendVehicleToAdmin = catchAsync(async (req, res, next) => {
+    const pickedVehicle = await Vehicle.findById(req.params.id)
+
+    if (!pickedVehicle) {
+        return next(new AppError('Picked vehicle not found', 404))
+    }
+
+    if (pickedVehicle._id.toString() !== req.params.id.toString()) {
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    // SEND EMAIL
+    try {
+        await new AdminEmailNotifications().sellVehicleToAdmin(pickedVehicle)
+        pickedVehicle.adminNotifiedAboutCarSelling = true
+        await pickedVehicle.save({ validateBeforeSave: false })
+    } catch (err) {
+        pickedVehicle.adminNotifiedAboutCarSelling = undefined
+        await pickedVehicle.save({ validateBeforeSave: false })
+        console.log(err)
+    }
+
+    res.status(200).json({
+        message: 'success',
+        pickedVehicle
+    })
+})
+
+exports.reportVehicleDamage = catchAsync(async (req, res, next) => {
+    const damagedVehicle = await Vehicle.findById(req.params.id)
+    const { damageDescription } = req.body
+
+    if (!damagedVehicle) {
+        return next(new AppError('Vehicle you selected does not exist.', 404))
+    }
+
+    if (damagedVehicle._id.toString() !== req.params.id.toString()) {
+        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    }
+
+    // SEND EMAIL
+    try {
+        await new AdminEmailNotifications().reportVehicleDamage(damagedVehicle, damageDescription)
+    } catch (err) {
+        console.log(err)
+    }
+
+    res.status(201).json({
+        message: 'success'
     })
 })

@@ -105,7 +105,7 @@ const vehicleSchema = new mongoose.Schema({
         // required: [true, 'Please provide allowed kilometers per year.']
     },
     vehiclePaymentType: {
-        type: mongoose.Schema.Types.Mixed,
+        type: mongoose.Schema.Types.Mixed
     },
     // IMPROVE LATER THINGS BELLOW
     vehiclePaymentTypeVariant: {
@@ -136,6 +136,12 @@ const vehicleSchema = new mongoose.Schema({
     },
     carIsSoldDate: {
         type: Date
+    },
+    markForSelling: {
+        type: Boolean
+    },
+    adminNotifiedAboutCarSelling: {
+        type: Boolean
     }
 })
 

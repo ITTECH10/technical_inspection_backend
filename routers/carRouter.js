@@ -45,6 +45,19 @@ router.route('/:id')
 router.route('/car/:id')
     .get(vehicleController.getVehicle)
 
+router.route('/selling/:id')
+    .get(vehicleController.recommendVehicleToAdmin)
+
+router.route('/selling/mark/:id')
+    .put(vehicleController.markVehicleForSelling)
+
+router.route('/selling/unmark/:id')
+    .put(vehicleController.unmarkVehicleForSelling)
+
+// CAR DAMAGE
+router.route('/damage/:id')
+    .post(vehicleController.reportVehicleDamage)
+
 // ADMIN ROUTES BELLOW
 router.use(authController.restrictTo('admin'))
 

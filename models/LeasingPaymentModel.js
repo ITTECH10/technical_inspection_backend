@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const DateGenerator = require('../utils/DateGenerator')
+const bcrypt = require('bcryptjs')
 
 const leasingPaymentSchema = new mongoose.Schema({
     vehiclePayedFor: {
@@ -32,6 +34,9 @@ const leasingPaymentSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please provide how much the credit lasts for. (in months)']
     },
+    leasingEndsOn: {
+        type: Date
+    },
     remainingPayment: {
         type: Number
     },
@@ -44,6 +49,15 @@ const leasingPaymentSchema = new mongoose.Schema({
     costsForLessKilometers: {
         type: Number
     }
+})
+
+leasingPaymentSchema.pre('save', function (next) {
+    this.leasingEndsOn = new DateGenerator().monthsFromNow(this.leasingLastsFor)
+    next()
+})
+
+leasingPaymentSchema.pre(/^find/, function () {
+    this.populate('vehiclePayedFor')
 })
 
 const LeasingPayment = mongoose.model('LeasingPayment', leasingPaymentSchema)

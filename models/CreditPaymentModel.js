@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const DateGenerator = require('./../utils/DateGenerator')
 
 const creditPaymentSchema = new mongoose.Schema({
     vehiclePayedFor: {
@@ -25,6 +26,9 @@ const creditPaymentSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please provide the monthly credit payment.']
     },
+    creditEndsOn: {
+        type: Date
+    },
     interestRate: {
         type: Number,
         required: [true, 'Please provide the interest rate.']
@@ -36,6 +40,15 @@ const creditPaymentSchema = new mongoose.Schema({
     closingRate: {
         type: Number
     }
+})
+
+creditPaymentSchema.pre('save', function (next) {
+    this.creditEndsOn = new DateGenerator().monthsFromNow(this.creditLastsFor)
+    next()
+})
+
+creditPaymentSchema.pre(/^find/, function () {
+    this.populate('vehiclePayedFor')
 })
 
 const CreditPayment = mongoose.model('CreditPayment', creditPaymentSchema)

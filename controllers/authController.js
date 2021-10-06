@@ -4,8 +4,10 @@ const AppError = require('./../utils/appError')
 const createSendToken = require('./../utils/signToken')
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
-const Email = require('./../utils/nodemailer')
 const crypto = require('crypto')
+const UserEmailNotifications = require('./../utils/Emails/UserRelatedNotifications')
+const CommonEmailNotifications = require('../utils/Emails/CommonRelatedNotifications')
+const AdminEmailNotifications = require('../utils/Emails/AdminRelatedNotifications')
 
 exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
@@ -30,7 +32,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url = 'https://secarmanagement.vercel.app/'
 
     try {
-        await new Email(req.user, newUser).customerCreated(req.body.password, url)
+        await new UserEmailNotifications().customerCreated(newUser, req.body.password, url)
 
         newUser.password = undefined
         newUser.__v = undefined
@@ -127,14 +129,14 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     const resetToken = user.createPasswordResetToken()
-    // const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
 
-    const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
+    // const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
 
     await user.save({ validateBeforeSave: false })
 
     try {
-        await new Email(undefined, undefined, user).sendPasswordReset(resetURL);
+        await new CommonEmailNotifications().sendPasswordResetToken(user, resetURL)
 
         res.status(200).json({
             message: 'success'
@@ -166,12 +168,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.passwordResetToken = undefined;
     user.passwordResetTokenExpiresIn = undefined;
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     try {
-        if (user.role !== 'admin') {
-            await new Email(user, user).userResetedPassword()
-        }
+        await new AdminEmailNotifications().userResetedPassword(user)
     } catch (err) {
         if (err) {
             console.log(err)

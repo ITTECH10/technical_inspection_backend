@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "app:dev": "nodemon server.js"
+    "app:dev": "nodemon server.js",
+    "app:debug": "set PORT=6000&&ndb server.js"
   },
   "keywords": [],
   "author": "",

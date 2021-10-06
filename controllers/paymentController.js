@@ -5,7 +5,7 @@ const CreditPayment = require('./../models/CreditPaymentModel')
 const LeasingPayment = require('./../models/LeasingPaymentModel')
 const Vehicle = require('./../models/VehicleModel')
 const User = require('./../models/UserModel')
-const Email = require('./../utils/nodemailer')
+const UserEmailNotifications = require('../utils/Emails/UserRelatedNotifications')
 
 exports.createCashPayment = catchAsync(async (req, res, next) => {
     const newCashPayment = await CashPayment.create({
@@ -16,7 +16,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     })
 
     const vehicle = await Vehicle.findById(req.params.carId)
-    const customer = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner._id)
 
     if (vehicle._id.toString() !== req.params.carId.toString()) {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
@@ -27,7 +27,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'cash', 'added')
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -57,7 +57,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + newCreditPayment.creditLastsFor))
 
     const vehicle = await Vehicle.findById(req.params.carId)
-    const customer = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner._id)
 
     vehicle.vehiclePaymentType = newCreditPayment._id
     vehicle.contractExpiresOn = newCreditPayment.creditLastsFor
@@ -67,7 +67,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'credit', 'added')
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -110,7 +110,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'leasing', 'added')
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -157,9 +157,9 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(cashPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
-    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+    const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
-    const customer = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner._id)
 
     if (vehicle._id.toString() === cashPayment.vehiclePayedFor.toString()) {
         cashPayment.vehiclePayedFor = req.body.vehiclePayedFor || cashPayment.vehiclePayedFor
@@ -172,7 +172,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'cash', 'updated', formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -190,27 +190,27 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(creditPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
-    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+    const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
-    const customer = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner._id)
 
-    if (vehicle._id.toString() === creditPayment.vehiclePayedFor.toString()) {
-        creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
-        creditPayment.creditInstitute = req.body.creditInstitute || creditPayment.creditInstitute
-        creditPayment.contractNumber = req.body.contractNumber || creditPayment.contractNumber
-        creditPayment.boughtFrom = req.body.boughtFrom || creditPayment.boughtFrom
-        creditPayment.creditStartDate = req.body.creditStartDate || creditPayment.creditStartDate
-        creditPayment.monthlyCreditPayment = req.body.monthlyCreditPayment || creditPayment.monthlyCreditPayment
-        creditPayment.interestRate = req.body.interestRate || creditPayment.interestRate
-        creditPayment.creditLastsFor = req.body.creditLastsFor || creditPayment.creditLastsFor
-        creditPayment.closingRate = req.body.closingRate || creditPayment.closingRate
-        await creditPayment.save()
-    } else {
-        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
-    }
+    // if (vehicle._id.toString() === creditPayment.vehiclePayedFor.toString()) {
+    creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
+    creditPayment.creditInstitute = req.body.creditInstitute || creditPayment.creditInstitute
+    creditPayment.contractNumber = req.body.contractNumber || creditPayment.contractNumber
+    creditPayment.boughtFrom = req.body.boughtFrom || creditPayment.boughtFrom
+    creditPayment.creditStartDate = req.body.creditStartDate || creditPayment.creditStartDate
+    creditPayment.monthlyCreditPayment = req.body.monthlyCreditPayment || creditPayment.monthlyCreditPayment
+    creditPayment.interestRate = req.body.interestRate || creditPayment.interestRate
+    creditPayment.creditLastsFor = req.body.creditLastsFor || creditPayment.creditLastsFor
+    creditPayment.closingRate = req.body.closingRate || creditPayment.closingRate
+    await creditPayment.save()
+    // } else {
+    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    // }
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'credit', 'updated', formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -228,30 +228,30 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(leasingPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
-    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+    const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
-    const customer = await User.findById(vehicle.vehicleOwner)
+    const customer = await User.findById(vehicle.vehicleOwner._id)
 
-    if (vehicle._id.toString() === leasingPayment.vehiclePayedFor.toString()) {
-        leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
-        leasingPayment.leasingGiver = req.body.leasingGiver || leasingPayment.leasingGiver
-        leasingPayment.contractNumber = req.body.contractNumber || leasingPayment.contractNumber
-        leasingPayment.boughtFrom = req.body.boughtFrom || leasingPayment.boughtFrom
-        leasingPayment.maintenancePackage = req.body.maintenancePackage || leasingPayment.maintenancePackage
-        leasingPayment.leasingStartDate = req.body.leasingStartDate || leasingPayment.leasingStartDate
-        leasingPayment.monthlyLeasingPayment = req.body.monthlyLeasingPayment || leasingPayment.monthlyLeasingPayment
-        leasingPayment.leasingLastsFor = req.body.leasingLastsFor || leasingPayment.leasingLastsFor
-        leasingPayment.remainingPayment = req.body.remainingPayment || leasingPayment.remainingPayment
-        leasingPayment.allowedYearlyKilometers = req.body.allowedYearlyKilometers || leasingPayment.allowedYearlyKilometers
-        leasingPayment.costsForMoreKilometers = req.body.costsForMoreKilometers || leasingPayment.costsForMoreKilometers
-        leasingPayment.costsForLessKilometers = req.body.costsForLessKilometers || leasingPayment.costsForLessKilometers
-        await leasingPayment.save()
-    } else {
-        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
-    }
+    // if (vehicle._id.toString() === leasingPayment.vehiclePayedFor.toString()) {
+    leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
+    leasingPayment.leasingGiver = req.body.leasingGiver || leasingPayment.leasingGiver
+    leasingPayment.contractNumber = req.body.contractNumber || leasingPayment.contractNumber
+    leasingPayment.boughtFrom = req.body.boughtFrom || leasingPayment.boughtFrom
+    leasingPayment.maintenancePackage = req.body.maintenancePackage || leasingPayment.maintenancePackage
+    leasingPayment.leasingStartDate = req.body.leasingStartDate || leasingPayment.leasingStartDate
+    leasingPayment.monthlyLeasingPayment = req.body.monthlyLeasingPayment || leasingPayment.monthlyLeasingPayment
+    leasingPayment.leasingLastsFor = req.body.leasingLastsFor || leasingPayment.leasingLastsFor
+    leasingPayment.remainingPayment = req.body.remainingPayment || leasingPayment.remainingPayment
+    leasingPayment.allowedYearlyKilometers = req.body.allowedYearlyKilometers || leasingPayment.allowedYearlyKilometers
+    leasingPayment.costsForMoreKilometers = req.body.costsForMoreKilometers || leasingPayment.costsForMoreKilometers
+    leasingPayment.costsForLessKilometers = req.body.costsForLessKilometers || leasingPayment.costsForLessKilometers
+    await leasingPayment.save()
+    // } else {
+    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    // }
 
     try {
-        await new Email(req.user, customer).paymentOperations(vehicle, 'leasing', 'updated', formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)

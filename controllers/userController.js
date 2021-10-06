@@ -3,7 +3,10 @@ const AppError = require('./../utils/appError')
 const User = require('./../models/UserModel')
 const validator = require('validator')
 const Vehicle = require('../models/VehicleModel')
-const Email = require('./../utils/nodemailer')
+const File = require('../models/FileModel')
+const Insurance = require('../models/InsuranceHouseModel')
+const UserEmailNotifications = require('./../utils/Emails/UserRelatedNotifications')
+const CommonEmailNotifications = require('../utils/Emails/CommonRelatedNotifications')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find().select('-__v')
@@ -44,7 +47,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.params.id)
 
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(user[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
-    const formatedChangedValues = JSON.stringify(changedValues).replace("{", "").replace("}", "")
+    const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
     if (!user) {
         return next(new AppError('Editing user went wrong', 404))
@@ -80,7 +83,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     })
 
     try {
-        await new Email(req.user, user).userUpdatedInformation(formatedChangedValues)
+        await new CommonEmailNotifications(req.user.role).customerInformationsUpdated(user, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -99,7 +102,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     await Vehicle.deleteMany({ vehicleOwner: req.params.id })
 
     try {
-        await new Email(req.user, customer).deleteUser()
+        await new UserEmailNotifications().customerDeleted(customer)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -110,3 +113,4 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
         message: 'success'
     })
 })
+

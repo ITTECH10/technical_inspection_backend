@@ -10,4 +10,8 @@ module.exports = class DateGenerator {
     expiresInGivenDays(days) {
         return new Date(...this.fields) > new Date() && new Date(...this.fields) < new Date(new Date().setDate(new Date().getDate() + +days))
     }
+
+    monthsFromNow(months) {
+        return new Date(new Date().setMonth(new Date().getMonth() + +months))
+    }
 }
