@@ -14,21 +14,6 @@ const AdminEmailNotifications = require('./../utils/Emails/AdminRelatedNotificat
 const UserEmailNotifications = require('./../utils/Emails/UserRelatedNotifications')
 const CommonEmailNotifications = require('./../utils/Emails/CommonRelatedNotifications')
 
-// GET "CSV-FRIENDLY" VEHICLES
-exports.csvReadyVehicles = catchAsync(async (req, res, next) => {
-    const vehicles = await Vehicle.find({}, {
-        _id: 0,
-        vehicleOwner: 1,
-        mark: 1,
-        model: 1
-    })
-
-    res.status(200).json({
-        message: 'success',
-        vehicles
-    })
-})
-
 // MIDLEWARE FOR IMAGES
 exports.checkForFiles = catchAsync(async (req, res, next) => {
     // if(!req.files) next()
@@ -380,11 +365,11 @@ exports.unmarkVehicleForSelling = catchAsync(async (req, res, next) => {
 
     try {
         pickedVehicle.markForSelling = undefined
-        pickedVehicle.adminNotifiedAboutCarSelling = undefined
-        await pickedVehicle.save({ validateBeforeSave: false })
 
         if (pickedVehicle.adminNotifiedAboutCarSelling) {
             await new AdminEmailNotifications().abortVehicleSellingToAdmin(pickedVehicle)
+            pickedVehicle.adminNotifiedAboutCarSelling = undefined
+            await pickedVehicle.save({ validateBeforeSave: false })
         }
 
     } catch (err) {
