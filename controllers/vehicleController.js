@@ -93,7 +93,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
 })
 
 exports.getAllVehicles = catchAsync(async (req, res, next) => {
-    const vehicles = await Vehicle.find({ carIsSold: { $ne: true } })
+    const vehicles = await Vehicle.find({ carIsSold: { $ne: true } }).sort({ 'TUVExpiresInTwoMonths': - 1 })
 
     if (!vehicles) {
         return next(new AppError('There are no vehicles found', 404))
