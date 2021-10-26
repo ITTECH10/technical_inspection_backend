@@ -17,6 +17,8 @@ const sendMailOnTuvExpiredJob = new SendMailOnTuvExpiredJob()
 
 function MailingScheduler() {
     // 1) TUV NOTIFIERS
+    // job.schedule('*/5 * * * *', sendMailOnTuvExpiredJob.tuvExpiringInOneMonth.bind(sendMailOnTuvExpiredJob));
+    // job.schedule('*/5 * * * *', sendMailOnTuvExpiredJob.tuvExpiringInTwoMonths.bind(sendMailOnTuvExpiredJob));
     // job.schedule('*/15 * * * * *', sendMailOnTuvExpiredJob.tuvExpiringInOneMonth.bind(sendMailOnTuvExpiredJob));
     // job.schedule('*/15 * * * * *', sendMailOnTuvExpiredJob.tuvExpiringInTwoMonths.bind(sendMailOnTuvExpiredJob));
 
@@ -33,7 +35,7 @@ function MailingScheduler() {
     // job.schedule('*/15 * * * * *', sendMailOnFinansesExpiringJob.finansesExpiresInSixMonths.bind(sendMailOnFinansesExpiringJob));
 
     // 5) DELETE NOTIFIERS
-    // job.schedule('*/20 * * * * *', emailHashNotifiersJob.deleteEmailHashNotifier.bind(emailHashNotifiersJob));
+    // job.schedule('*/4 * * * *', emailHashNotifiersJob.deleteEmailHashNotifier.bind(emailHashNotifiersJob));
 }
 
 module.exports = MailingScheduler
