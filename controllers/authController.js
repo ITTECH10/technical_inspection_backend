@@ -32,7 +32,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url = 'https://secarmanagement.vercel.app/'
 
     try {
-        await new UserEmailNotifications().customerCreated(newUser, req.body.password, url)
+        await new UserEmailNotifications().customerCreated(newUser, req.body.password)
 
         newUser.password = undefined
         newUser.__v = undefined

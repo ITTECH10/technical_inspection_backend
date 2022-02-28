@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer')
+const fs = require('fs')
 
 class EmailNotifications {
     newTransport() {
@@ -13,12 +14,19 @@ class EmailNotifications {
         });
     }
 
-    async loadTemplateAndSendEmail(template, recipient, subject, vehicle) {
-        const formatedTemplate = template.replaceAll('{{recipient}}', `${recipient.firstName} ${recipient.lastName}`)
-            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+    loadTemplate(folder, fileName) {
+        const template = fs.readFileSync(`${__dirname}../../../templates/${folder}/${fileName}.html`, 'utf8', function (err, data) {
+            if (err) {
+                console.log(err)
+                return
+            }
 
-        recipient ? await this.sendToCustomer(recipient, subject, formatedTemplate)
-            : await this.sendToAdmin(subject, formatedTemplate)
+            if (data) {
+                return data
+            }
+        })
+
+        return template
     }
 
     async sendToCustomer(customer, subject, text) {

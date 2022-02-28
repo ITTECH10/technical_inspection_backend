@@ -1,5 +1,4 @@
 const EmailNotifications = require('./EmailNotifications')
-const fs = require('fs')
 
 class UserEmailNotifications extends EmailNotifications {
     constructor() {
@@ -8,38 +7,31 @@ class UserEmailNotifications extends EmailNotifications {
 
     async vehicleDeleted(customer, vehicle) {
         const subject = "Fahrzeug gelöscht"
-        const template = fs.readFileSync(`${__dirname}../../../templates/VEHICLE_RELATED/vehicleDeleted.html`, 'utf8', function (err, data) {
-            if (err) {
-                console.log(err)
-                return
-            }
+        const template = super.loadTemplate(VEHICLE_RELATED, vehicleDeleted)
 
-            if (data) {
-                return data
-            }
-        })
+        const formatedTemplate = template.replaceAll('{{recipient}}', `${customer.firstName} ${customer.lastName}`)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
 
-        await super.loadTemplateAndSendEmail(template, customer, subject, vehicle)
+        await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-    // async vehicleDeleted(car, customer) {
-    //     const subject = "Fahrzeug gelöscht"
-    //     const body = `Admin hat ein Fahrzeug gelöscht
-    //     Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
-    //     Link: https://secarmanagement.vercel.app/cars/${car._id}
-    //     `
+    async customerCreated(customer, password) {
+        const subject = "Profil Hinzugefügt 🎉"
+        const template = super.loadTemplate('CUSTOMER_RELATED', 'customerCreated')
 
+        const formatedTemplate = template.replaceAll('{{recipientEmail}}', customer.email)
+            .replaceAll('{{recipientPassword}}', password)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+    // async customerCreated(customer, password, url) {
+    //     const subject = "Kunde hinzugefügt"
+    //     const body = `Admin hat ihres Profil erstellt
+    //     Informationen: E-mail: ${customer.email} Password: ${password}
+    //     Bitte besuchen Sie diese URL, um zu beginnen ${url}
+    //     `
     //     await super.sendToCustomer(customer, subject, body)
     // }
-
-    async customerCreated(customer, password, url) {
-        const subject = "Kunde hinzugefügt"
-        const body = `Admin hat ihres Profil erstellt
-        Informationen: E-mail: ${customer.email} Password: ${password}
-        Bitte besuchen Sie diese URL, um zu beginnen ${url}
-        `
-        await super.sendToCustomer(customer, subject, body)
-    }
 
     async customerDeleted(customer) {
         const subject = "Kunde gelöscht"
