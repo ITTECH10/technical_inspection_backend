@@ -24,14 +24,17 @@ class UserEmailNotifications extends EmailNotifications {
 
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
-    // async customerCreated(customer, password, url) {
-    //     const subject = "Kunde hinzugefügt"
-    //     const body = `Admin hat ihres Profil erstellt
-    //     Informationen: E-mail: ${customer.email} Password: ${password}
-    //     Bitte besuchen Sie diese URL, um zu beginnen ${url}
-    //     `
-    //     await super.sendToCustomer(customer, subject, body)
-    // }
+
+    async ntiServiceExpiresInNextMonth(customer, vehicle) {
+        const subject = "SE Carmanagement - Vertrauen ist gut. Kontrolle auch!"
+        const template = super.loadTemplate('CUSTOMER_RELATED', 'oneMonthBeforeServiceExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
 
     async customerDeleted(customer) {
         const subject = "Kunde gelöscht"

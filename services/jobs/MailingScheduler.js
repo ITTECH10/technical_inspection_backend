@@ -5,12 +5,14 @@ const SendMailOnTuvExpiredJob = require('./Dates/SendMailOnTuvExpiredJob')
 const SendMailOnAuExpiredJob = require('./Dates/SendMailOnAuExpiredJob')
 const SendMailOnLeasingExpiredJob = require('./Dates/SendEmailOnLeasingExpiredJob')
 const SendMailOnFinansesExpiringJob = require('./Dates/SendMailOnFinansesExpiringJob')
+const SendMailOnNtiServiceExpiration = require('./Dates/SendMailOnNtiServiceExpiration')
 
 // DELETING HASHED EMAIL NOTIFIERS
 const emailHashNotifiersJob = new EmailHashNotifiersJob()
 
 // EMAIL NOTIFIERS SENDERS
-const sendMailOnTuvExpiredJob = new SendMailOnTuvExpiredJob()
+// const sendMailOnTuvExpiredJob = new SendMailOnTuvExpiredJob()
+const sendMailOnNtiServiceExpiringInNextMonth = new SendMailOnNtiServiceExpiration()
 // const sendMailOnAuExpiredJob = new SendMailOnAuExpiredJob()
 // const sendMailOnLeasingExpiredJob = new SendMailOnLeasingExpiredJob()
 // const sendMailOnFinansesExpiringJob = new SendMailOnFinansesExpiringJob()
@@ -21,6 +23,7 @@ function MailingScheduler() {
     // job.schedule('*/5 * * * *', sendMailOnTuvExpiredJob.tuvExpiringInTwoMonths.bind(sendMailOnTuvExpiredJob));
     // job.schedule('*/15 * * * * *', sendMailOnTuvExpiredJob.tuvExpiringInOneMonth.bind(sendMailOnTuvExpiredJob));
     // job.schedule('*/15 * * * * *', sendMailOnTuvExpiredJob.tuvExpiringInTwoMonths.bind(sendMailOnTuvExpiredJob));
+    // job.schedule('*/15 * * * * *', sendMailOnNtiServiceExpiringInNextMonth.ntiServiceExpiresInOneMonth.bind(sendMailOnNtiServiceExpiringInNextMonth));
 
     // 2) AU NOTIFIERS
     // job.schedule('*/15 * * * * *', sendMailOnAuExpiredJob.auExpiringInOneMonth.bind(sendMailOnAuExpiredJob));

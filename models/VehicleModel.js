@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 
 const vehicleSchema = new mongoose.Schema({
     vehicleOwner: {
@@ -138,12 +139,24 @@ const vehicleSchema = new mongoose.Schema({
     },
     adminNotifiedAboutCarSelling: {
         type: Boolean
+    },
+    ntiServiceExpiresInOneMonthEmailNotifier: {
+        type: String
     }
 })
 
 vehicleSchema.pre(/^find/, function () {
     this.populate('vehicleOwner')
 })
+
+// NTI-SERVICE EXPIRES IN ONE MONTH EMAIL HASH GENERATOR
+vehicleSchema.methods.createNtiServiceExpiresInOneMonthEmailNotifier = async function (vehicleOwner) {
+    this.ntiServiceExpiresInOneMonthEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+}
+
+// vehicleSchema.methods.compareNtiServiceExpiresInOneMonthEmailNotifier = async function (candidateServiceEmailExpiredNotifier, vehicleServiceEmailExpiredNotifier) {
+//     return await bcrypt.compare(`${candidateServiceEmailExpiredNotifier}`, vehicleServiceEmailExpiredNotifier)
+// }
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema)
 

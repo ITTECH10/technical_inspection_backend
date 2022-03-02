@@ -12,7 +12,8 @@ class EmailHashNotifiersJob {
                 { TuvExpiredEmailNotifier: { $exists: true } },
                 { AuExpiredEmailNotifier: { $exists: true } },
                 { leasingExpiredEmailNotifier: { $exists: true } },
-                { finansesExpiredEmailNotifier: { $exists: true } }
+                { finansesExpiredEmailNotifier: { $exists: true } },
+                { ntiServiceExpiresInOneMonthEmailNotifier: { $exists: true } }
             ]
         })
 
@@ -22,6 +23,7 @@ class EmailHashNotifiersJob {
                 user.AuExpiredEmailNotifier = undefined
                 user.leasingExpiredEmailNotifier = undefined
                 user.finansesExpiredEmailNotifier = undefined
+                user.ntiServiceExpiresInOneMonthEmailNotifier = undefined
 
                 await user.save({ validateBeforeSave: false })
             })
