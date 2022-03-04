@@ -2,7 +2,7 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const BanksLeasing = require('./../models/BanksLeasingModel')
 
-exports.createBanksLeasing = catchAsync(async(req, res, next) => {
+exports.createBanksLeasing = catchAsync(async (req, res, next) => {
     const newBanksLeasing = await BanksLeasing.create({
         // banksLeasingOwner: req.params.bankLeasingId,
         name: req.body.name,
@@ -19,11 +19,11 @@ exports.createBanksLeasing = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.getAllBanks = catchAsync(async(req, res, next) => {
+exports.getAllBanks = catchAsync(async (req, res, next) => {
     const banks = await BanksLeasing.find()
 
-    if(!banks) {
-        return next(new AppError('There are no banks found.', 404))
+    if (!banks) {
+        return next(new AppError('Es wurden keine Banken gefunden.', 404))
     }
 
     res.status(200).json({
@@ -32,11 +32,11 @@ exports.getAllBanks = catchAsync(async(req, res, next) => {
     })
 })
 
-exports.getUsersBank = catchAsync(async(req, res, next) => {
+exports.getUsersBank = catchAsync(async (req, res, next) => {
     const bank = await BanksLeasing.findById(req.params.bankId)
 
-    if(!bank) {
-        return next(new AppError('There are no banks found.', 404))
+    if (!bank) {
+        return next(new AppError('Es wurden keine Banken gefunden.', 404))
     }
 
     res.status(200).json({

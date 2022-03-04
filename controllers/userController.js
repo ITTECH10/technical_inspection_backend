@@ -21,7 +21,7 @@ exports.getOneUser = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ _id: req.params.id })
 
     if (!user) {
-        return next(new AppError('User could not be found', 404))
+        return next(new AppError('Benutzer konnte nicht gefunden werden.', 404))
     }
 
     res.status(200).json({
@@ -34,7 +34,7 @@ exports.getMyCredentials = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ _id: req.user._id })
 
     if (!user) {
-        return next(new AppError('There was a problem loading your account data.', 404))
+        return next(new AppError('Beim Laden Ihrer Kontodaten ist ein Problem aufgetreten.', 404))
     }
 
     res.status(200).json({
@@ -50,16 +50,16 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
     if (!user) {
-        return next(new AppError('Editing user went wrong', 404))
+        return next(new AppError('Benutzer nicht gefunden.', 404))
     }
 
     if (req.body.role) {
-        return next(new AppError('You do not have permission to perform this action.', 403))
+        return next(new AppError('Sie haben nicht die Erlaubnis, diese Aktion durchzuführen.', 403))
     }
 
     if (req.body.email) {
         if (!validator.isEmail(req.body.email)) {
-            return next(new AppError('Please use a correct email format.', 400))
+            return next(new AppError('Bitte verwenden Sie ein korrektes E-Mail-Format.', 400))
         }
     }
 

@@ -1,14 +1,15 @@
 const LeasingPayment = require('../../../models/LeasingPaymentModel')
+const Vehicle = require('../../../models/VehicleModel')
 const User = require('../../../models/UserModel')
-const EmailJob = require('../EmailJob')
+const UserRelatedNotifications = require('../../../utils/Emails/UserRelatedNotifications')
 const DateGenerator = require('../../../utils/DateGenerator')
 
 const threeMonthsFromNow = new DateGenerator().monthsFromNow(3).setHours(23, 59, 59, 999)
 const sixMonthsFromNow = new DateGenerator().monthsFromNow(6).setHours(23, 59, 59, 999)
-const currentDate = new Date().toISOString()
+const currentDate = new Date().toLocaleString('de-DE')
 
 // // Send email to a customer if leasing expires
-class SendMailOnLeasingExpiredJob extends EmailJob {
+class SendMailOnLeasingExpiredJob extends UserRelatedNotifications {
     constructor() {
         super()
         this.leasingExpiringInThreeMonthsVehicles = []
@@ -16,39 +17,30 @@ class SendMailOnLeasingExpiredJob extends EmailJob {
     }
 
     async leasingExpiresInThreeMonths() {
-        this.leasingExpiringInThreeMonthsVehicles = await LeasingPayment.find({ leasingEndsOn: { $gte: currentDate, $lte: threeMonthsFromNow } })
+        this.leasingExpiringInThreeMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: currentDate, $lte: threeMonthsFromNow }, vehiclePaymentTypeVariant: 'leasing' })
         if (this.leasingExpiringInThreeMonthsVehicles.length === 0) return
 
         this.leasingExpiringInThreeMonthsVehicles.map(async foundVehicle => {
-            if (!foundVehicle.vehiclePayedFor || !foundVehicle.vehiclePayedFor.vehicleOwner) return
-
             try {
-                const users = await User.find({ _id: foundVehicle.vehiclePayedFor.vehicleOwner._id })
+                const users = await User.find({ _id: foundVehicle.vehicleOwner })
 
                 users.forEach(async (user) => {
-                    if (user.leasingExpiredEmailNotifier && !await user.compareLeasingEmailExpiredNotifier(user._id, user.leasingExpiredEmailNotifier)) {
-                        throw new Error('Leasing email hash comparasion did not match!')
-                    }
-
-                    if (!user.leasingExpiredEmailNotifier) {
+                    if (!foundVehicle.leasingExpiresInUpcomingThreeMonthsNotifier) {
                         try {
-                            const body = `Leasing für Ihr Fahrzeug ${foundVehicle.vehiclePayedFor.mark} ${foundVehicle.vehiclePayedFor.model} läuft in drei monaten ab.`
-                            const emailTo = foundVehicle.vehiclePayedFor.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "Leasing läuft ab", body)
+                                await super.leasingExpiresInThreeMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "Leasing läuft ab", body)
+                                await super.leasingExpiresInThreeMonths(user, foundVehicle)
                             }
 
-                            await user.createLeasingExpiredEmailNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createLeasingExpiresInThreeMonthsEmailNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.leasingExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.leasingExpiresInUpcomingThreeMonthsNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })
@@ -59,39 +51,30 @@ class SendMailOnLeasingExpiredJob extends EmailJob {
     }
 
     async leasingExpiresInSixMonths() {
-        this.leasingExpiringInSixMonthsVehicles = await LeasingPayment.find({ leasingEndsOn: { $gte: threeMonthsFromNow, $lte: sixMonthsFromNow } })
+        this.leasingExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: sixMonthsFromNow }, vehiclePaymentTypeVariant: 'leasing' })
         if (this.leasingExpiringInSixMonthsVehicles.length === 0) return
 
         this.leasingExpiringInSixMonthsVehicles.map(async foundVehicle => {
-            if (!foundVehicle.vehiclePayedFor || !foundVehicle.vehiclePayedFor.vehicleOwner) return
-
             try {
-                const users = await User.find({ _id: foundVehicle.vehiclePayedFor.vehicleOwner._id })
+                const users = await User.find({ _id: foundVehicle.vehicleOwner })
 
                 users.forEach(async (user) => {
-                    if (user.leasingExpiredEmailNotifier && !await user.compareLeasingEmailExpiredNotifier(user._id, user.leasingExpiredEmailNotifier)) {
-                        throw new Error('Leasing email hash comparasion did not match!')
-                    }
-
-                    if (!user.leasingExpiredEmailNotifier) {
+                    if (!foundVehicle.leasingExpiresInUpcomingSixMonthsNotifier) {
                         try {
-                            const body = `Leasing für Ihr Fahrzeug ${foundVehicle.vehiclePayedFor.mark} ${foundVehicle.vehiclePayedFor.model} läuft in sechs monaten ab.`
-                            const emailTo = foundVehicle.vehiclePayedFor.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "Leasing läuft ab", body)
+                                await super.leasingExpiresInSixMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "Leasing läuft ab", body)
+                                await super.leasingExpiresInSixMonths(user, foundVehicle)
                             }
 
-                            await user.createLeasingExpiredEmailNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createLeasingExpiresInSixMonthsEmailNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.leasingExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.leasingExpiresInUpcomingSixMonthsNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })

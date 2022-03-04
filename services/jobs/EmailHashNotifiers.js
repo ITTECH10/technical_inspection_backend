@@ -1,28 +1,34 @@
 const User = require('../../models/UserModel')
 
 class EmailHashNotifiersJob {
-    constructor() {
-
-    }
-
-    //ADD FINANSES HASH LATER //TODO
     async deleteEmailHashNotifier() {
         const users = await User.find({
             $or: [
-                { TuvExpiredEmailNotifier: { $exists: true } },
-                { AuExpiredEmailNotifier: { $exists: true } },
+                { TuvExpiresInNextMonthNotifier: { $exists: true } },
+                { TuvExpiresInNextTwoMonthsNotifier: { $exists: true } },
+                { AuExpiresInNextMonthNotifier: { $exists: true } },
+                { AuExpiresInNextTwoMonthsNotifier: { $exists: true } },
                 { leasingExpiredEmailNotifier: { $exists: true } },
-                { finansesExpiredEmailNotifier: { $exists: true } },
+                { creditExpiresInUpcomingThreeMonthsNotifier: { $exists: true } },
+                { creditExpiresInUpcomingSixMonthsNotifier: { $exists: true } },
+                { leasingExpiresInUpcomingThreeMonthsNotifier: { $exists: true } },
+                { leasingExpiresInUpcomingSixMonthsNotifier: { $exists: true } },
+                { creditExpiresInUpcomingSixMonthsNotifier: { $exists: true } },
                 { ntiServiceExpiresInOneMonthEmailNotifier: { $exists: true } }
             ]
         })
 
         if (users.length > 0) {
             users.forEach(async user => {
-                user.TuvExpiredEmailNotifier = undefined
-                user.AuExpiredEmailNotifier = undefined
+                user.TuvExpiresInNextMonthNotifier = undefined
+                user.TuvExpiresInNextTwoMonthsNotifier = undefined
+                user.AuExpiresInNextMonthNotifier = undefined
+                user.AuExpiresInNextTwoMonthsNotifier = undefined
                 user.leasingExpiredEmailNotifier = undefined
-                user.finansesExpiredEmailNotifier = undefined
+                user.creditExpiresInUpcomingThreeMonthsNotifier = undefined
+                user.creditExpiresInUpcomingSixMonthsNotifier = undefined
+                user.leasingExpiresInUpcomingThreeMonthsNotifier = undefined
+                user.leasingExpiresInUpcomingSixMonthsNotifier = undefined
                 user.ntiServiceExpiresInOneMonthEmailNotifier = undefined
 
                 await user.save({ validateBeforeSave: false })

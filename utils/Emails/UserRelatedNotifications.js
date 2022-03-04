@@ -27,7 +27,7 @@ class UserEmailNotifications extends EmailNotifications {
 
     async ntiServiceExpiresInNextMonth(customer, vehicle) {
         const subject = "SE Carmanagement - Vertrauen ist gut. Kontrolle auch!"
-        const template = super.loadTemplate('CUSTOMER_RELATED', 'oneMonthBeforeServiceExpiration')
+        const template = super.loadTemplate('VEHICLE_RELATED', 'oneMonthBeforeServiceExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
             .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
@@ -35,12 +35,91 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
+    async tuvExpiresInUpcomingMonth(customer, vehicle) {
+        const subject = "SE Carmanagement - TUV läuft nächsten Monat aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'oneMonthBeforeTuvExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async tuvExpiresInUpcomingTwoMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - TÜV läuft in zwei Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'twoMonthsBeforeTuvExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async auExpiresInUpcomingMonth(customer, vehicle) {
+        const subject = "SE Carmanagement - AÜ läuft nächsten Monat aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'oneMonthBeforeAuExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async auExpiresInUpcomingTwoMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - AÜ läuft in zwei Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'twoMonthsBeforeAuExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async creditExpiresInThreeMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - Finanzierung läuft in drei Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'threeMonthsBeforeCreditExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async creditExpiresInSixMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - Finanzierung läuft in sechts Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeCreditExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async leasingExpiresInThreeMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - Leasing läuft in drei Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'threeMonthsBeforeLeasingExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
+
+    async leasingExpiresInSixMonths(customer, vehicle) {
+        const subject = "SE Carmanagement - Leasing läuft in sechts Monate aus!"
+        const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeLeasingExpiration')
+
+        const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
+            .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+
+        await this.sendToCustomer(customer, subject, formatedTemplate)
+    }
 
     async customerDeleted(customer) {
-        const subject = "Kunde gelöscht"
-        const body = `Admin hat ihres Profil gelöschen.`
+        const subject = "SE Carmanagement - Kunde gelöscht"
+        const template = super.loadTemplate('CUSTOMER_RELATED', 'customerDeleted')
 
-        await super.sendToCustomer(customer, subject, body)
+        await super.sendToCustomer(customer, subject, template)
     }
 
     async paymentOperations(customer, operation, paymentType, car, changedValues) {
@@ -50,7 +129,6 @@ class UserEmailNotifications extends EmailNotifications {
         Link: https://secarmanagement.vercel.app/cars/${car._id}
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
-
         await super.sendToCustomer(customer, subject, body)
     }
 }

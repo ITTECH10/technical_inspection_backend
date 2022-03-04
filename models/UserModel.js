@@ -96,9 +96,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: undefined
     },
-    TuvExpiredEmailNotifier: {
-        type: String
-    },
     AuExpiredEmailNotifier: {
         type: String
     },
@@ -131,13 +128,13 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 // TUV EMAIL HASH GENERATOR
-userSchema.methods.createTuvEmailExpiredNotifier = async function (vehicleOwner) {
-    this.TuvExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
+// userSchema.methods.createTuvEmailExpiredNotifier = async function (vehicleOwner) {
+//     this.TuvExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+// };
 
-userSchema.methods.compareTuvEmailExpiredNotifier = async function (candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier) {
-    return await bcrypt.compare(candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier)
-}
+// userSchema.methods.compareTuvEmailExpiredNotifier = async function (candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier) {
+//     return await bcrypt.compare(candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier)
+// }
 
 // AU EMAIL HASH GENERATOR
 userSchema.methods.createAuEmailExpiredNotifier = async function (vehicleOwner) {

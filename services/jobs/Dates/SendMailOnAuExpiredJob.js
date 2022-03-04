@@ -1,14 +1,14 @@
 const Vehicle = require('./../../../models/VehicleModel')
 const User = require('./../../../models/UserModel')
-const EmailJob = require('../../jobs/EmailJob')
+const UserRelatedNotifications = require('../../../utils/Emails/UserRelatedNotifications')
 const DateGenerator = require('../../../utils/DateGenerator')
 
 // IMPORTANT TO BE GLOBAL SCOPE!
 const oneMonthFromNow = new DateGenerator().monthsFromNow(1).setHours(23, 59, 59, 999)
 const twoMonthsFromNow = new DateGenerator().monthsFromNow(2).setHours(23, 59, 59, 999)
-const currentDate = new Date().toISOString()
+const currentDate = new Date().toLocaleString('de-DE')
 
-class SendMailOnAuExpiredJob extends EmailJob {
+class SendMailOnAuExpiredJob extends UserRelatedNotifications {
     constructor() {
         super()
         this.AuExpiringInOneMonthsVehicles = []
@@ -24,29 +24,22 @@ class SendMailOnAuExpiredJob extends EmailJob {
                 const users = await User.find({ _id: foundVehicle.vehicleOwner._id })
 
                 users.forEach(async (user) => {
-                    if (user.AuExpiredEmailNotifier && !await user.compareAuEmailExpiredNotifier(`${user._id}`, user.AuExpiredEmailNotifier)) {
-                        throw new Error('AU email hash comparasion did not match!')
-                    }
-
-                    if (!user.AuExpiredEmailNotifier) {
+                    if (!foundVehicle.AuExpiresInNextMonthNotifier) {
                         try {
-                            const body = `AU für Ihr Fahrzeug ${foundVehicle.mark} ${foundVehicle.model} läuft in ein monat ab.`
-                            const emailTo = foundVehicle.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "AU abgelaufen", body)
+                                await super.auExpiresInUpcomingMonth({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "AU abgelaufen", body)
+                                await super.auExpiresInUpcomingMonth(user, foundVehicle)
                             }
 
-                            await user.createAuEmailExpiredNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createAuExpiresInNextMonthNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.AuExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.AuExpiresInNextMonthNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })
@@ -65,29 +58,22 @@ class SendMailOnAuExpiredJob extends EmailJob {
                 const users = await User.find({ _id: foundVehicle.vehicleOwner._id })
 
                 users.forEach(async (user) => {
-                    if (user.AuExpiredEmailNotifier && !await user.compareAuEmailExpiredNotifier(`${user._id}`, user.AuExpiredEmailNotifier)) {
-                        throw new Error('AU email hash comparasion did not match!')
-                    }
-
-                    if (!user.AuExpiredEmailNotifier) {
+                    if (!foundVehicle.AuExpiresInNextTwoMonthsNotifier) {
                         try {
-                            const body = `AU für Ihr Fahrzeug ${foundVehicle.mark} ${foundVehicle.model} läuft in zwei monaten ab.`
-                            const emailTo = foundVehicle.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "AU abgelaufen", body)
+                                await super.auExpiresInUpcomingTwoMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "AU abgelaufen", body)
+                                await super.auExpiresInUpcomingTwoMonths(user, foundVehicle)
                             }
 
-                            await user.createAuEmailExpiredNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createAuExpiresInNextTwoMonthsNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.AuExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.AuExpiresInNextTwoMonthsNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })

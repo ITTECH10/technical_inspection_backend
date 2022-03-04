@@ -142,7 +142,31 @@ const vehicleSchema = new mongoose.Schema({
     },
     ntiServiceExpiresInOneMonthEmailNotifier: {
         type: String
-    }
+    },
+    TuvExpiresInNextMonthNotifier: {
+        type: String
+    },
+    TuvExpiresInNextTwoMonthsNotifier: {
+        type: String
+    },
+    AuExpiresInNextMonthNotifier: {
+        type: String
+    },
+    AuExpiresInNextTwoMonthsNotifier: {
+        type: String
+    },
+    creditExpiresInUpcomingThreeMonthsNotifier: {
+        type: String
+    },
+    creditExpiresInUpcomingSixMonthsNotifier: {
+        type: String
+    },
+    leasingExpiresInUpcomingThreeMonthsNotifier: {
+        type: String
+    },
+    leasingExpiresInUpcomingSixMonthsNotifier: {
+        type: String
+    },
 })
 
 vehicleSchema.pre(/^find/, function () {
@@ -154,9 +178,41 @@ vehicleSchema.methods.createNtiServiceExpiresInOneMonthEmailNotifier = async fun
     this.ntiServiceExpiresInOneMonthEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
 }
 
-// vehicleSchema.methods.compareNtiServiceExpiresInOneMonthEmailNotifier = async function (candidateServiceEmailExpiredNotifier, vehicleServiceEmailExpiredNotifier) {
-//     return await bcrypt.compare(`${candidateServiceEmailExpiredNotifier}`, vehicleServiceEmailExpiredNotifier)
-// }
+// TUV EXPIRED HASH GENERATOR
+vehicleSchema.methods.createTuvExpiresInNextMonthNotifier = async function (vehicleOwner) {
+    this.TuvExpiresInNextMonthNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+vehicleSchema.methods.createTuvExpiresInNextTwoMonthsNotifier = async function (vehicleOwner) {
+    this.TuvExpiresInNextTwoMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+// AU EXPIRED HASH GENERATOR
+vehicleSchema.methods.createAuExpiresInNextMonthNotifier = async function (vehicleOwner) {
+    this.AuExpiresInNextMonthNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+vehicleSchema.methods.createAuExpiresInNextTwoMonthsNotifier = async function (vehicleOwner) {
+    this.AuExpiresInNextTwoMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+// CREDIT EXPIRED HASH GENERATOR
+vehicleSchema.methods.createFinansesExpiresInThreeMonthsEmailNotifier = async function (vehicleOwner) {
+    this.creditExpiresInUpcomingThreeMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+vehicleSchema.methods.createFinansesExpiresInSixMonthsEmailNotifier = async function (vehicleOwner) {
+    this.creditExpiresInUpcomingSixMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+// LEASING EXPIRED HASH GENERATOR
+vehicleSchema.methods.createLeasingExpiresInThreeMonthsEmailNotifier = async function (vehicleOwner) {
+    this.leasingExpiresInUpcomingThreeMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
+
+vehicleSchema.methods.createLeasingExpiresInSixMonthsEmailNotifier = async function (vehicleOwner) {
+    this.leasingExpiresInUpcomingSixMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+};
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema)
 

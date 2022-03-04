@@ -1,15 +1,16 @@
 const Vehicle = require('./../../../models/VehicleModel')
 const User = require('./../../../models/UserModel')
 const EmailJob = require('../../jobs/EmailJob')
+const UserRelatedNotifications = require('../../../utils/Emails/UserRelatedNotifications')
 const DateGenerator = require('../../../utils/DateGenerator')
 
 // IMPORTANT TO BE GLOBAL SCOPE!
 const oneMonthFromNow = new DateGenerator().monthsFromNow(1).setHours(23, 59, 59, 999)
 const twoMonthsFromNow = new DateGenerator().monthsFromNow(2).setHours(23, 59, 59, 999)
-const currentDate = new Date().toISOString()
+const currentDate = new Date().toLocaleString('de-DE')
 
 // Send email to a customer if TUV,AU,GENERAL INSPECTION EXPIRES
-class SendMailOnTuvExpiredJob extends EmailJob {
+class SendMailOnTuvExpiredJob extends UserRelatedNotifications {
     constructor() {
         super()
         this.TuvExpiringInOneMonthsVehicles = []
@@ -21,35 +22,27 @@ class SendMailOnTuvExpiredJob extends EmailJob {
         if (this.TuvExpiringInOneMonthsVehicles.length === 0) return
 
         this.TuvExpiringInOneMonthsVehicles.map(async foundVehicle => {
+
             try {
                 const users = await User.find({ _id: foundVehicle.vehicleOwner._id })
 
-                // TOKEN HASHING AND SENDING MAILS ONLY TO USERS THAT DID NOT RECEIVE IT YET
-                // VEHICLEOWNERID = 613b5f48baae5c1eb4118c57 + TUVDATE + CHASSIS NUMER = #
                 users.forEach(async (user) => {
-                    if (user.TuvExpiredEmailNotifier && !await user.compareTuvEmailExpiredNotifier(`${user._id}`, user.TuvExpiredEmailNotifier)) {
-                        throw new Error('Tuv email hash comparasion did not match!')
-                    }
-
-                    if (!user.TuvExpiredEmailNotifier) {
+                    if (!foundVehicle.TuvExpiresInNextMonthNotifier) {
                         try {
-                            const body = `TÜV für Ihr Fahrzeug ${foundVehicle.mark} ${foundVehicle.model} läuft in ein monat ab.`
-                            const emailTo = foundVehicle.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "TUV abgelaufen", body)
+                                await super.tuvExpiresInUpcomingMonth({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "TUV abgelaufen", body)
+                                await super.tuvExpiresInUpcomingMonth(user, foundVehicle)
                             }
 
-                            await user.createTuvEmailExpiredNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createTuvExpiresInNextMonthNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.TuvExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.TuvExpiresInNextMonthNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })
@@ -67,32 +60,23 @@ class SendMailOnTuvExpiredJob extends EmailJob {
             try {
                 const users = await User.find({ _id: foundVehicle.vehicleOwner._id })
 
-                // TOKEN HASHING AND SENDING MAILS ONLY TO USERS THAT DID NOT RECEIVE IT YET
-                // VEHICLEOWNERID = 613b5f48baae5c1eb4118c57 + TUVDATE + CHASSIS NUMER = #
                 users.forEach(async (user) => {
-                    if (user.TuvExpiredEmailNotifier && !await user.compareTuvEmailExpiredNotifier(`${user._id}`, user.TuvExpiredEmailNotifier)) {
-                        throw new Error('Tuv email hash comparasion did not match!')
-                    }
-
-                    if (!user.TuvExpiredEmailNotifier) {
+                    if (!foundVehicle.TuvExpiresInNextTwoMonthsNotifier) {
                         try {
-                            const body = `TÜV für Ihr Fahrzeug ${foundVehicle.mark} ${foundVehicle.model} läuft in zwei monaten ab.`
-                            const emailTo = foundVehicle.vehicleOwner
-
                             if (user.customerType === 'firmenkunde') {
-                                await super.sendToContactPerson(user.corespondencePartnerEmail, "TUV abgelaufen", body)
+                                await super.tuvExpiresInUpcomingTwoMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.sendToCustomer(emailTo, "TUV abgelaufen", body)
+                                await super.tuvExpiresInUpcomingTwoMonths(user, foundVehicle)
                             }
 
-                            await user.createTuvEmailExpiredNotifier(user._id)
-                            await user.save({ validateBeforeSave: false })
+                            await foundVehicle.createTuvExpiresInNextTwoMonthsNotifier(user._id)
+                            await foundVehicle.save({ validateBeforeSave: false })
                         } catch (err) {
                             console.log(err)
-                            user.TuvExpiredEmailNotifier = undefined
-                            await user.save({ validateBeforeSave: false })
+                            foundVehicle.TuvExpiresInNextTwoMonthsNotifier = undefined
+                            await foundVehicle.save({ validateBeforeSave: false })
                         }
                     }
                 })

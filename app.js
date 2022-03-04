@@ -17,6 +17,7 @@ const MailingScheduler = require('./services/jobs/MailingScheduler')
 
 const app = express()
 const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
+// const origin = 'http://localhost:3000'
 
 // SECURITY HEADERS
 app.use(helmet())
@@ -47,7 +48,7 @@ app.use('/api/v1/contracts', paymentRouter)
 // app.use('/api/v1/upload', fileRouter)
 
 app.all('*', (req, res, next) => {
-    next(new AppError(`The requested url ${req.originalUrl} could not be found.`, 404))
+    next(new AppError(`Die angeforderte URL ${req.originalUrl} konnte nicht gefunden werden!`, 404))
 })
 
 app.use(globalErrorHandler)

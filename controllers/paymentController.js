@@ -20,7 +20,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     const customer = await User.findById(vehicle.vehicleOwner._id)
 
     if (vehicle._id.toString() !== req.params.carId.toString()) {
-        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     }
 
     vehicle.vehiclePaymentType = newCashPayment._id
@@ -135,15 +135,15 @@ exports.getCorespondingPayment = catchAsync(async (req, res, next) => {
 
     // !!FINISH LATER
     // if (cashPayment && cashPayment._id.toString() !== req.params.paymentId.toString()) {
-    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
     // if (creditPayment._id.toString() !== req.params.paymentId.toString()) {
-    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
     // if (leasingPayment && leasingPayment._id.toString() !== req.params.paymentId.toString()) {
-    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
     res.status(200).json({
@@ -171,7 +171,11 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
         cashPayment.cashSum = req.body.cashSum || cashPayment.cashSum
         cashPayment.boughtFrom = req.body.boughtFrom || cashPayment.boughtFrom
         cashPayment.kilometersDrivenWhenPurchased = req.body.kilometersDrivenWhenPurchased || cashPayment.kilometersDrivenWhenPurchased
-        await cashPayment.save()
+
+        vehicle.vehiclePaymentTypeVariant = 'cash'
+
+        await cashPayment.save({ validateBeforeSave: false })
+        await vehicle.save({ validateBeforeSave: false })
     } else {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
     }
@@ -214,9 +218,15 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     creditPayment.kilometersDrivenWhenPurchased = req.body.kilometersDrivenWhenPurchased || creditPayment.kilometersDrivenWhenPurchased
     creditPayment.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 8))
 
-    await creditPayment.save()
+    vehicle.contractExpiresOn = req.body.creditLastsFor || vehicle.contractExpiresOn
+    vehicle.contractExpirationDate = req.body.creditLastsFor && new Date(new Date().setMonth(new Date().getMonth() + +req.body.creditLastsFor)) || vehicle.creditExpirationDate
+    vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 8))
+    vehicle.vehiclePaymentTypeVariant = 'credit'
+
+    await creditPayment.save({ validateBeforeSave: false })
+    await vehicle.save({ validateBeforeSave: false })
     // } else {
-    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
     try {
@@ -261,9 +271,16 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     leasingPayment.moreDetails = req.body.moreDetails || leasingPayment.moreDetails
     leasingPayment.kilometersDrivenWhenPurchased = req.body.kilometersDrivenWhenPurchased || leasingPayment.kilometersDrivenWhenPurchased
     leasingPayment.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 8))
-    await leasingPayment.save()
+
+    vehicle.contractExpiresOn = req.body.leasingLastsFor || vehicle.contractExpiresOn
+    vehicle.contractExpirationDate = req.body.leasingLastsFor && new Date(new Date().setMonth(new Date().getMonth() + +req.body.leasingLastsFor)) || vehicle.leasingExpirationDate
+    vehicle.contractExpiresInNextTwoMonths = expirationDate > new Date() && expirationDate < new Date(new Date().setMonth(new Date().getMonth() + 8))
+    vehicle.vehiclePaymentTypeVariant = 'leasing'
+
+    await leasingPayment.save({ validateBeforeSave: false })
+    await vehicle.save({ validateBeforeSave: false })
     // } else {
-    //     return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
     try {

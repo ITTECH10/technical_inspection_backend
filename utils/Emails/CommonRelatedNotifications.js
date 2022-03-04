@@ -39,7 +39,6 @@ class CommonEmailNotifications extends EmailNotifications {
         this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
     }
 
-
     async sendPasswordResetToken(customer, url) {
         const subject = 'Passwort zurücksetzen token'
         const body = `Um Ihr Passwort zurückzusetzen, klicken Sie bitte auf den untenstehenden Link ${url}

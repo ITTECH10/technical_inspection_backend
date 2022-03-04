@@ -29,7 +29,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         confirmPassword: req.body.confirmPassword
     })
 
-    const url = 'https://secarmanagement.vercel.app/'
+    // const url = 'https://secarmanagement.vercel.app/'
 
     try {
         await new UserEmailNotifications().customerCreated(newUser, req.body.password)
@@ -38,7 +38,8 @@ exports.signup = catchAsync(async (req, res, next) => {
         newUser.__v = undefined
     }
     catch (err) {
-        console.log(err)
+        // console.log(err)
+        return next(new AppError('Beim Senden der E-Mail ist etwas schief gelaufen!', 500))
     }
 
     res.status(201).json({
@@ -73,14 +74,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     if (!token) {
-        return next(new AppError('Invalid token', 401))
+        return next(new AppError('Ungültiges Token! Bitte loggen Sie sich erneut ein oder kontaktieren Sie den Kundensupport!', 401))
     }
 
     const decodedToken = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
     const currentUser = await User.findById(decodedToken.id)
 
     if (!currentUser) {
-        return next(new AppError('User belonging to this token does no longer exist.', 404))
+        return next(new AppError('Der Benutzer, der zu diesem Token gehört, existiert nicht mehr.', 404))
     }
 
     req.user = currentUser
@@ -89,13 +90,13 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
     if (req.params.userId.toString() !== req.user._id.toString()) {
-        return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
+        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     }
 
     const user = await User.findById(req.params.userId)
 
     if (!user) {
-        return next(new AppError('User not found', 404))
+        return next(new AppError('Benutzer nicht gefunden!', 404))
     }
 
     user.policiesAccepted = true
@@ -112,7 +113,7 @@ exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(
-                new AppError('You do not have permission to perform this action', 403)
+                new AppError('Sie haben nicht die Erlaubnis, diese Aktion durchzuführen!', 403)
             );
         }
 
@@ -124,7 +125,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email })
 
     if (!user) {
-        return next(new AppError('Customer associated with this email does not exist.', 404))
+        return next(new AppError('Der Kunde, der mit dieser E-Mail verbunden ist, existiert nicht.', 404))
     }
 
     const resetToken = user.createPasswordResetToken()
@@ -146,7 +147,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         user.passwordResetTokenExpiresIn = undefined;
         await user.save({ validateBeforeSave: false })
 
-        return next(new AppError('There was an error sending the email. Please try again later.', 500))
+        return next(new AppError('Es ist ein Fehler beim Senden der E-Mail aufgetreten. Bitte versuchen Sie es später noch einmal.', 500))
     }
 })
 
@@ -159,7 +160,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     });
 
     if (!user) {
-        return next(new AppError('Token is invalid or it is expired.', 400));
+        return next(new AppError('Das Reset-Token ist ungültig oder es ist abgelaufen.', 400));
     }
 
     user.password = req.body.password;
@@ -184,11 +185,11 @@ exports.changeGeneratedPassword = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.user._id).select('+password')
 
     if (!user.firstLogIn) {
-        return next(new AppError('You can only set a new password after first loging in.', 403))
+        return next(new AppError('Sie können erst nach der ersten Anmeldung ein neues Passwort festlegen.', 403))
     }
 
     if (!await user.comparePasswords(req.body.currentPassword, user.password)) {
-        return next(new AppError('Your current password is wrong!', 400))
+        return next(new AppError('Ihr aktuelles Passwort ist falsch!', 400))
     }
 
     user.password = req.body.password
