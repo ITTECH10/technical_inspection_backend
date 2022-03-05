@@ -12,7 +12,7 @@ const path = require('path')
 //     }
 // })
 
-// console.log(test)
+console.log(__dirname)
 
 class EmailNotifications {
     newTransport() {
