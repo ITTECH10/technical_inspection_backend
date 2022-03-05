@@ -16,8 +16,8 @@ const xss = require('xss-clean')
 const MailingScheduler = require('./services/jobs/MailingScheduler')
 
 const app = express()
-// const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
-const origin = 'http://localhost:3000'
+const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
+// const origin = 'http://localhost:3000'
 
 // SECURITY HEADERS
 app.use(helmet())
