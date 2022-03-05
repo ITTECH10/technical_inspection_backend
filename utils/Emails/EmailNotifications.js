@@ -2,18 +2,6 @@ const nodemailer = require('nodemailer')
 const fs = require('fs')
 const path = require('path')
 
-// const test = fs.readFileSync('/templates/CUSTOMER_RELATED/customerCreated.html', 'utf8', function (err, data) {
-//     if (err) {
-//         console.log(err)
-//     }
-
-//     if (data) {
-//         console.log(data)
-//     }
-// })
-
-console.log(path.join(__dirname, '../../../templates'))
-
 class EmailNotifications {
     newTransport() {
         return nodemailer.createTransport({
@@ -28,7 +16,7 @@ class EmailNotifications {
     }
 
     loadTemplate(folder, fileName) {
-        const template = fs.readFileSync(`/templates/${folder}/${fileName}.html`, 'utf8', function (err, data) {
+        const template = fs.readFileSync(path.join(__dirname, `../../templates/${folder}/${fileName}.html`), 'utf8', function (err, data) {
             if (err) {
                 console.log(err)
                 return
