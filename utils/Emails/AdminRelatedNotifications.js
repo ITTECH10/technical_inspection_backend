@@ -5,24 +5,24 @@ class AdminEmailNotifications extends EmailNotifications {
         super()
     }
 
-    async sellVehicleToAdmin(car) {
-        const subject = "Fahrzeugverkauf"
-        const body = `Hallo, ich möchte dieses Auto verkaufen bitte schauen Sie es sich an 
-        kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
-        fahrzeug: ${car.mark} ${car.model}
-        link: https://secarmanagement.vercel.app/cars/${car._id}`
+    async sellVehicleToAdmin(vehicle) {
+        const subject = 'Fahrzeugverkauf'
+        const template = super.loadTemplate('ADMIN_RELATED', 'sellVehicleToAdmin')
 
-        await super.sendToAdmin(subject, body)
+        const formatedTemplate = template.replaceAll('{{customer}}', `${vehicle.vehicleOwner.firstName} ${vehicle.vehicleOwner.lastName}`)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`).replaceAll('{{vehicleId}}', vehicle._id)
+
+        await super.sendToAdmin(subject, formatedTemplate)
     }
 
-    async abortVehicleSellingToAdmin(car) {
+    async abortVehicleSellingToAdmin(vehicle) {
         const subject = "Meinungsänderung"
-        const body = `Hallo, ich möchte NICHT dieses Auto verkaufen bitte entschuldige Sie mich
-        kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
-        fahrzeug: ${car.mark} ${car.model}
-        link: https://secarmanagement.vercel.app/cars/${car._id}`
+        const template = super.loadTemplate('ADMIN_RELATED', 'abortVehicleSellingToAdmin')
 
-        await super.sendToAdmin(subject, body)
+        const formatedTemplate = template.replaceAll('{{customer}}', `${vehicle.vehicleOwner.firstName} ${vehicle.vehicleOwner.lastName}`)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`).replaceAll('{{vehicleId}}', vehicle._id)
+
+        await super.sendToAdmin(subject, formatedTemplate)
     }
 
     async reportVehicleDamage(car, damageDescription) {
@@ -35,6 +35,14 @@ class AdminEmailNotifications extends EmailNotifications {
 
         await super.sendToAdmin(subject, body)
     }
+
+    // async reportVehicleDamage (vehicle, damageDescription) {
+    //     const subject = 'Fahrzeugschaden'
+    //     const template = super.loadTemplate('ADMIN_RELATED', 'reportVehicleDamage')
+
+
+    //     await super.sendToAdmin(subject, formatedTemplate)
+    // }
 
     async userResetedPassword(customer) {
         const subject = 'Passwort zurückgesetzt'

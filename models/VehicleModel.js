@@ -141,31 +141,40 @@ const vehicleSchema = new mongoose.Schema({
         type: Boolean
     },
     ntiServiceExpiresInOneMonthEmailNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     TuvExpiresInNextMonthNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     TuvExpiresInNextTwoMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     AuExpiresInNextMonthNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     AuExpiresInNextTwoMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     creditExpiresInUpcomingThreeMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     creditExpiresInUpcomingSixMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     leasingExpiresInUpcomingThreeMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
     leasingExpiresInUpcomingSixMonthsNotifier: {
-        type: String
+        type: String,
+        select: false
     },
 })
 

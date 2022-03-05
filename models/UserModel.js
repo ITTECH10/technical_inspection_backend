@@ -95,15 +95,6 @@ const userSchema = new mongoose.Schema({
     passwordResetTokenExpiresIn: {
         type: String,
         default: undefined
-    },
-    AuExpiredEmailNotifier: {
-        type: String
-    },
-    leasingExpiredEmailNotifier: {
-        type: String
-    },
-    finansesExpiredEmailNotifier: {
-        type: String
     }
 })
 
@@ -126,42 +117,6 @@ userSchema.methods.createPasswordResetToken = function () {
 
     return plainToken;
 };
-
-// TUV EMAIL HASH GENERATOR
-// userSchema.methods.createTuvEmailExpiredNotifier = async function (vehicleOwner) {
-//     this.TuvExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-// };
-
-// userSchema.methods.compareTuvEmailExpiredNotifier = async function (candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier) {
-//     return await bcrypt.compare(candidateTuvEmailExpiredNotifier, userTuvEmailExpiredNotifier)
-// }
-
-// AU EMAIL HASH GENERATOR
-userSchema.methods.createAuEmailExpiredNotifier = async function (vehicleOwner) {
-    this.AuExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
-
-userSchema.methods.compareAuEmailExpiredNotifier = async function (candidateAuEmailExpiringNotifier, userAuEmailExpiringNotifier) {
-    return await bcrypt.compare(candidateAuEmailExpiringNotifier, userAuEmailExpiringNotifier)
-}
-
-// LEASING EMAIL HASH GENERATOR
-userSchema.methods.createLeasingExpiredEmailNotifier = async function (vehicleOwner) {
-    this.leasingExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
-
-userSchema.methods.compareLeasingEmailExpiredNotifier = async function (candidateLeasingEmailExpiredNotifier, userLeasingEmailExpiredNotifier) {
-    return await bcrypt.compare(`${candidateLeasingEmailExpiredNotifier}`, userLeasingEmailExpiredNotifier)
-}
-
-// FINANSES EMAIL HASH GENERATOR
-userSchema.methods.createFinansesExpiredEmailNotifier = async function (vehicleOwner) {
-    this.finansesExpiredEmailNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
-
-userSchema.methods.compareFinansesEmailExpiredNotifier = async function (candidateLeasingEmailExpiredNotifier, userLeasingEmailExpiredNotifier) {
-    return await bcrypt.compare(`${candidateLeasingEmailExpiredNotifier}`, userLeasingEmailExpiredNotifier)
-}
 
 const User = mongoose.model('User', userSchema)
 

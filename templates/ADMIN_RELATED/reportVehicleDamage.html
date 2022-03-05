@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SE Carmanagement - Fahrzeugschaden</title>
+</head>
+
+<body>
+    const body = `Hallo, hier ist mein Schadensbericht zu meinem Fahrzeug
+    kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName}
+    fahrzeug: ${car.mark} ${car.model}
+    link: https://secarmanagement.vercel.app/cars/${car._id}
+    Schadensbeschreibung: ${damageDescription}`
+
+    <h3>Fahrzeugschaden</h3>
+    <p>Kunde: {{customer}}</p>
+    <p>Fahrzeug: {{vehicle}}</p>
+    <p>Link:
+        <a href="https://secarmanagement.vercel.app/cars/{{vehicleId}}" target="_blank">
+            https://secarmanagement.vercel.app/cars/{{vehicleId}}
+        </a>
+    </p>
+    <h4>Ihr team von</h4>
+    <img src="https://res.cloudinary.com/dze3eqnby/image/upload/v1645788759/unnamed_jzbylp.jpg" alt="logo"
+        style="width: 180px;" />
+    <p>Geltinger Str. 23</p>
+    <p>85652 Pliening </p>
+    <a>www.se-carmanagement.de</a>
+</body>
+
+</html>
