@@ -38,7 +38,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         newUser.__v = undefined
     }
     catch (err) {
-        console.log(err)
+        // console.log(err)
         return next(new AppError('Beim Senden der E-Mail ist etwas schief gelaufen!', 500))
     }
 

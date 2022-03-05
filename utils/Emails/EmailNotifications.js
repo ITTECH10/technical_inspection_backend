@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer')
 const fs = require('fs')
-// const test = require('./../../')
+const path = require('path')
 
 class EmailNotifications {
     newTransport() {
@@ -16,7 +16,7 @@ class EmailNotifications {
     }
 
     loadTemplate(folder, fileName) {
-        const template = fs.readFileSync(`./../../templates/${folder}/${fileName}.html`, 'utf8', function (err, data) {
+        const template = fs.readFileSync(path.join(__dirname, `../../../templates/${folder}/${fileName}.html`), 'utf8', function (err, data) {
             if (err) {
                 console.log(err)
                 return
