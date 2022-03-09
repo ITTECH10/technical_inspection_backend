@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema({
         },
         unique: true
     },
+    companyName: {
+        type: String
+    },
     customerType: {
         type: String
     },

@@ -16,6 +16,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         email: req.body.email,
         corespondencePartner: req.body.corespondencePartner,
         customerType: req.body.customerType,
+        companyName: req.body.companyName,
         corespondencePartnerEmail: req.body.corespondencePartnerEmail,
         phoneNumber: req.body.phoneNumber,
         gender: req.body.gender,

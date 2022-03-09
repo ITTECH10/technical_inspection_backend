@@ -5,7 +5,7 @@ const UserRelatedNotifications = require('../../../utils/Emails/UserRelatedNotif
 const DateGenerator = require('../../../utils/DateGenerator')
 
 const threeMonthsFromNow = new DateGenerator().monthsFromNow(3).setHours(23, 59, 59, 999)
-const sixMonthsFromNow = new DateGenerator().monthsFromNow(6).setHours(23, 59, 59, 999)
+const eightMonthsFromNow = new DateGenerator().monthsFromNow(8).setHours(23, 59, 59, 999)
 const currentDate = new Date().toLocaleString('de-DE')
 
 // // Send email to a customer if leasing expires
@@ -51,7 +51,7 @@ class SendMailOnLeasingExpiredJob extends UserRelatedNotifications {
     }
 
     async leasingExpiresInSixMonths() {
-        this.leasingExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: sixMonthsFromNow }, vehiclePaymentTypeVariant: 'leasing' })
+        this.leasingExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: eightMonthsFromNow }, vehiclePaymentTypeVariant: 'leasing' })
         if (this.leasingExpiringInSixMonthsVehicles.length === 0) return
 
         this.leasingExpiringInSixMonthsVehicles.map(async foundVehicle => {

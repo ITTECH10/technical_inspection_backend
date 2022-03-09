@@ -5,7 +5,7 @@ const DateGenerator = require('../../../utils/DateGenerator')
 const CreditPayment = require('../../../models/CreditPaymentModel')
 
 const threeMonthsFromNow = new DateGenerator().monthsFromNow(3).setHours(23, 59, 59, 999)
-const sixMonthsFromNow = new DateGenerator().monthsFromNow(6).setHours(23, 59, 59, 999)
+const eightMonthsFromNow = new DateGenerator().monthsFromNow(8).setHours(23, 59, 59, 999)
 const currentDate = new Date().toISOString()
 
 // Send email to a customer if finanses expires
@@ -51,7 +51,7 @@ class SendMailOnFinansesExpiringJob extends UserRelatedNotifications {
     }
 
     async finansesExpiresInSixMonths() {
-        this.finansesExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: sixMonthsFromNow }, vehiclePaymentTypeVariant: 'credit' })
+        this.finansesExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: eightMonthsFromNow }, vehiclePaymentTypeVariant: 'credit' })
         if (this.finansesExpiringInSixMonthsVehicles.length === 0) return
 
         this.finansesExpiringInSixMonthsVehicles.map(async foundVehicle => {
