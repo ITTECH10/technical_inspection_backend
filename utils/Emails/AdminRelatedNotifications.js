@@ -25,32 +25,27 @@ class AdminEmailNotifications extends EmailNotifications {
         await super.sendToAdmin(subject, formatedTemplate)
     }
 
-    async reportVehicleDamage(car, damageDescription) {
-        const subject = "Fahrzeugschaden"
-        const body = `Hallo, hier ist mein Schadensbericht zu meinem Fahrzeug
-        kunde: ${car.vehicleOwner.firstName} ${car.vehicleOwner.lastName} 
-        fahrzeug: ${car.mark} ${car.model}
-        link: https://secarmanagement.vercel.app/cars/${car._id}
-        Schadensbeschreibung: ${damageDescription}`
+    async reportVehicleDamage(vehicle, damageDescription) {
+        const subject = 'Fahrzeugschaden'
+        const template = super.loadTemplate('ADMIN_RELATED', 'reportVehicleDamage')
 
-        await super.sendToAdmin(subject, body)
+        const formatedTemplate = template
+            .replaceAll('{{customer}}', `${vehicle.vehicleOwner.firstName} ${vehicle.vehicleOwner.lastName}`)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`).replaceAll('{{vehicleId}}', vehicle._id)
+            .replaceAll('{{damageDescription}}', damageDescription)
+
+        await super.sendToAdmin(subject, formatedTemplate)
     }
 
-    // async reportVehicleDamage (vehicle, damageDescription) {
-    //     const subject = 'Fahrzeugschaden'
-    //     const template = super.loadTemplate('ADMIN_RELATED', 'reportVehicleDamage')
-
-
-    //     await super.sendToAdmin(subject, formatedTemplate)
-    // }
-
     async userResetedPassword(customer) {
-        const subject = 'Passwort zurückgesetzt'
-        const body = `Kunde hat sein passwort zurückgesetzt
-        Kunde: ${customer.firstName} ${customer.lastName}
-        `
         if (customer.role === 'admin') return
-        await super.sendToAdmin(subject, body)
+        const subject = 'Passwort zurückgesetzt'
+        const template = super.loadTemplate('ADMIN_RELATED', 'userResetedPassword')
+
+        const formatedTemplate = template
+            .replaceAll('{{customer}}', `${customer.firstName} ${customer.lastName}`)
+
+        await super.sendToAdmin(subject, formatedTemplate)
     }
 }
 

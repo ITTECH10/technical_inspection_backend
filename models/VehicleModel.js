@@ -141,46 +141,42 @@ const vehicleSchema = new mongoose.Schema({
         type: Boolean
     },
     ntiServiceExpiresInOneMonthEmailNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     TuvExpiresInNextMonthNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     TuvExpiresInNextTwoMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     AuExpiresInNextMonthNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     AuExpiresInNextTwoMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     creditExpiresInUpcomingThreeMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     creditExpiresInUpcomingSixMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     leasingExpiresInUpcomingThreeMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
     leasingExpiresInUpcomingSixMonthsNotifier: {
-        type: String,
-        select: false
+        type: String
     },
 })
 
 vehicleSchema.pre(/^find/, function () {
     this.populate('vehicleOwner')
 })
+
+// vehicleSchema.virtual('tuvExpired').get(function () {
+//     // return new Date(this.TUV) < new Date()
+//     console.log(this)
+// });
 
 // NTI-SERVICE EXPIRES IN ONE MONTH EMAIL HASH GENERATOR
 vehicleSchema.methods.createNtiServiceExpiresInOneMonthEmailNotifier = async function (vehicleOwner) {

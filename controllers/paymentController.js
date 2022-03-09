@@ -28,7 +28,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -69,7 +69,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -114,7 +114,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
+        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -181,7 +181,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -198,14 +198,17 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     const creditPayment = await CreditPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
+    if (req.body.creditLastsFor && +req.body.creditLastsFor !== +creditPayment.creditLastsFor) {
+        vehicle.creditExpiresInUpcomingThreeMonthsNotifier = undefined
+        vehicle.creditExpiresInUpcomingSixMonthsNotifier = undefined
+    }
+
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(creditPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
     const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
     const customer = await User.findById(vehicle.vehicleOwner._id)
-
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + creditPayment.creditLastsFor))
 
-    // if (vehicle._id.toString() === creditPayment.vehiclePayedFor.toString()) {
     creditPayment.vehiclePayedFor = req.body.vehiclePayedFor || creditPayment.vehiclePayedFor
     creditPayment.creditInstitute = req.body.creditInstitute || creditPayment.creditInstitute
     creditPayment.contractNumber = req.body.contractNumber || creditPayment.contractNumber
@@ -225,12 +228,9 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
 
     await creditPayment.save({ validateBeforeSave: false })
     await vehicle.save({ validateBeforeSave: false })
-    // } else {
-    //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
-    // }
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -247,13 +247,17 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     const leasingPayment = await LeasingPayment.findById(req.params.paymentId)
     const vehicle = await Vehicle.findById(req.body.vehiclePayedFor)
 
+    if (req.body.leasingLastsFor && +req.body.leasingLastsFor !== +leasingPayment.leasingLastsFor) {
+        vehicle.leasingExpiresInUpcomingThreeMonthsNotifier = undefined
+        vehicle.leasingExpiresInUpcomingSixMonthsNotifier = undefined
+    }
+
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(leasingPayment[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
     const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
     const customer = await User.findById(vehicle.vehicleOwner._id)
 
     const expirationDate = new Date(new Date().setMonth(new Date().getMonth() + leasingPayment.leasingLastsFor))
-
 
     // if (vehicle._id.toString() === leasingPayment.vehiclePayedFor.toString()) {
     leasingPayment.vehiclePayedFor = req.body.vehiclePayedFor || leasingPayment.vehiclePayedFor
@@ -284,7 +288,7 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     // }
 
     try {
-        // await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
+        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)

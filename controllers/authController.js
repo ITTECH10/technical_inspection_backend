@@ -29,8 +29,6 @@ exports.signup = catchAsync(async (req, res, next) => {
         confirmPassword: req.body.confirmPassword
     })
 
-    // const url = 'https://secarmanagement.vercel.app/'
-
     try {
         await new UserEmailNotifications().customerCreated(newUser, req.body.password)
 

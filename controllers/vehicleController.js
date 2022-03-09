@@ -94,8 +94,6 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
 exports.getAllVehicles = catchAsync(async (req, res, next) => {
     const vehicles = await Vehicle.find({ carIsSold: { $ne: true } }).sort({ 'TUVExpiresInTwoMonths': - 1 })
 
-    // loop
-
     if (!vehicles) {
         return next(new AppError('Es wurden keine Fahrzeuge gefunden.', 404))
     }
@@ -290,6 +288,20 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     const changedValues = Object.keys(req.body).reduce((a, k) => (JSON.stringify(updatedVehicle[k]) !== JSON.stringify(req.body[k]) && (a[k] = req.body[k]), a), {})
     const formatedChangedValues = JSON.stringify(changedValues, null, '\t').replace("{", "").replace("}", "")
 
+    if (req.body.nextTechnicalInspection && new Date(req.body.nextTechnicalInspection).getTime() !== new Date(updatedVehicle.nextTechnicalInspection).getTime()) {
+        updatedVehicle.ntiServiceExpiresInOneMonthEmailNotifier = undefined
+    }
+
+    if (req.body.TUV && new Date(req.body.TUV).getTime() !== new Date(updatedVehicle.TUV).getTime()) {
+        updatedVehicle.TuvExpiresInNextMonthNotifier = undefined
+        updatedVehicle.TuvExpiresInNextTwoMonthsNotifier = undefined
+    }
+
+    if (req.body.AU && new Date(req.body.AU).getTime() !== new Date(updatedVehicle.AU).getTime()) {
+        updatedVehicle.AuExpiresInNextMonthNotifier = undefined
+        updatedVehicle.AuExpiresInNextTwoMonthsNotifier = undefined
+    }
+
     updatedVehicle.chassisNumber = req.body.chassisNumber || updatedVehicle.chassisNumber
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
     updatedVehicle.model = req.body.model || updatedVehicle.model
@@ -317,9 +329,9 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
         updatedVehicle.AU = req.body.AU || updatedVehicle.AU
     updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(1) : updatedVehicle.TUVExpiresInOneMonth,
         updatedVehicle.AUExpiresInTwoMonths = req.body.AU ? new DateGenerator(req.body.AU).expiresInGivenMonths(2) : updatedVehicle.AUExpiresInTwoMonths,
-        updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(2) : updatedVehicle.TUVExpiresInTwoMonths,
+        updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(2) : updatedVehicle.TUVExpiresInTwoMonths
 
-        await updatedVehicle.save({ validateBeforeSave: true })
+    await updatedVehicle.save({ validateBeforeSave: true })
 
     try {
         await new CommonEmailNotifications(req.user.role).carOperations("aktualisiert", updatedVehicle, user, formatedChangedValues)

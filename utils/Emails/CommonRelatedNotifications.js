@@ -39,13 +39,24 @@ class CommonEmailNotifications extends EmailNotifications {
         this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
     }
 
+    // async documentOperations(customer, operation, car) {
+    //     const subject = `Dokument ${operation}`
+    //     const template = super.loadTemplate('COMMON_RELATED', 'documentOperations')
+
+    //     const formatedTemplate = `${this.role === 'admin' ? 'Admin' : 'Kunde'}` + template
+    //     .replaceAll('{{}}')
+
+    //     this.role === 'admin' ? super.sendToCustomer(customer, subject, formatedTemplate) : super.sendToAdmin(subject, formatedTemplate)
+    // }
+
     async sendPasswordResetToken(customer, url) {
         const subject = 'Passwort zurücksetzen token'
-        const body = `Um Ihr Passwort zurückzusetzen, klicken Sie bitte auf den untenstehenden Link ${url}
-        Warnung, Token ist nur 10 Minuten gültig!!!
-        `
+        const template = super.loadTemplate('COMMON_RELATED', 'sendPasswordResetToken')
 
-        customer.role === 'user' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        const formatedTemplate = template
+            .replaceAll('{{url}}', url)
+
+        customer.role === 'user' ? super.sendToCustomer(customer, subject, formatedTemplate) : super.sendToAdmin(subject, formatedTemplate)
     }
 }
 

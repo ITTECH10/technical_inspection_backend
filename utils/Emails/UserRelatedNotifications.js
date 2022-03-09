@@ -122,14 +122,17 @@ class UserEmailNotifications extends EmailNotifications {
         await super.sendToCustomer(customer, subject, template)
     }
 
-    async paymentOperations(customer, operation, paymentType, car, changedValues) {
+    async paymentOperations(customer, operation, paymentType, vehicle, changedValues) {
         const subject = `${paymentType} ${operation}`
-        const body = `Admin hat ein ${paymentType} Zahlung ${operation}
-        zum ${car.mark} ${car.model} ${car.registrationNumber}
-        Link: https://secarmanagement.vercel.app/cars/${car._id}
-        ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
-        `
-        await super.sendToCustomer(customer, subject, body)
+        const template = super.loadTemplate('CUSTOMER_RELATED', 'paymentOperations')
+
+        const formatedTemplate = template
+            .replaceAll('{{paymentType}}', paymentType)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model} ${vehicle.registrationNumber}`)
+            .replaceAll('{{vehicleId}}', vehicle._id)
+            .replaceAll('{{operation}}', operation)
+
+        await super.sendToCustomer(customer, subject, formatedTemplate)
     }
 }
 
