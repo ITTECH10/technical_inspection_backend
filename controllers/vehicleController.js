@@ -78,12 +78,12 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         })
     }
 
-    // try {
-    //     await new CommonEmailNotifications(req.user.role).carOperations('hinzugefügt', newVehicle, customer)
-    // }
-    // catch (err) {
-    //     console.log(err)
-    // }
+    try {
+        await new CommonEmailNotifications(req.user.role).carOperations('hinzugefügt', newVehicle, customer)
+    }
+    catch (err) {
+        console.log(err)
+    }
 
     res.status(201).json({
         message: 'success',
