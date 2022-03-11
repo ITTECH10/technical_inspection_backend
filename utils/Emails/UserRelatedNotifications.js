@@ -116,7 +116,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async customerDeleted(customer) {
-        const subject = "SE Carmanagement | Kunde gelöscht"
+        const subject = "SE Carmanagement | Ihr Profil wurde gelöscht."
         const template = super.loadTemplate('CUSTOMER_RELATED', 'customerDeleted')
 
         await super.sendToCustomer(customer, subject, template)
