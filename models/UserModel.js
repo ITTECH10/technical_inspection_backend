@@ -39,6 +39,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
+    protectionLetter: {
+        type: Boolean
+    },
+    ADAC: {
+        type: Boolean
+    },
+    membershipNumber: {
+        type: String
+    },
     phoneNumber: {
         type: String,
         required: [true, 'Please provide a phone number (fax).']
