@@ -5,7 +5,7 @@ const vehicleSchema = new mongoose.Schema({
     vehicleOwner: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Vehicle must have a owner.']
+        required: [true, 'Das Fahrzeug muss einen Besitzer haben.']
     },
     thumbnail: {
         type: String
@@ -30,13 +30,13 @@ const vehicleSchema = new mongoose.Schema({
     },
     HSN: {
         type: String,
-        minLength: [4, 'HSN must be at least 4 characters, got {VALUE}'],
-        maxLength: [4, 'HSN must be at least 4 characters, got {VALUE}'],
+        minLength: [4, 'Die HSN muss aus mindestens 4 Zeichen bestehen und hat {VALUE}'],
+        maxLength: [4, 'Die HSN muss aus mindestens 4 Zeichen bestehen und hat {VALUE}'],
         // required: [true, 'Please enter vehicle HSN information.']
     },
     TSN: {
         type: String,
-        maxLength: [3, 'TSN length cannot exceed 3 characters.'],
+        maxLength: [3, 'Die TSN-Länge darf 3 Zeichen nicht überschreiten.'],
         // required: [true, 'Please enter vehicle TSN information.']
     },
     varantyExpiresAt: {

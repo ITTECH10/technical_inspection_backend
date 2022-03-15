@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please enter customers last name']
     },
     gender: {
-        type: String
+        type: String,
+        required: [true, 'Please provide customers gender.']
     },
     email: {
         type: String,
@@ -49,12 +50,10 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     phoneNumber: {
-        type: String,
-        required: [true, 'Please provide a phone number (fax).']
+        type: String
     },
     smartphoneNumber: {
-        type: String,
-        required: [true, 'Please provide a phone number (smartphone).']
+        type: String
     },
     street: {
         type: String,
@@ -69,8 +68,7 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please provide the city']
     },
     birthDate: {
-        type: Date,
-        required: [true, 'Please provide birth date']
+        type: Date
     },
     role: {
         type: String,

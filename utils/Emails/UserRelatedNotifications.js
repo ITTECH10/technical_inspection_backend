@@ -7,7 +7,7 @@ class UserEmailNotifications extends EmailNotifications {
 
     async vehicleDeleted(customer, vehicle) {
         const subject = "SE Carmanagement | Fahrzeug gelöscht"
-        const template = super.loadTemplate(VEHICLE_RELATED, vehicleDeleted)
+        const template = super.loadTemplate('VEHICLE_RELATED', 'vehicleDeleted')
 
         const formatedTemplate = template.replaceAll('{{recipient}}', `${customer.firstName} ${customer.lastName}`)
             .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)

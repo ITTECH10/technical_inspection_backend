@@ -190,12 +190,12 @@ exports.changeGeneratedPassword = catchAsync(async (req, res, next) => {
         return next(new AppError('Sie können erst nach der ersten Anmeldung ein neues Passwort festlegen.', 403))
     }
 
-    if (!await user.comparePasswords(req.body.currentPassword, user.password)) {
+    if (!await user.comparePasswords(req.body.currentPassword.trim(), user.password)) {
         return next(new AppError('Ihr aktuelles Passwort ist falsch!', 400))
     }
 
-    user.password = req.body.password
-    user.confirmPassword = req.body.confirmPassword
+    user.password = req.body.password.trim()
+    user.confirmPassword = req.body.confirmPassword.trim()
     user.firstLogIn = false
     await user.save()
 

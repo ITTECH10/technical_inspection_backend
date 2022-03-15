@@ -74,8 +74,11 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     user.city = req.body.city || user.city
     user.birthDate = req.body.birthDate || user.birthDate
     user.email = req.body.email || user.email
-    user.corespondencePartner = req.body.corespondencePartner || user.corespondencePartner
-    user.corespondencePartnerEmail = req.body.corespondencePartnerEmail || user.corespondencePartnerEmail
+    user.corespondencePartner = req.body.customerPartner || user.corespondencePartner
+    user.corespondencePartnerEmail = req.body.customerPartnerEmail || user.corespondencePartnerEmail
+    user.protectionLetter = req.body.protectionLetter
+    user.ADAC = req.body.ADAC
+    user.membershipNumber = req.body.membershipNumber
 
     await user.save({
         new: true,
@@ -83,7 +86,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     })
 
     try {
-        await new CommonEmailNotifications(req.user.role).customerInformationsUpdated(user, formatedChangedValues)
+        // await new CommonEmailNotifications(req.user.role).customerInformationsUpdated(user, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
