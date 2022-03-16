@@ -27,11 +27,11 @@ exports.updateInsuranceHouse = catchAsync(async (req, res, next) => {
     const insurance = await Insurance.findById(req.params.insuranceId)
 
     if (!insurance) {
-        return next(new AppError('Es gibt keine zu aktualisierende Versicherung in unserer DB!', 404))
+        return next(new AppError('Es gibt keine zu aktualisierende Versicherung in unserer Datenbank!', 404))
     }
 
     if (insurance._id.toString() !== req.params.insuranceId.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     insurance.insuranceHouse = req.body.insuranceHouse || insurance.insuranceHouse
@@ -51,7 +51,7 @@ exports.getAllInsurances = catchAsync(async (req, res, next) => {
     const insurances = await Insurance.find()
 
     if (!insurances) {
-        return next(new AppError('Es wurden keine Versicherungen gefunden.', 404))
+        return next(new AppError('Es wurden keine Versicherung gefunden.', 404))
     }
 
     res.status(200).json({
@@ -64,11 +64,11 @@ exports.getUsersInsuranceHouse = catchAsync(async (req, res, next) => {
     const insurance = await Insurance.findById(req.params.insuranceId)
 
     if (!insurance) {
-        return next(new AppError('Es wurden keine Versicherungen gefunden.', 404))
+        return next(new AppError('Es wurden keine Versicherung gefunden.', 404))
     }
 
     if (insurance._id.toString() !== req.params.insuranceId.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     res.status(200).json({

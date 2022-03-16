@@ -34,7 +34,7 @@ exports.getMyCredentials = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ _id: req.user._id })
 
     if (!user) {
-        return next(new AppError('Beim Laden Ihrer Kontodaten ist ein Problem aufgetreten.', 404))
+        return next(new AppError('Beim Laden Ihrer Kontodaten ist ein Fehler aufgetreten.', 404))
     }
 
     res.status(200).json({
@@ -54,7 +54,7 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     }
 
     if (req.body.role) {
-        return next(new AppError('Sie haben nicht die Erlaubnis, diese Aktion durchzuführen.', 403))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 403))
     }
 
     if (req.body.email) {

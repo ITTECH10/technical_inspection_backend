@@ -36,7 +36,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async tuvExpiresInUpcomingMonth(customer, vehicle) {
-        const subject = "SE Carmanagement | TUV läuft nächsten Monat aus!"
+        const subject = "SE Carmanagement | TÜV läuft nächsten Monat aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'oneMonthBeforeTuvExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -46,7 +46,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async tuvExpiresInUpcomingTwoMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | TÜV läuft in zwei Monate aus!"
+        const subject = "SE Carmanagement | TÜV läuft in zwei Monaten ab!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'twoMonthsBeforeTuvExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -56,7 +56,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async auExpiresInUpcomingMonth(customer, vehicle) {
-        const subject = "SE Carmanagement | AÜ läuft nächsten Monat aus!"
+        const subject = "SE Carmanagement | Abgasuntersuchung läuft nächsten Monat aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'oneMonthBeforeAuExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -66,7 +66,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async auExpiresInUpcomingTwoMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | AÜ läuft in zwei Monate aus!"
+        const subject = "SE Carmanagement | Abgasuntersuchung läuft in zwei Monaten ab"
         const template = super.loadTemplate('VEHICLE_RELATED', 'twoMonthsBeforeAuExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -76,7 +76,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async creditExpiresInThreeMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Finanzierung läuft in drei Monate aus!"
+        const subject = "SE Carmanagement | Ihre KFZ-Finanzierung läuft in drei Monaten aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'threeMonthsBeforeCreditExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -86,7 +86,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async creditExpiresInSixMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Finanzierung läuft in sechts Monate aus!"
+        const subject = "SE Carmanagement | Ihre KFZ-Finanzierung läuft in sechs Monaten aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeCreditExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -96,7 +96,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async leasingExpiresInThreeMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Leasing läuft in drei Monate aus!"
+        const subject = "SE Carmanagement | Ihr KFZ-Leasing läuft in drei Monaten aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'threeMonthsBeforeLeasingExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -106,7 +106,7 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async leasingExpiresInSixMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Leasing läuft in sechts Monate aus!"
+        const subject = "SE Carmanagement | Ihr KFZ-Leasing läuft in sechs Monaten aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeLeasingExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)

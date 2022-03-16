@@ -5,7 +5,7 @@ exports.uploadSingleFile = req => {
     const filename = `user-${req.user._id}-${new Date().getTime() * 1000}.${ext}`;
 
     if (req.files.photo.mimetype !== 'image/jpeg' && req.files.photo.mimetype !== 'image/png' && req.files.photo.mimetype !== 'application/pdf') {
-        return next(new AppError('Es sind nur Dateien mit den Erweiterungen PNG, JPEG und PDF zulässig.', 400));
+        return next(new AppError('Folgende Dateiendungen sind zulässing: PNG, JPEG und PDF', 400));
     }
 
     let temp = req.files.photo.tempFilePath.split('/')
@@ -32,11 +32,11 @@ exports.uploadMultipleImages = req => {
         filename = `user-${req.user._id}-PLACEHOLDER.${ext}`;
 
         if (!p.mimetype.startsWith('image')) {
-            return next(new AppError('Ungültiger Dateityp. Bitte laden Sie nur Bilder hoch.', 400))
+            return next(new AppError('Unbekannte Dateiendung. Bitte laden Sie nur Bilder hoch.', 400))
         }
 
         if (p.mimetype !== 'image/jpeg' && p.mimetype !== 'image/png') {
-            return next(new AppError('Bitte geben Sie einen Bildtyp mit der Dateierweiterung jpg oder png an.', 400));
+            return next(new AppError('Folgende Dateiendungen für Bilder sind zulässing: PNG, JPEG', 400));
         }
 
         oldTempFiles.push(p.tempFilePath)
