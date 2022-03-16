@@ -28,11 +28,11 @@ function MailingScheduler() {
 
     // 3) LEASING NOTIFIERS
     job.schedule('*/15 * * * * *', sendMailOnLeasingExpiredJob.leasingExpiresInThreeMonths.bind(sendMailOnLeasingExpiredJob));
-    job.schedule('*/15 * * * * *', sendMailOnLeasingExpiredJob.leasingExpiresInSixMonths.bind(sendMailOnLeasingExpiredJob));
+    job.schedule('*/15 * * * * *', sendMailOnLeasingExpiredJob.leasingExpiresInEightMonths.bind(sendMailOnLeasingExpiredJob));
 
     // 4) FINANSE NOTIFIERS
     job.schedule('*/15 * * * * *', sendMailOnFinansesExpiringJob.finansesExpiresInThreeMonths.bind(sendMailOnFinansesExpiringJob));
-    job.schedule('*/15 * * * * *', sendMailOnFinansesExpiringJob.finansesExpiresInSixMonths.bind(sendMailOnFinansesExpiringJob));
+    job.schedule('*/15 * * * * *', sendMailOnFinansesExpiringJob.finansesExpiresInEightMonths.bind(sendMailOnFinansesExpiringJob));
 
     // 5) NTI SERVICE NOTIFIERS
     job.schedule('*/15 * * * * *', sendMailOnNtiServiceExpiringInNextMonth.ntiServiceExpiresInOneMonth.bind(sendMailOnNtiServiceExpiringInNextMonth));

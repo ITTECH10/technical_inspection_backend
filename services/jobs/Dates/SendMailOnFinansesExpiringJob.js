@@ -50,7 +50,7 @@ class SendMailOnFinansesExpiringJob extends UserRelatedNotifications {
         })
     }
 
-    async finansesExpiresInSixMonths() {
+    async finansesExpiresInEightMonths() {
         this.finansesExpiringInSixMonthsVehicles = await Vehicle.find({ contractExpirationDate: { $gte: threeMonthsFromNow, $lte: eightMonthsFromNow }, vehiclePaymentTypeVariant: 'credit' })
         if (this.finansesExpiringInSixMonthsVehicles.length === 0) return
 
@@ -62,11 +62,11 @@ class SendMailOnFinansesExpiringJob extends UserRelatedNotifications {
                     if (!foundVehicle.creditExpiresInUpcomingSixMonthsNotifier) {
                         try {
                             if (user.customerType === 'firmenkunde') {
-                                await super.creditExpiresInSixMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
+                                await super.creditExpiresInEightMonths({ email: user.corespondencePartnerEmail }, foundVehicle)
                             }
 
                             if (user.customerType === 'privat') {
-                                await super.creditExpiresInSixMonths(user, foundVehicle)
+                                await super.creditExpiresInEightMonths(user, foundVehicle)
                             }
 
                             await foundVehicle.createFinansesExpiresInSixMonthsEmailNotifier(user._id)

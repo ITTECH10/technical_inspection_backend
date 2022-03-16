@@ -85,7 +85,7 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-    async creditExpiresInSixMonths(customer, vehicle) {
+    async creditExpiresInEightMonths(customer, vehicle) {
         const subject = "SE Carmanagement | Finanzierung läuft in sechts Monate aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeCreditExpiration')
 
@@ -105,7 +105,7 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-    async leasingExpiresInSixMonths(customer, vehicle) {
+    async leasingExpiresInEightMonths(customer, vehicle) {
         const subject = "SE Carmanagement | Leasing läuft in sechts Monate aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeLeasingExpiration')
 
