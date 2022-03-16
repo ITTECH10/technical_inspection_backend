@@ -7,8 +7,8 @@ class CommonEmailNotifications extends EmailNotifications {
     }
 
     async carOperations(operation, car, customer, changedValues) {
-        const subject = `Fahrzeug ${operation}`
-        const body = `${this.role === 'admin' ? 'Admin' : 'Kunde'} hat ein Fahrzeug ${operation}
+        const subject = `SE-Carmangement | Fahrzeug ${operation}`
+        const body = `${this.role === 'admin' ? 'SE-Carmanagement' : 'Kunde'} hat ein Fahrzeug ${operation}
         ${this.role === 'user' ? `Kunde: ${customer.firstName} ${customer.lastName}` : ''}
         Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
         Link: https://app.se-carmanagement.de/cars/${car._id}
@@ -19,8 +19,8 @@ class CommonEmailNotifications extends EmailNotifications {
     }
 
     async customerInformationsUpdated(customer, changedValues) {
-        const subject = `Kunde aktuelisiert`
-        const body = `${this.role === 'admin' ? 'Admin' : 'Kunde'} hat die profile informationen aktuelisiert
+        const subject = `SE-Carmangement | Kundenstammdaten aktualisiert`
+        const body = `${this.role === 'admin' ? 'SE-Carmanagement' : 'Kunde'} hat Stammdaten aktualisiert
         ${this.role === 'user' ? `Kunde: ${customer.firstName} ${customer.lastName}` : ''}
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
@@ -29,8 +29,8 @@ class CommonEmailNotifications extends EmailNotifications {
     }
 
     async documentOperations(customer, operation, car) {
-        const subject = `Dokument ${operation}`
-        const body = `${this.role === 'admin' ? 'Admin' : 'Kunde'} hat das dokument ${operation}
+        const subject = `SE-Carmangement | Dokument ${operation}`
+        const body = `${this.role === 'admin' ? 'SE-Carmanagmenet' : 'Kunde'} hat das Dokument ${operation}
         ${this.role === 'user' ? `Kunde: ${customer.firstName} ${customer.lastName}` : ''}
         Fahrzeug: ${car.mark} ${car.model} ${car.registrationNumber}
         Link: https://app.se-carmanagement.de/cars/${car._id}
@@ -50,7 +50,7 @@ class CommonEmailNotifications extends EmailNotifications {
     // }
 
     async sendPasswordResetToken(customer, url) {
-        const subject = 'Passwort zurücksetzen token'
+        const subject = 'SE-Carmangement | Passwort vergessen'
         const template = super.loadTemplate('COMMON_RELATED', 'sendPasswordResetToken')
 
         const formatedTemplate = template

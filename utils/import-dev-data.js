@@ -17,7 +17,7 @@ mongoose.connect(DB, {
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true
-}).then(() => console.log('Konekcija ka bazi podataka uspješna...'))
+}).then(() => console.log('Die Verbindung zur Datenbank wurde erfolgreich aufgebaut...'))
     .catch(err => console.log(err))
 
 

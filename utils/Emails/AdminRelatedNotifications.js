@@ -16,7 +16,7 @@ class AdminEmailNotifications extends EmailNotifications {
     }
 
     async abortVehicleSellingToAdmin(vehicle) {
-        const subject = "Meinungsänderung"
+        const subject = "SE-Carmanagement | Kunde kann möchte sein Fahrzeug doch nicht verkaufen."
         const template = super.loadTemplate('ADMIN_RELATED', 'abortVehicleSellingToAdmin')
 
         const formatedTemplate = template.replaceAll('{{customer}}', `${vehicle.vehicleOwner.firstName} ${vehicle.vehicleOwner.lastName}`)
@@ -26,7 +26,7 @@ class AdminEmailNotifications extends EmailNotifications {
     }
 
     async reportVehicleDamage(vehicle, damageDescription) {
-        const subject = 'Fahrzeugschaden'
+        const subject = 'SE-Carmanagement | Fahrzeugschaden'
         const template = super.loadTemplate('ADMIN_RELATED', 'reportVehicleDamage')
 
         const formatedTemplate = template

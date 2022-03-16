@@ -95,7 +95,7 @@ exports.getAllVehicles = catchAsync(async (req, res, next) => {
     const vehicles = await Vehicle.find({ carIsSold: { $ne: true } }).sort({ 'TUVExpiresInTwoMonths': - 1 })
 
     if (!vehicles) {
-        return next(new AppError('Es wurden keine Fahrzeuge gefunden.', 404))
+        return next(new AppError('Keine Fahrzeuge gefunden.', 404))
     }
 
     res.status(200).json({
@@ -106,13 +106,13 @@ exports.getAllVehicles = catchAsync(async (req, res, next) => {
 
 exports.getMyVehicles = catchAsync(async (req, res, next) => {
     if (req.params.id.toString() !== req.user._id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     const userVehicles = await Vehicle.find({ vehicleOwner: req.params.id, carIsSold: { $ne: true } })
 
     if (!userVehicles) {
-        return next(new AppError('Es wurden keine Fahrzeuge gefunden.', 404))
+        return next(new AppError('Keine Fahrzeuge gefunden.', 404))
     }
 
     res.status(200).json({
@@ -219,7 +219,7 @@ exports.connectInsuranceHouse = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.params.updateId)
 
     if (!vehicle) {
-        return next(new AppError('Es wurde kein Fahrzeug gefunden.', 404))
+        return next(new AppError('Keine Fahrzeuge gefunden.', 404))
     }
 
     vehicle.insuranceHouse = req.body.insuranceHouse || vehicle.insuranceHouse
@@ -240,7 +240,7 @@ exports.getVehicle = catchAsync(async (req, res, next) => {
     const vehicle = await Vehicle.findById(req.params.id)
 
     if (!vehicle) {
-        return next(new AppError('Es wurde kein Fahrzeug gefunden.', 404))
+        return next(new AppError('Keine Fahrzeug gefunden.', 404))
     }
 
     res.status(200).json({
@@ -355,7 +355,7 @@ exports.markVehicleForSelling = catchAsync(async (req, res, next) => {
     }
 
     if (pickedVehicle._id.toString() !== req.params.id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     pickedVehicle.markForSelling = true
@@ -375,7 +375,7 @@ exports.unmarkVehicleForSelling = catchAsync(async (req, res, next) => {
     }
 
     if (pickedVehicle._id.toString() !== req.params.id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     try {
@@ -407,7 +407,7 @@ exports.recommendVehicleToAdmin = catchAsync(async (req, res, next) => {
     }
 
     if (pickedVehicle._id.toString() !== req.params.id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     // SEND EMAIL
@@ -436,7 +436,7 @@ exports.reportVehicleDamage = catchAsync(async (req, res, next) => {
     }
 
     if (damagedVehicle._id.toString() !== req.params.id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     // SEND EMAIL

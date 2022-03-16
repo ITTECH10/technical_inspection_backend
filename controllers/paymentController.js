@@ -20,7 +20,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     const customer = await User.findById(vehicle.vehicleOwner._id)
 
     if (vehicle._id.toString() !== req.params.carId.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     vehicle.vehiclePaymentType = newCashPayment._id

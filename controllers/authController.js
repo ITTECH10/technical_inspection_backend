@@ -76,14 +76,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     if (!token) {
-        return next(new AppError('Ungültiges Token! Bitte loggen Sie sich erneut ein oder kontaktieren Sie den Kundensupport!', 401))
+        return next(new AppError('Ungültiges Token! Bitte melden Sie sich erneut an oder kontaktieren Sie uns!', 401))
     }
 
     const decodedToken = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
     const currentUser = await User.findById(decodedToken.id)
 
     if (!currentUser) {
-        return next(new AppError('Der Benutzer, der zu diesem Token gehört, existiert nicht mehr.', 404))
+        return next(new AppError('Der Benutzer mit diesem Token existiert nicht mehr.', 404))
     }
 
     req.user = currentUser
@@ -92,7 +92,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.acceptPrivacyPolicy = catchAsync(async (req, res, next) => {
     if (req.params.userId.toString() !== req.user._id.toString()) {
-        return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
+        return next(new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 400))
     }
 
     const user = await User.findById(req.params.userId)
@@ -115,7 +115,7 @@ exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(
-                new AppError('Sie haben nicht die Erlaubnis, diese Aktion durchzuführen!', 403)
+                new AppError('Sie sind nicht berechtigt, diese Aktion durchzuführen.', 403)
             );
         }
 
