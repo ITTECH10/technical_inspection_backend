@@ -85,13 +85,8 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-<<<<<<< HEAD
-    async creditExpiresInEightMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Finanzierung läuft in sechts Monate aus!"
-=======
     async creditExpiresInSixMonths(customer, vehicle) {
         const subject = "SE Carmanagement | Ihre KFZ-Finanzierung läuft in sechs Monaten aus!"
->>>>>>> f8b37850afabf10746bab6acd6ccc1772acdaab0
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeCreditExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
@@ -110,13 +105,8 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-<<<<<<< HEAD
-    async leasingExpiresInEightMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Leasing läuft in sechts Monate aus!"
-=======
     async leasingExpiresInSixMonths(customer, vehicle) {
         const subject = "SE Carmanagement | Ihr KFZ-Leasing läuft in sechs Monaten aus!"
->>>>>>> f8b37850afabf10746bab6acd6ccc1772acdaab0
         const template = super.loadTemplate('VEHICLE_RELATED', 'sixMonthsBeforeLeasingExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
