@@ -17,8 +17,8 @@ const MailingScheduler = require('./services/jobs/MailingScheduler')
 
 const app = express()
 // const origin = process.env.NODE_ENV === 'production' ? 'https://secarmanagement.vercel.app' : 'http://localhost:3000'
-// const origin = process.env.NODE_ENV === 'production' ? 'https://zivinice-connected.ba' : 'http://localhost:3000'
-const origin = process.env.NODE_ENV === 'production' ? 'https://app.se-carmanagement.de' : 'http://localhost:3000'
+const origin = process.env.NODE_ENV === 'production' ? 'https://zivinice-connected.ba' : 'http://localhost:3000'
+// const origin = process.env.NODE_ENV === 'production' ? 'https://app.se-carmanagement.de' : 'http://localhost:3000'
 // const origin = 'http://localhost:3000'
 
 // SECURITY HEADERS
