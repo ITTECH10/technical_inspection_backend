@@ -13,8 +13,12 @@ const handleCastErrorDB = err => {
 
 const handleDuplicateFieldsDB = err => {
     const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
+    let message = `Doppelter Feldwert: ${value}. Bitte verwenden Sie einen anderen Wert!`;
 
-    const message = `Doppelter Feldwert: ${value}. Bitte verwenden Sie einen anderen Wert!`;
+    if (err.message.includes('email')) {
+        message = 'Die verwendete E-Mail Adresse existiert bereits!'
+    }
+
     return new AppError(message, 400);
 };
 

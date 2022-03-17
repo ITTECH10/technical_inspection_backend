@@ -37,8 +37,7 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     corespondencePartnerEmail: {
-        type: String,
-        unique: true
+        type: String
     },
     protectionLetter: {
         type: Boolean
