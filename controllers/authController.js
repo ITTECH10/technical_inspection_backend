@@ -57,7 +57,7 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Bitte E-Mail und Passwort eingeben!', 401))
     }
 
-    const user = await User.findOne({ email }).select('+password')
+    const user = await User.findOne({ email: email.trim() }).select('+password')
     if (!user || !await user.comparePasswords(password.trim(), user.password)) {
         return next(new AppError('Benutzername oder Passwort ungültig!', 401))
     }
