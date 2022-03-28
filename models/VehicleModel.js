@@ -13,6 +13,9 @@ const vehicleSchema = new mongoose.Schema({
     images: {
         type: Array
     },
+    driver: {
+        type: String
+    },
     chassisNumber: {
         type: String
     },

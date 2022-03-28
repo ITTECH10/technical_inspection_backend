@@ -42,6 +42,7 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         model: req.body.model,
         thumbnail: req.files ? req.files.file : req.body.image,
         chassisNumber: req.body.chassisNumber,
+        driver: req.body.driver,
         mark: req.body.mark,
         HSN: req.body.HSN,
         TSN: req.body.TSN,
@@ -305,6 +306,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.chassisNumber = req.body.chassisNumber || updatedVehicle.chassisNumber
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
     updatedVehicle.model = req.body.model || updatedVehicle.model
+    updatedVehicle.driver = req.body.driver || updatedVehicle.driver
     updatedVehicle.registrationNumber = req.body.registrationNumber || updatedVehicle.registrationNumber
     updatedVehicle.HSN = req.body.HSN || updatedVehicle.HSN
     updatedVehicle.TSN = req.body.TSN || updatedVehicle.TSN
