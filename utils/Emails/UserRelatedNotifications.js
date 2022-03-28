@@ -76,11 +76,13 @@ class UserEmailNotifications extends EmailNotifications {
     }
 
     async creditExpiresInThreeMonths(customer, vehicle) {
-        const subject = "SE Carmanagement | Ihre KFZ-Finanzierung läuft in drei Monaten aus!"
+        const subject = "Ihre KFZ-Finanzierung läuft in drei Monaten aus!"
         const template = super.loadTemplate('VEHICLE_RELATED', 'threeMonthsBeforeCreditExpiration')
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
             .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
+            .replaceAll('{{gender}}', customer.gender === 'Mr' ? 'Herr' : 'Frau')
+            .replaceAll('{{name}}', `${customer.firstName} ${customer.lastName}`)
 
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
