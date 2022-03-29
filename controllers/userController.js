@@ -72,7 +72,6 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     user.customerType = req.body.customerType || user.customerType
     user.postCode = req.body.postCode || user.postCode
     user.city = req.body.city || user.city
-    user.birthDate = req.body.birthDate || user.birthDate
     user.email = req.body.email || user.email
     user.corespondencePartner = req.body.customerPartner || user.corespondencePartner
     user.corespondencePartnerEmail = req.body.customerPartnerEmail || user.corespondencePartnerEmail

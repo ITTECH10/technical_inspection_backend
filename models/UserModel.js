@@ -62,9 +62,6 @@ const userSchema = new mongoose.Schema({
     city: {
         type: String
     },
-    birthDate: {
-        type: Date
-    },
     role: {
         type: String,
         default: 'user',

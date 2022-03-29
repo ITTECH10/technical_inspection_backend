@@ -27,7 +27,6 @@ exports.signup = catchAsync(async (req, res, next) => {
         street: req.body.street,
         postCode: req.body.postCode,
         city: req.body.city,
-        birthDate: req.body.birthDate,
         role: req.body.role,
         password: req.body.password,
         confirmPassword: req.body.confirmPassword
