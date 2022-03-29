@@ -75,9 +75,6 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
     user.email = req.body.email || user.email
     user.corespondencePartner = req.body.customerPartner || user.corespondencePartner
     user.corespondencePartnerEmail = req.body.customerPartnerEmail || user.corespondencePartnerEmail
-    user.protectionLetter = req.body.protectionLetter
-    user.ADAC = req.body.ADAC
-    user.membershipNumber = req.body.membershipNumber
 
     await user.save({
         new: true,

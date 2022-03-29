@@ -143,6 +143,15 @@ const vehicleSchema = new mongoose.Schema({
     adminNotifiedAboutCarSelling: {
         type: Boolean
     },
+    protectionLetter: {
+        type: Boolean
+    },
+    ADAC: {
+        type: Boolean
+    },
+    membershipNumber: {
+        type: String
+    },
     ntiServiceExpiresInOneMonthEmailNotifier: {
         type: String
     },

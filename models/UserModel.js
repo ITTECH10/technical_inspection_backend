@@ -38,15 +38,6 @@ const userSchema = new mongoose.Schema({
     corespondencePartnerEmail: {
         type: String
     },
-    protectionLetter: {
-        type: Boolean
-    },
-    ADAC: {
-        type: Boolean
-    },
-    membershipNumber: {
-        type: String
-    },
     phoneNumber: {
         type: String
     },
