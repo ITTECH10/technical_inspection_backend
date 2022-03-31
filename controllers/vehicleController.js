@@ -192,7 +192,7 @@ exports.deleteMyVehicles = catchAsync(async (req, res, next) => {
     })
 
     try {
-        await new UserEmailNotifications().vehicleDeleted(customer, vehicleToDelete)
+        // await new UserEmailNotifications().vehicleDeleted(customer, vehicleToDelete)
         await File.deleteMany({ uploadedFor: vehicleToDelete._id })
         await CashPayment.deleteMany({ vehiclePayedFor: vehicleToDelete._id })
         await CreditPayment.deleteMany({ vehiclePayedFor: vehicleToDelete._id })

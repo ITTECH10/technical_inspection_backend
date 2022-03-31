@@ -15,7 +15,8 @@ class CommonEmailNotifications extends EmailNotifications {
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
 
-        this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        // this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        this.role === 'admin' && super.sendToAdmin(subject, body)
     }
 
     async customerInformationsUpdated(customer, changedValues) {
@@ -25,7 +26,8 @@ class CommonEmailNotifications extends EmailNotifications {
         ${changedValues ? `Geänderte Werte: ${changedValues}` : ''}
         `
 
-        this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        // this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        this.role === 'admin' && super.sendToAdmin(subject, body)
     }
 
     async documentOperations(customer, operation, car) {
@@ -36,7 +38,8 @@ class CommonEmailNotifications extends EmailNotifications {
         Link: https://app.se-carmanagement.de/cars/${car._id}
         `
 
-        this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        // this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
+        this.role === 'admin' && super.sendToAdmin(subject, body)
     }
 
     // async documentOperations(customer, operation, car) {

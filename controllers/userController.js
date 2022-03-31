@@ -81,13 +81,13 @@ exports.editUserInfo = catchAsync(async (req, res, next) => {
         validateBeforeSave: false
     })
 
-    try {
-        // await new CommonEmailNotifications(req.user.role).customerInformationsUpdated(user, formatedChangedValues)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     // await new CommonEmailNotifications(req.user.role).customerInformationsUpdated(user, formatedChangedValues)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(202).json({
         message: 'success',
@@ -100,13 +100,13 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     const customer = await User.findByIdAndDelete(req.params.id)
     await Vehicle.deleteMany({ vehicleOwner: req.params.id })
 
-    try {
-        await new UserEmailNotifications().customerDeleted(customer)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().customerDeleted(customer)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(204).json({
         message: 'success'

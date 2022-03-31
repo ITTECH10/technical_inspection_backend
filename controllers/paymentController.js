@@ -27,13 +27,13 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     vehicle.vehiclePaymentTypeVariant = 'cash'
     await vehicle.save({ validateBeforeSave: false })
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(201).json({
         message: 'success',
@@ -68,13 +68,13 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     vehicle.vehiclePaymentTypeVariant = 'credit'
     await vehicle.save({ validateBeforeSave: false })
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(201).json({
         message: 'success',
@@ -113,13 +113,13 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     vehicle.vehiclePaymentTypeVariant = 'leasing'
     await vehicle.save({ validateBeforeSave: false })
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(201).json({
         message: 'success',
@@ -180,13 +180,13 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
         return next(new AppError('Route malformed, you do not have permissions to perform this action.', 400))
     }
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(202).json({
         message: 'success',
@@ -229,13 +229,13 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     await creditPayment.save({ validateBeforeSave: false })
     await vehicle.save({ validateBeforeSave: false })
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(202).json({
         message: 'success',
@@ -287,13 +287,13 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     //     return next(new AppError('Die Route ist fehlerhaft, Sie haben keine Berechtigung, diese Aktion durchzuführen.', 400))
     // }
 
-    try {
-        await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
-    } catch (err) {
-        if (err) {
-            console.log(err)
-        }
-    }
+    // try {
+    //     await new UserEmailNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
+    // } catch (err) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    // }
 
     res.status(202).json({
         message: 'success',
