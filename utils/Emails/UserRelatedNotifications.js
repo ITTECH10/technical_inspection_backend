@@ -81,7 +81,7 @@ class UserEmailNotifications extends EmailNotifications {
 
         const formatedTemplate = template.replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model}`)
             .replaceAll('{{registrationPlates}}', vehicle.registrationNumber)
-            .replaceAll('{{gender}}', customer.gender === 'Mr' ? 'Herr' : 'Frau')
+            .replaceAll('{{gender}}', customer.gender === 'Mr' ? 'geehrter Herr' : 'geehrte Frau')
             .replaceAll('{{name}}', `${customer.firstName} ${customer.lastName}`)
 
         await this.sendToCustomer(customer, subject, formatedTemplate)

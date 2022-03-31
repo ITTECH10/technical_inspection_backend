@@ -33,6 +33,8 @@ app.use(express.json())
 // CRONES INITIALIZATION
 MailingScheduler()
 
+// CONSIDER ADDING RATE LIMITER TO AVOID DDOS ATACKS
+
 // DATA SANITIZATION
 app.use(mongoSanitize())
 app.use(xss())
