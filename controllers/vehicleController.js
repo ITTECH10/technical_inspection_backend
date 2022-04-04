@@ -61,7 +61,6 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         nextTechnicalInspection: req.body.nextTechnicalInspection,
         kilometersDriven: req.body.kilometersDriven,
         registrationNumber: req.body.registrationNumber,
-        monthlyInsurancePayment: req.body.monthlyInsurancePayment,
         yearlyTax: req.body.yearlyTax
     })
 
@@ -323,8 +322,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.carIsSoldTo = req.body.carIsSoldTo || updatedVehicle.carIsSoldTo
     updatedVehicle.carIsSoldDate = req.body.carIsSoldDate || updatedVehicle.carIsSoldDate
     updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.technicalInspectionInNextTwoMonths,
-        updatedVehicle.monthlyInsurancePayment = req.body.monthlyInsurancePayment || updatedVehicle.monthlyInsurancePayment
-    updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
+        updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
     updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
         updatedVehicle.AU = req.body.AU || updatedVehicle.AU
     updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(1) : updatedVehicle.TUVExpiresInOneMonth,

@@ -96,10 +96,6 @@ const vehicleSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Insurance'
     },
-    monthlyInsurancePayment: {
-        type: Number,
-        // required: [true, 'Please provide your monthly insurance payment.']
-    },
     vehiclePaymentType: {
         type: mongoose.Schema.Types.Mixed
     },
