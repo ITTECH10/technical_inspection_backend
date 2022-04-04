@@ -26,11 +26,20 @@ exports.signup = catchAsync(async (req, res, next) => {
         city: req.body.city,
         role: req.body.role,
         password: req.body.password,
-        confirmPassword: req.body.confirmPassword
+        confirmPassword: req.body.confirmPassword,
+        loginCredentialsRecipient: req.body.loginCredentialsRecipient
     })
 
     try {
-        await new UserEmailNotifications().customerCreated(newUser, req.body.password)
+        await new CommonEmailNotifications().customerCreated(
+            {
+                ...newUser,
+                loginCredentialsRecipient: req.body.loginCredentialsRecipient,
+                email: req.body.email,
+                password: req.body.password
+            },
+            req.body.password
+        )
 
         newUser.password = undefined
         newUser.__v = undefined

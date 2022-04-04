@@ -15,15 +15,15 @@ class UserEmailNotifications extends EmailNotifications {
         await this.sendToCustomer(customer, subject, formatedTemplate)
     }
 
-    async customerCreated(customer, password) {
-        const subject = "SE Carmanagement | Ihr Profil wurde erstellt"
-        const template = super.loadTemplate('CUSTOMER_RELATED', 'customerCreated')
+    // async customerCreated(customer, password) {
+    //     const subject = "SE Carmanagement | Ihr Profil wurde erstellt"
+    //     const template = super.loadTemplate('CUSTOMER_RELATED', 'customerCreated')
 
-        const formatedTemplate = template.replaceAll('{{recipientEmail}}', customer.email)
-            .replaceAll('{{recipientPassword}}', password)
+    //     const formatedTemplate = template.replaceAll('{{recipientEmail}}', customer.email)
+    //         .replaceAll('{{recipientPassword}}', password)
 
-        await this.sendToCustomer(customer, subject, formatedTemplate)
-    }
+    //     await this.sendToCustomer(customer, subject, formatedTemplate)
+    // }
 
     async ntiServiceExpiresInNextMonth(customer, vehicle) {
         const subject = "SE Carmanagement | Vertrauen ist gut. Kontrolle auch!"

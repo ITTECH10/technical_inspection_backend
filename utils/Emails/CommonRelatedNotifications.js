@@ -6,6 +6,22 @@ class CommonEmailNotifications extends EmailNotifications {
         this.role = role
     }
 
+    async customerCreated(recipient, password) {
+        const subject = "SE Carmanagement | Ihr Profil wurde erstellt"
+        const template = super.loadTemplate('CUSTOMER_RELATED', 'customerCreated')
+
+        const formatedTemplate = template.replaceAll('{{recipientEmail}}', recipient.email)
+            .replaceAll('{{recipientPassword}}', password)
+
+        if (recipient.loginCredentialsRecipient === 'kunde') {
+            await this.sendToCustomer(recipient, subject, formatedTemplate)
+        }
+
+        if (recipient.loginCredentialsRecipient === 'admin') {
+            await this.sendToAdmin(subject, formatedTemplate)
+        }
+    }
+
     async carOperations(operation, car, customer, changedValues) {
         const subject = `SE-Carmangement | Fahrzeug ${operation}`
         const body = `${this.role === 'admin' ? 'SE-Carmanagement' : 'Kunde'} hat ein Fahrzeug ${operation}
