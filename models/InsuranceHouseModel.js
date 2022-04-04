@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const insuranceHouseSchema = new mongoose.Schema({
     insuranceOwner: {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        // required: [true, 'Insurance House information must be filled out.']
+        ref: 'User'
     },
     insuranceConnectedVehicle: {
         type: mongoose.Schema.ObjectId,
@@ -22,27 +21,25 @@ const insuranceHouseSchema = new mongoose.Schema({
     },
     partKasko: {
         type: String
+    },
+    insuranceCost: {
+        type: Number
+    },
+    insuranceCostType: {
+        type: String
+    },
+    allowedYearlyKilometers: {
+        type: Number
+    },
+    protectionLetter: {
+        type: Boolean
+    },
+    ADAC: {
+        type: Boolean
+    },
+    membershipNumber: {
+        type: String
     }
-    // streetAddress: {
-    //     type: String,
-    //     required: [true, 'Please enter the insurance house address street.']
-    // },
-    // numberAddress: {
-    //     type: String,
-    //     required: [true, 'Please enter the insurance house address number.']
-    // },
-    // postNumber: {
-    //     type: Number,
-    //     required: [true, 'Please enter the insurance house post number.']
-    // },
-    // city: {
-    //     type: String,
-    //     required: [true, 'Please enter the insurance house city location.']
-    // },
-    // phoneNumber: {
-    //     type: String,
-    //     required: [true, 'Please enter the insurance house phone number.']
-    // }
 })
 
 const Insurance = mongoose.model('Insurance', insuranceHouseSchema)

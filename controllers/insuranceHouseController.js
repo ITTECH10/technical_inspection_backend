@@ -10,7 +10,13 @@ exports.createInsuranceHouse = catchAsync(async (req, res, next) => {
         insuranceHouse: req.body.insuranceHouse,
         contractNumber: req.body.contractNumber,
         fullKasko: req.body.vk,
-        partKasko: req.body.tk
+        partKasko: req.body.tk,
+        insuranceCost: req.body.insuranceCost,
+        insuranceCostType: req.body.insuranceCostType,
+        allowedYearlyKilometers: req.body.allowedYearlyKilometers,
+        protectionLetter: req.body.protectionLetter,
+        ADAC: req.body.ADAC,
+        membershipNumber: req.body.membershipNumber
     })
 
     const vehicle = await Vehicle.findById(newInsuranceHouse.insuranceConnectedVehicle)
@@ -38,6 +44,12 @@ exports.updateInsuranceHouse = catchAsync(async (req, res, next) => {
     insurance.contractNumber = req.body.contractNumber || insurance.contractNumber
     insurance.fullKasko = req.body.vk || insurance.fullKasko
     insurance.partKasko = req.body.tk || insurance.partKasko
+    insurance.insuranceCost = req.body.insuranceCost || insurance.insuranceCost
+    insurance.insuranceCostType = req.body.insuranceCostType || insurance.insuranceCostType
+    insurance.allowedYearlyKilometers = req.body.allowedYearlyKilometers || insurance.allowedYearlyKilometers
+    insurance.protectionLetter = req.body.protectionLetter
+    insurance.ADAC = req.body.ADAC
+    insurance.membershipNumber = req.body.membershipNumber
 
     await insurance.save({ validateBeforeSave: true })
 

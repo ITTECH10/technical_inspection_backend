@@ -100,10 +100,6 @@ const vehicleSchema = new mongoose.Schema({
         type: Number,
         // required: [true, 'Please provide your monthly insurance payment.']
     },
-    allowedYearlyKilometers: {
-        type: Number,
-        // required: [true, 'Please provide allowed kilometers per year.']
-    },
     vehiclePaymentType: {
         type: mongoose.Schema.Types.Mixed
     },
@@ -142,15 +138,6 @@ const vehicleSchema = new mongoose.Schema({
     },
     adminNotifiedAboutCarSelling: {
         type: Boolean
-    },
-    protectionLetter: {
-        type: Boolean
-    },
-    ADAC: {
-        type: Boolean
-    },
-    membershipNumber: {
-        type: String
     },
     ntiServiceExpiresInOneMonthEmailNotifier: {
         type: String
