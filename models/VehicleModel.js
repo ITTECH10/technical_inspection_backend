@@ -85,13 +85,6 @@ const vehicleSchema = new mongoose.Schema({
     TUVExpiresInTwoMonths: {
         type: Boolean
     },
-    AU: {
-        type: Date,
-        // required: [true, 'Please provide AU date.']
-    },
-    AUExpiresInTwoMonths: {
-        type: Boolean
-    },
     insuranceHouse: {
         type: mongoose.Schema.ObjectId,
         ref: 'Insurance'
@@ -144,12 +137,12 @@ const vehicleSchema = new mongoose.Schema({
     TuvExpiresInNextTwoMonthsNotifier: {
         type: String
     },
-    AuExpiresInNextMonthNotifier: {
-        type: String
-    },
-    AuExpiresInNextTwoMonthsNotifier: {
-        type: String
-    },
+    // AuExpiresInNextMonthNotifier: {
+    //     type: String
+    // },
+    // AuExpiresInNextTwoMonthsNotifier: {
+    //     type: String
+    // },
     creditExpiresInUpcomingThreeMonthsNotifier: {
         type: String
     },
@@ -188,13 +181,13 @@ vehicleSchema.methods.createTuvExpiresInNextTwoMonthsNotifier = async function (
 };
 
 // AU EXPIRED HASH GENERATOR
-vehicleSchema.methods.createAuExpiresInNextMonthNotifier = async function (vehicleOwner) {
-    this.AuExpiresInNextMonthNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
+// vehicleSchema.methods.createAuExpiresInNextMonthNotifier = async function (vehicleOwner) {
+//     this.AuExpiresInNextMonthNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+// };
 
-vehicleSchema.methods.createAuExpiresInNextTwoMonthsNotifier = async function (vehicleOwner) {
-    this.AuExpiresInNextTwoMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
-};
+// vehicleSchema.methods.createAuExpiresInNextTwoMonthsNotifier = async function (vehicleOwner) {
+//     this.AuExpiresInNextTwoMonthsNotifier = await bcrypt.hash(`${vehicleOwner}`, 12)
+// };
 
 // CREDIT EXPIRED HASH GENERATOR
 vehicleSchema.methods.createFinansesExpiresInThreeMonthsEmailNotifier = async function (vehicleOwner) {

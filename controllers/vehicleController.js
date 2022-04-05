@@ -50,11 +50,9 @@ exports.createVehicle = catchAsync(async (req, res, next) => {
         lastUUV: req.body.lastUUV,
         nextUUV: req.body.nextUUV,
         TUV: req.body.TUV,
-        AU: req.body.AU,
         TUVExpiresInOneMonth: new DateGenerator(req.body.TUV).expiresInGivenMonths(1),
         TUVExpiresInTwoMonths: new DateGenerator(req.body.TUV).expiresInGivenMonths(2),
         technicalInspectionInNextTwoMonths: new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2),
-        AUExpiresInTwoMonths: new DateGenerator(req.body.AU).expiresInGivenMonths(2),
         firstVehicleRegistration: req.body.firstVehicleRegistration,
         firstVehicleRegistrationOnOwner: req.body.firstVehicleRegistrationOnOwner,
         lastTechnicalInspection: req.body.lastTechnicalInspection,
@@ -296,10 +294,10 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
         updatedVehicle.TuvExpiresInNextTwoMonthsNotifier = undefined
     }
 
-    if (req.body.AU && new Date(req.body.AU).getTime() !== new Date(updatedVehicle.AU).getTime()) {
-        updatedVehicle.AuExpiresInNextMonthNotifier = undefined
-        updatedVehicle.AuExpiresInNextTwoMonthsNotifier = undefined
-    }
+    // if (req.body.AU && new Date(req.body.AU).getTime() !== new Date(updatedVehicle.AU).getTime()) {
+    //     updatedVehicle.AuExpiresInNextMonthNotifier = undefined
+    //     updatedVehicle.AuExpiresInNextTwoMonthsNotifier = undefined
+    // }
 
     updatedVehicle.chassisNumber = req.body.chassisNumber || updatedVehicle.chassisNumber
     updatedVehicle.mark = req.body.mark || updatedVehicle.mark
@@ -324,9 +322,7 @@ exports.updateVehicleInformation = catchAsync(async (req, res, next) => {
     updatedVehicle.technicalInspectionInNextTwoMonths = req.body.nextTechnicalInspection ? new DateGenerator(req.body.nextTechnicalInspection).expiresInGivenMonths(2) : updatedVehicle.technicalInspectionInNextTwoMonths,
         updatedVehicle.yearlyTax = req.body.yearlyTax || updatedVehicle.yearlyTax
     updatedVehicle.TUV = req.body.TUV || updatedVehicle.TUV,
-        updatedVehicle.AU = req.body.AU || updatedVehicle.AU
-    updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(1) : updatedVehicle.TUVExpiresInOneMonth,
-        updatedVehicle.AUExpiresInTwoMonths = req.body.AU ? new DateGenerator(req.body.AU).expiresInGivenMonths(2) : updatedVehicle.AUExpiresInTwoMonths,
+        updatedVehicle.TUVExpiresInOneMonth = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(1) : updatedVehicle.TUVExpiresInOneMonth,
         updatedVehicle.TUVExpiresInTwoMonths = req.body.TUV ? new DateGenerator(req.body.TUV).expiresInGivenMonths(2) : updatedVehicle.TUVExpiresInTwoMonths
 
     await updatedVehicle.save({ validateBeforeSave: true })

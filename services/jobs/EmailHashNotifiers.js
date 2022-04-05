@@ -6,8 +6,8 @@ class EmailHashNotifiersJob {
             $or: [
                 { TuvExpiresInNextMonthNotifier: { $exists: true } },
                 { TuvExpiresInNextTwoMonthsNotifier: { $exists: true } },
-                { AuExpiresInNextMonthNotifier: { $exists: true } },
-                { AuExpiresInNextTwoMonthsNotifier: { $exists: true } },
+                // { AuExpiresInNextMonthNotifier: { $exists: true } },
+                // { AuExpiresInNextTwoMonthsNotifier: { $exists: true } },
                 { leasingExpiredEmailNotifier: { $exists: true } },
                 { creditExpiresInUpcomingThreeMonthsNotifier: { $exists: true } },
                 { creditExpiresInUpcomingSixMonthsNotifier: { $exists: true } },
@@ -22,8 +22,8 @@ class EmailHashNotifiersJob {
             users.forEach(async user => {
                 user.TuvExpiresInNextMonthNotifier = undefined
                 user.TuvExpiresInNextTwoMonthsNotifier = undefined
-                user.AuExpiresInNextMonthNotifier = undefined
-                user.AuExpiresInNextTwoMonthsNotifier = undefined
+                // user.AuExpiresInNextMonthNotifier = undefined
+                // user.AuExpiresInNextTwoMonthsNotifier = undefined
                 user.leasingExpiredEmailNotifier = undefined
                 user.creditExpiresInUpcomingThreeMonthsNotifier = undefined
                 user.creditExpiresInUpcomingSixMonthsNotifier = undefined
