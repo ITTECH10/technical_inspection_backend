@@ -28,7 +28,7 @@ exports.createCashPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'cash', vehicle)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'Barkauf', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -69,7 +69,7 @@ exports.createCreditPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'credit', vehicle)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'Finanzierung', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -114,7 +114,7 @@ exports.createLeasingPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'leasing', vehicle)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'hinzugefügt', 'Leasing', vehicle)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -181,7 +181,7 @@ exports.updateCashPayment = catchAsync(async (req, res, next) => {
     }
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'cash', vehicle, formatedChangedValues)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'Barkauf', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -230,7 +230,7 @@ exports.updateCreditPayment = catchAsync(async (req, res, next) => {
     await vehicle.save({ validateBeforeSave: false })
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'credit', vehicle, formatedChangedValues)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'Finanzierung', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
@@ -288,7 +288,7 @@ exports.updateLeasingPayment = catchAsync(async (req, res, next) => {
     // }
 
     try {
-        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'leasing', vehicle, formatedChangedValues)
+        await new AdminRelatedNotifications().paymentOperations(customer, 'aktualisiert', 'Leasing', vehicle, formatedChangedValues)
     } catch (err) {
         if (err) {
             console.log(err)
