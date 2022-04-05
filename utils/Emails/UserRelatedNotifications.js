@@ -145,20 +145,20 @@ class UserEmailNotifications extends EmailNotifications {
         await super.sendToCustomer(customer, subject, template)
     }
 
-    async paymentOperations(customer, operation, paymentType, vehicle, changedValues) {
-        const subject = `${paymentType} ${operation}`
-        const template = super.loadTemplate('CUSTOMER_RELATED', 'paymentOperations')
+    // async paymentOperations(customer, operation, paymentType, vehicle, changedValues) {
+    //     const subject = `${paymentType} ${operation}`
+    //     const template = super.loadTemplate('CUSTOMER_RELATED', 'paymentOperations')
 
-        const formatedTemplate = template
-            .replaceAll('{{name}}', `${customer.firstName} ${customer.lastName}`)
-            .replaceAll('{{gender}}', customer.gender === 'Mr' ? 'geehrter Herr' : 'geeherte Frau')
-            .replaceAll('{{paymentType}}', paymentType)
-            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model} ${vehicle.registrationNumber}`)
-            .replaceAll('{{vehicleId}}', vehicle._id)
-            .replaceAll('{{operation}}', operation)
+    //     const formatedTemplate = template
+    //         .replaceAll('{{name}}', `${customer.firstName} ${customer.lastName}`)
+    //         .replaceAll('{{gender}}', customer.gender === 'Mr' ? 'geehrter Herr' : 'geeherte Frau')
+    //         .replaceAll('{{paymentType}}', paymentType)
+    //         .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model} ${vehicle.registrationNumber}`)
+    //         .replaceAll('{{vehicleId}}', vehicle._id)
+    //         .replaceAll('{{operation}}', operation)
 
-        await super.sendToCustomer(customer, subject, formatedTemplate)
-    }
+    //     await super.sendToCustomer(customer, subject, formatedTemplate)
+    // }
 }
 
 module.exports = UserEmailNotifications

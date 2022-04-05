@@ -47,6 +47,20 @@ class AdminEmailNotifications extends EmailNotifications {
 
         await super.sendToAdmin(subject, formatedTemplate)
     }
+
+    async paymentOperations(customer, operation, paymentType, vehicle, changedValues) {
+        const subject = `${paymentType} ${operation}`
+        const template = super.loadTemplate('ADMIN_RELATED', 'paymentOperations')
+
+        const formatedTemplate = template
+            .replaceAll('{{name}}', `${customer.firstName} ${customer.lastName}`)
+            .replaceAll('{{paymentType}}', paymentType)
+            .replaceAll('{{vehicle}}', `${vehicle.mark} ${vehicle.model} ${vehicle.registrationNumber}`)
+            .replaceAll('{{vehicleId}}', vehicle._id)
+            .replaceAll('{{operation}}', operation)
+
+        await super.sendToAdmin(subject, formatedTemplate)
+    }
 }
 
 module.exports = AdminEmailNotifications
