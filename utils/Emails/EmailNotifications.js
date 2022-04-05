@@ -52,7 +52,7 @@ class EmailNotifications {
             from: process.env.EMAIL_FROM,
             to: process.env.EMAIL_TO_ADMIN,
             subject: subject,
-            text: text
+            html: text
         }
 
         await this.newTransport().sendMail(mailOptions, (err, info) => {
