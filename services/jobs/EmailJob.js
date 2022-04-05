@@ -36,8 +36,8 @@ class EmailJob {
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: process.env.EMAIL_TO_ADMIN,
-            subject,
-            text
+            subject: subject,
+            text: text
         };
 
         await this.newTransport().sendMail(mailOptions, (err, info) => {
