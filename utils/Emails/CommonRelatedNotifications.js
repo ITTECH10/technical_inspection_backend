@@ -32,7 +32,9 @@ class CommonEmailNotifications extends EmailNotifications {
         `
 
         // this.role === 'admin' ? super.sendToCustomer(customer, subject, body) : super.sendToAdmin(subject, body)
-        operation === 'hinzugefügt' || operation === 'aktualisiert' && this.role === 'user' && super.sendToAdmin(subject, body)
+        if ((operation === 'hinzugefügt' || operation === 'aktualisiert') && this.role === 'user') {
+            super.sendToAdmin(subject, body)
+        }
     }
 
     async customerInformationsUpdated(customer, changedValues) {
